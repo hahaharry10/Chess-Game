@@ -13,6 +13,23 @@ public class Server {
     private int portNumber = 6174;
     private String terminator = "$$END$$";
 
+    /**
+     * Check both clients are conencted.
+     */
+    private void checkConnection()
+    {
+        if (!client1.isConnected())
+        {
+            System.err.println("Client 1 has been disconnected.");
+            System.exit(1);
+        }
+        else if (!client2.isConnected())
+        {
+            System.err.println("Client 2 has been disconnected.");
+            System.exit(1);
+        }
+    }
+
 
     private void startGame()
     {}
@@ -48,7 +65,7 @@ public class Server {
             System.exit(1);
         }
 
-        c1Writer.write("Connection to server successful. Waiting for opponent to connect..."); // send confirmation message to client.
+        c1Writer.println("Connection to server successful. Waiting for opponent to connect..."); // send confirmation message to client.
 
         System.out.println("Waiting for second client to connect...");
         try
@@ -59,23 +76,27 @@ public class Server {
         }
         catch ( IOException err )
         {
-            c1Writer.write("Failed to connect to opponent. Closing server.");
-            c1Writer.write(terminator);
+            c1Writer.println("Failed to connect to opponent. Closing server.");
+            c1Writer.println(terminator);
             System.err.println("ERROR: unable to connect to client.");
             System.exit(1);
         }
 
-        c1Writer.write("Opponent connected. Starting Game...");
-        c2Writer.write("Connected to sever. Starting Game...");
+        checkConnection();
+
+        c1Writer.println("Opponent connected. Starting Game...\n================================================================================");
+        c2Writer.println("Connected to sever. Starting Game...\n================================================================================");
+        c1Writer.println(terminator);
+        c2Writer.println(terminator);
 
         System.out.println("Starting game...");
         startGame();
 
-        c1Writer.write("Closing server...");
-        c2Writer.write("Closing server...");
+        c1Writer.println("Closing server...");
+        c2Writer.println("Closing server...");
 
-        c1Writer.write(terminator);
-        c2Writer.write(terminator);
+        c1Writer.println(terminator);
+        c2Writer.println(terminator);
 
         System.out.println("Closing server...");
         try
@@ -89,7 +110,7 @@ public class Server {
         }
         catch ( IOException err )
         {
-            System.err.println("ERROR: failed to disconnect server. forcing shut down...");
+            System.err.println("ERROR: failed to disconnect server. Forcing termination...");
             System.exit(1);
         }
     }

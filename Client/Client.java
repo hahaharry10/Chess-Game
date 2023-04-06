@@ -76,43 +76,57 @@ public class Client
 
         show(); // show the initial state of the board.
 
-        System.out.println("PASS...");
+        // System.out.println("PASS...");
 
-        stdin = new BufferedReader(new InputStreamReader(System.in));
+        // stdin = new BufferedReader(new InputStreamReader(System.in));
 
-        while (true)
+        // while (true)
+        // {
+        //     String userInput = "";
+
+        //     System.out.print("Enter move: ");
+        //     try
+        //     {
+        //         userInput = stdin.readLine(); // read from the terminal.
+        //     }
+        //     catch ( IOException err )
+        //     {
+        //         System.err.println("ERROR: failed to read user input.");
+        //         System.exit(1);
+        //     }
+
+        //     System.err.println("ERROR IS HERE");
+        //     if (userInput.equals("help"))
+        //     {
+        //         System.out.println("==========================================================");
+        //         System.out.println("The accepted format of a move is:\n\t$ current_tile new_tile");
+        //         System.out.println("==========================================================");
+        //         continue;
+        //     }
+
+        //     if ( checkInputValidity(userInput) )
+        //     {
+        //         writer.println(userInput); // Send input to the server
+        //         show(); // output server response
+        //     }
+        //     else
+        //     {
+        //         System.out.println("TRY AGAIN: input was invalid");
+        //     }
+        // }
+
+        // free resources:
+        try
         {
-            String userInput = "";
-
-            System.out.print("Enter move: ");
-            try
-            {
-                userInput = stdin.readLine(); // read from the terminal.
-            }
-            catch ( IOException err )
-            {
-                System.err.println("ERROR: failed to read user input.");
-                System.exit(1);
-            }
-
-            System.err.println("ERROR IS HERE");
-            if (userInput.equals("help"))
-            {
-                System.out.println("==========================================================");
-                System.out.println("The accepted format of a move is:\n\t$ current_tile new_tile");
-                System.out.println("==========================================================");
-                continue;
-            }
-
-            if ( checkInputValidity(userInput) )
-            {
-                writer.println(userInput); // Send input to the server
-                show(); // output server response
-            }
-            else
-            {
-                System.out.println("TRY AGAIN: input was invalid");
-            }
+            serverReader.close();
+            // stdin.close();
+            writer.close();
+            socket.close();
+        }
+        catch ( IOException err )
+        {
+            System.err.println("ERROR: failed to close connection. Forcing termination...");
+			System.exit(1);
         }
     }
 
