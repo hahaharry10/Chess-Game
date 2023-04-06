@@ -1,7 +1,8 @@
 import java.net.*;
 import java.io.*;
 
-public class Server {
+public class Server
+{
     private ServerSocket server = null;
     private Socket client1 = null;
     private Socket client2 = null;
