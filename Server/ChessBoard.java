@@ -55,20 +55,36 @@ public class ChessBoard
 
     /**
      * Convert the board into a string.
+     * @param client Boolean value saying whether the board will be created in teh perspective of client 1 (white).
      * @return the chessboard in the form of a string.
      */
-    public String getBoard()
+    public String getBoard(Boolean client1View)
     {
         String boardString = "";
 
-        for (int row = 0; row < boardWidth; row++)
+        if (client1View)
         {
-            boardString = boardString + board[row][0];
+            for (int row = 0; row < boardWidth; row++)
+            {
+                boardString = boardString + board[row][0];
 
-            for (int col = 1; col < boardWidth; col++)
-                boardString = boardString + ' ' + board[row][col];
-            
-            boardString = boardString + '\n';
+                for (int col = 1; col < boardWidth; col++)
+                    boardString = boardString + ' ' + board[row][col];
+                
+                boardString = boardString + '\n';
+            }
+        }
+        else
+        {
+            for (int row = boardWidth-1; row >= 0; row--)
+            {
+                boardString = boardString + board[row][boardWidth-1];
+
+                for (int col = boardWidth-2; col >= 0; col--)
+                    boardString = boardString + ' ' + board[row][col];
+                
+                boardString = boardString + '\n';
+            }
         }
 
         return boardString;

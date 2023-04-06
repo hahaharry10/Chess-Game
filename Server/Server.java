@@ -39,9 +39,8 @@ public class Server
         chessBoard = new ChessBoard();
         chessBoard.createNewBoard();
 
-        String board = chessBoard.getBoard();
-        c1Writer.println(board);
-        c2Writer.println(board);
+        c1Writer.println(chessBoard.getBoard(true));
+        c2Writer.println(chessBoard.getBoard(false));
 
         c1Writer.println(terminator);
         c2Writer.println(terminator);
