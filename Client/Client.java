@@ -12,7 +12,7 @@ public class Client
     private Socket socket = null;
     private PrintWriter writer = null;
     private BufferedReader serverReader = null;
-    private BufferedReader stdin = null;
+    private BufferedReader stdin = null; // used to read from standard input.
 
     private int portNumber = 6174;
     private String gameOverSymbol = "$$END$$";
@@ -48,6 +48,10 @@ public class Client
         return Pattern.matches("[a-zA-Z][0-8]\s[a-zA-Z][0-8]", input);
     }
 
+
+    /**
+     * Execute client logic.
+     */
     private void runClient()
     {
         // Connect to the server:
@@ -74,12 +78,12 @@ public class Client
 
         while (true)
         {
-            String userInput;
+            String userInput = "";
 
             System.out.print("Enter move: ");
             try
             {
-                userInput = stdin.readLine(); // read user input
+                userInput = stdin.readLine(); // read from the terminal.
             }
             catch ( IOException err )
             {
@@ -97,12 +101,8 @@ public class Client
 
             if ( checkInputValidity(userInput) )
             {
-                // Send input to the server:
-                writer.println(userInput);
-
-                // output server response:
-                show();
-
+                writer.println(userInput); // Send input to the server
+                show(); // output server response
             }
             else
             {
