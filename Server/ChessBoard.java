@@ -61,40 +61,28 @@ public class ChessBoard
         switch (chr) {
             case 'P':
                 return '\u265F';
-                break;
             case 'p':
                 return '\u2659';
-                break;
             case 'R':
                 return '\u265C';
-                break;
             case 'r':
                 return '\u2656';
-                break;
             case 'N':
                 return '\u265E';
-                break;
             case 'n':
                 return '\u2658';
-                break;
             case 'B':
                 return '\u265D';
-                break;
             case 'b':
                 return '\u2657';
-                break;
             case 'Q':
                 return '\u265B';
-                break;
             case 'q':
                 return '\u2655';
-                break;
             case 'K':
                 return '\u265A';
-                break;
             case 'k':
                 return '\u2654';
-                break;
             default:
                 return chr;
         }
@@ -141,17 +129,17 @@ public class ChessBoard
     /*                The following methods implement the movements of the chess pieces:                */
     /****************************************************************************************************/
 
-    private Boolean pawnCanMove(String current_loc, String new_loc) {}
+    private Boolean pawnCanMove(String current_loc, String new_loc) { return false; }
 
-    private Boolean rookCanMove(String current_loc, String new_loc) {}
+    private Boolean rookCanMove(String current_loc, String new_loc) { return false; }
 
-    private Boolean knightCanMove(String current_loc, String new_loc) {}
+    private Boolean knightCanMove(String current_loc, String new_loc) { return false; }
 
-    private Boolean bishopCanMove(String current_loc, String new_loc) {}
+    private Boolean bishopCanMove(String current_loc, String new_loc) { return false; }
 
-    private Boolean queenCanMove(String current_loc, String new_loc) {}
+    private Boolean queenCanMove(String current_loc, String new_loc) { return false; }
 
-    private Boolean kingCanMove(String current_loc, String new_loc) {}
+    private Boolean kingCanMove(String current_loc, String new_loc) { return false; }
 
     /****************************************************************************************************/
 }
