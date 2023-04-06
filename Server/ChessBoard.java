@@ -56,6 +56,11 @@ public class ChessBoard
         board[8][5] = 'k'; // King
     }
 
+    /**
+     * Convert a character into its ASCII symbol.
+     * @param chr The character being translated into ascii representation.
+     * @return The translated ASCII character.
+     */
     private char translateCharacter(char chr)
     {
         switch (chr) {
@@ -129,16 +134,58 @@ public class ChessBoard
     /*                The following methods implement the movements of the chess pieces:                */
     /****************************************************************************************************/
 
+    /**
+     * Check if the piece can legally move to the new location.
+     * @param current_loc The current location of the piece.
+     * @param new_loc The new location the piece is being sent to.
+     * 
+     * @return true if the move is legal, false otherwise.
+     */
     private Boolean pawnCanMove(String current_loc, String new_loc) { return false; }
 
+    /**
+     * Check if the piece can legally move to the new location.
+     * @param current_loc The current location of the piece.
+     * @param new_loc The new location the piece is being sent to.
+     * 
+     * @return true if the move is legal, false otherwise.
+     */
     private Boolean rookCanMove(String current_loc, String new_loc) { return false; }
 
+    /**
+     * Check if the piece can legally move to the new location.
+     * @param current_loc The current location of the piece.
+     * @param new_loc The new location the piece is being sent to.
+     * 
+     * @return true if the move is legal, false otherwise.
+     */
     private Boolean knightCanMove(String current_loc, String new_loc) { return false; }
 
+    /**
+     * Check if the piece can legally move to the new location.
+     * @param current_loc The current location of the piece.
+     * @param new_loc The new location the piece is being sent to.
+     * 
+     * @return true if the move is legal, false otherwise.
+     */
     private Boolean bishopCanMove(String current_loc, String new_loc) { return false; }
 
+    /**
+     * Check if the piece can legally move to the new location.
+     * @param current_loc The current location of the piece.
+     * @param new_loc The new location the piece is being sent to.
+     * 
+     * @return true if the move is legal, false otherwise.
+     */
     private Boolean queenCanMove(String current_loc, String new_loc) { return false; }
 
+    /**
+     * Check if the piece can legally move to the new location.
+     * @param current_loc The current location of the piece.
+     * @param new_loc The new location the piece is being sent to.
+     * 
+     * @return true if the move is legal, false otherwise.
+     */
     private Boolean kingCanMove(String current_loc, String new_loc) { return false; }
 
     /****************************************************************************************************/
