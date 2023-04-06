@@ -11,6 +11,8 @@ public class Server
     private PrintWriter c1Writer = null; // used to write to client 1.
     private PrintWriter c2Writer = null; // used to write to client 2.
 
+    private ChessBoard chessBoard = null;
+
     private int portNumber = 6174;
     private String terminator = "$$END$$";
 
@@ -33,7 +35,17 @@ public class Server
 
 
     private void startGame()
-    {}
+    {
+        chessBoard = new ChessBoard();
+        chessBoard.createNewBoard();
+
+        String board = chessBoard.getBoard();
+        c1Writer.println(board);
+        c2Writer.println(board);
+
+        c1Writer.println(terminator);
+        c2Writer.println(terminator);
+    }
 
     /**
      * Execute the logic of the server.
