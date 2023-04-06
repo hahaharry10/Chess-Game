@@ -17,7 +17,7 @@ public class Client
     /**
      * Display the output of the server to the client.
      */
-    private void show()
+    private void printResponse()
     {
         String row;
 
@@ -74,7 +74,9 @@ public class Client
             System.exit(1);
         }
 
-        show(); // show the initial state of the board.
+        printResponse(); // output the server response.
+
+        printResponse(); // output the chess board.
 
         // System.out.println("PASS...");
 

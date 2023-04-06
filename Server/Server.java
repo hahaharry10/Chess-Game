@@ -1,7 +1,8 @@
 import java.net.*;
 import java.io.*;
 
-public class Server {
+public class Server
+{
     private ServerSocket server = null;
     private Socket client1 = null;
     private Socket client2 = null;
@@ -9,6 +10,8 @@ public class Server {
     private BufferedReader c2Reader = null; // used to read from client 2.
     private PrintWriter c1Writer = null; // used to write to client 1.
     private PrintWriter c2Writer = null; // used to write to client 2.
+
+    private ChessBoard chessBoard = null;
 
     private int portNumber = 6174;
     private String terminator = "$$END$$";
@@ -32,7 +35,16 @@ public class Server {
 
 
     private void startGame()
-    {}
+    {
+        chessBoard = new ChessBoard();
+        chessBoard.createNewBoard();
+
+        c1Writer.println(chessBoard.getBoard(true));
+        c2Writer.println(chessBoard.getBoard(false));
+
+        c1Writer.println(terminator);
+        c2Writer.println(terminator);
+    }
 
     /**
      * Execute the logic of the server.
