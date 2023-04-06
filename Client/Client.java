@@ -1,5 +1,3 @@
-package Client;
-
 import java.net.*;
 import java.io.*;
 
@@ -14,7 +12,7 @@ public class Client
     private BufferedReader stdin = null; // used to read from standard input.
 
     private int portNumber = 6174;
-    private String gameOverSymbol = "$$END$$";
+    private String terminator = "$$END$$";
 
     /**
      * Display the output of the server to the client.
@@ -25,9 +23,14 @@ public class Client
 
         try
         {
-            row = serverReader.readLine();
-
-            System.out.println(row);
+            while (true)
+            {
+                row = serverReader.readLine();
+                if (row.equals(terminator))
+                    break;
+                else
+                    System.out.println(row);
+            }
         }
         catch ( IOException err )
         {
@@ -73,6 +76,8 @@ public class Client
 
         show(); // show the initial state of the board.
 
+        System.out.println("PASS...");
+
         stdin = new BufferedReader(new InputStreamReader(System.in));
 
         while (true)
@@ -90,6 +95,7 @@ public class Client
                 System.exit(1);
             }
 
+            System.err.println("ERROR IS HERE");
             if (userInput.equals("help"))
             {
                 System.out.println("==========================================================");
@@ -110,7 +116,7 @@ public class Client
         }
     }
 
-    public void main()
+    public static void main(String[] args)
     {
         Client c = new Client();
         c.runClient();
