@@ -34,23 +34,70 @@ public class ChessBoard
             board[9][i] = (char) ('a' + i - 1);
         }
 
+        // The peices will be represented by the starting letter of the piece (i.e. pawn will be shown with a 'P' or 'p').
+        // The characters will either be in capital or lower case; capital case represents white, lowercase represents black.
+
         // place all black pieces onto the board:
         for (int i = 1; i < 9; i++)
-            board[2][i] = '\u265F'; // Pawns
-        board[1][1] = '\u265C'; board[1][8] = '\u265C'; // Rooks
-        board[1][2] = '\u265E'; board[1][7] = '\u265E'; // Knights
-        board[1][3] = '\u265D'; board[1][6] = '\u265D'; // Bishops
-        board[1][4] = '\u265B'; // Queen
-        board[1][5] = '\u265A'; // King
+            board[2][i] = 'P'; // Pawns
+        board[1][1] = 'R'; board[1][8] = 'R'; // Rooks
+        board[1][2] = 'N'; board[1][7] = 'N'; // Knights
+        board[1][3] = 'B'; board[1][6] = 'B'; // Bishops
+        board[1][4] = 'Q'; // Queen
+        board[1][5] = 'K'; // King
 
         // place all white pieces onto the board:
         for (int i = 1; i < 9; i++)
-            board[7][i] = '\u2659'; // Pawns
-        board[8][1] = '\u2656'; board[8][8] = '\u2656'; // Rooks
-        board[8][2] = '\u2658'; board[8][7] = '\u2658'; // Knights
-        board[8][3] = '\u2657'; board[8][6] = '\u2657'; // Bishops
-        board[8][4] = '\u2655'; // Queen
-        board[8][5] = '\u2654'; // King
+            board[7][i] = 'p'; // Pawns
+        board[8][1] = 'r'; board[8][8] = 'r'; // Rooks
+        board[8][2] = 'n'; board[8][7] = 'n'; // Knights
+        board[8][3] = 'b'; board[8][6] = 'b'; // Bishops
+        board[8][4] = 'q'; // Queen
+        board[8][5] = 'k'; // King
+    }
+
+    private char translateCharacter(char chr)
+    {
+        switch (chr) {
+            case 'P':
+                return '\u265F';
+                break;
+            case 'p':
+                return '\u2659';
+                break;
+            case 'R':
+                return '\u265C';
+                break;
+            case 'r':
+                return '\u2656';
+                break;
+            case 'N':
+                return '\u265E';
+                break;
+            case 'n':
+                return '\u2658';
+                break;
+            case 'B':
+                return '\u265D';
+                break;
+            case 'b':
+                return '\u2657';
+                break;
+            case 'Q':
+                return '\u265B';
+                break;
+            case 'q':
+                return '\u2655';
+                break;
+            case 'K':
+                return '\u265A';
+                break;
+            case 'k':
+                return '\u2654';
+                break;
+            default:
+                return chr;
+        }
     }
 
     /**
@@ -66,10 +113,10 @@ public class ChessBoard
         {
             for (int row = 0; row < boardWidth; row++)
             {
-                boardString = boardString + board[row][0];
+                boardString = boardString + translateCharacter(board[row][0]);
 
                 for (int col = 1; col < boardWidth; col++)
-                    boardString = boardString + ' ' + board[row][col];
+                    boardString = boardString + ' ' + translateCharacter(board[row][col]);
                 
                 boardString = boardString + '\n';
             }
@@ -78,10 +125,10 @@ public class ChessBoard
         {
             for (int row = boardWidth-1; row >= 0; row--)
             {
-                boardString = boardString + board[row][boardWidth-1];
+                boardString = boardString + translateCharacter(board[row][boardWidth-1]);
 
                 for (int col = boardWidth-2; col >= 0; col--)
-                    boardString = boardString + ' ' + board[row][col];
+                    boardString = boardString + ' ' + translateCharacter(board[row][col]);
                 
                 boardString = boardString + '\n';
             }
@@ -89,4 +136,22 @@ public class ChessBoard
 
         return boardString;
     }
+
+    /****************************************************************************************************/
+    /*                The following methods implement the movements of the chess pieces:                */
+    /****************************************************************************************************/
+
+    private Boolean pawnCanMove(String current_loc, String new_loc) {}
+
+    private Boolean rookCanMove(String current_loc, String new_loc) {}
+
+    private Boolean knightCanMove(String current_loc, String new_loc) {}
+
+    private Boolean bishopCanMove(String current_loc, String new_loc) {}
+
+    private Boolean queenCanMove(String current_loc, String new_loc) {}
+
+    private Boolean kingCanMove(String current_loc, String new_loc) {}
+
+    /****************************************************************************************************/
 }
