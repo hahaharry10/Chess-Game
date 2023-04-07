@@ -14,7 +14,7 @@ public class Server
     private ChessBoard chessBoard = null;
 
     private int portNumber = 6174;
-    private String terminator = "$$END$$";
+    private String terminator = "$$END$$"; // used to mark the end of a transmission.
 
     /**
      * Check both clients are conencted.
@@ -33,17 +33,47 @@ public class Server
         }
     }
 
+    private String makeMove(String current_loc, String new_loc)
+    {
+        return null;
+    }
 
+    /**
+     * Sun the logic of the chess game.
+     */
     private void startGame()
     {
         chessBoard = new ChessBoard();
         chessBoard.createNewBoard();
+        
+        // Start the game:
+        while (true)
+        {
+            c1Writer.println(chessBoard.getBoard(true));
+            c2Writer.println(chessBoard.getBoard(false));
 
-        c1Writer.println(chessBoard.getBoard(true));
-        c2Writer.println(chessBoard.getBoard(false));
+            c1Writer.println(terminator);
+            c2Writer.println(terminator);
 
-        c1Writer.println(terminator);
-        c2Writer.println(terminator);
+            try
+            {
+
+                String[] move = c1Reader.readLine().split(" "); // read client1's move and split it into an array of locations.
+
+                String moveResponse = makeMove(move[0], move[1]);
+                
+                if (moveResponse != null) // if the move cannot be made.
+                {
+                    c1Writer.println(moveResponse);
+                    c1Writer.println(terminator);
+                }
+            }
+            catch ( IOException err )
+            {
+                System.err.println("ERROR: failed to communicate with client. Shutting down server...");
+                System.exit(1);
+            }
+        }
     }
 
     /**
