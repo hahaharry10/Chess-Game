@@ -3,7 +3,7 @@ public class ChessBoard
     private char[][] board = new char[10][10]; // declare the 8x8 board plus tile coordinates.
     private int boardWidth = 10;
 
-    private char emptyTile = '·';
+    final char emptyTile = '·';
 
     /**
      * Initialise the board with all the pieces in their starting positions.
@@ -159,10 +159,6 @@ public class ChessBoard
         return board[row][col];
     }
 
-    /*******************************************************************************************************/
-    /* The following methods implement functions that test if pieces can legally move to the new location: */
-    /*******************************************************************************************************/
-
     /**
      * Check if the piece can legally move to the new location.
      * @param current_loc The current location of the piece.
@@ -170,7 +166,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    private Boolean pawnCanMove(String current_loc, String new_loc)
+    public Boolean movePawn(String current_loc, String new_loc)
     { 
         // split locations into seperate cordinates:
         char current_x = current_loc.charAt(0);
@@ -181,25 +177,26 @@ public class ChessBoard
         char pawn = getPieceAtLoc(current_loc);
         Boolean currentPieceIsBlack = (pawn >= 'A' && pawn <= 'Z');
         char pieceAtNewLoc = getPieceAtLoc(new_loc);
+        Boolean moveIsLegal = false;
         
-        // REMEMBER: the board perspectives oof black and white are flipped.
+        // REMEMBER: the board perspectives of black and white are flipped.
         if (currentPieceIsBlack)
         {
             if (current_y-1 == new_y) // is the pawn moving one tile forward?
             {
                 // if the new location is forward one tile and if the next tile is empty.
                 if (pieceAtNewLoc == emptyTile)
-                    return true;
+                    moveIsLegal = true;
 
                 Boolean newLocContainsWhite = (pieceAtNewLoc >= 'a' && pieceAtNewLoc <= 'z');
 
                 // is the move capturing an opponents piece on the forward right diagonal tile?
                 if (current_x-1 == new_x && newLocContainsWhite)
-                    return true;
+                    moveIsLegal = true;
 
                 // is the move capturing an opponents piece on the forward left diagonal tile?
                 if (current_x+1 == new_x && newLocContainsWhite)
-                    return true;
+                    moveIsLegal = true;
             }
 
             // if the pawn is at its starting row.
@@ -208,7 +205,7 @@ public class ChessBoard
                 // if the pawn is jumping 2 steps forward and the jump path is clear.
                 char nextTile = getPieceAtLoc((char) (current_y-1), current_x);
                 if (current_y-2 == new_y && nextTile == emptyTile && pieceAtNewLoc == emptyTile)
-                    return true;
+                    moveIsLegal = true;
             }
         }
         else
@@ -217,26 +214,33 @@ public class ChessBoard
             {
                 // if the new location is forward one tile and if the next tile is empty.
                 if (pieceAtNewLoc == emptyTile)
-                    return true;
+                    moveIsLegal = true;
 
                 Boolean newLocContainsBlack = (pieceAtNewLoc >= 'a' && pieceAtNewLoc <= 'z');
 
                 // is the move capturing an opponents piece on the forward right diagonal tile?
                 if (current_x+1 == new_x && newLocContainsBlack)
-                    return true;
+                    moveIsLegal = true;
                 
                 // is the move capturing an opponents piece on the forward left diagonal tile?
                 if (current_x-1 == new_x && newLocContainsBlack)
-                    return true;
+                    moveIsLegal = true;
             }
 
+            // if the pawn is at its starting row.
             else if (current_y == '2')
             {
                 // if the pawn is jumping 2 steps forward and the jump path is clear.
                 char nextTile = getPieceAtLoc((char) (current_y+1), current_x);
                 if (current_y+2 == new_y && nextTile == emptyTile && pieceAtNewLoc == emptyTile)
-                    return true;
+                    moveIsLegal = true;
             }
+        }
+
+        if (moveIsLegal)
+        {
+            makeMove(current_loc, new_loc);
+            return true;
         }
 
         return false;
@@ -249,7 +253,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    private Boolean rookCanMove(String current_loc, String new_loc) { return false; }
+    public Boolean rookCanMove(String current_loc, String new_loc) { return false; }
 
     /**
      * Check if the piece can legally move to the new location.
@@ -258,7 +262,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    private Boolean knightCanMove(String current_loc, String new_loc) { return false; }
+    public Boolean knightCanMove(String current_loc, String new_loc) { return false; }
 
     /**
      * Check if the piece can legally move to the new location.
@@ -267,7 +271,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    private Boolean bishopCanMove(String current_loc, String new_loc) { return false; }
+    public Boolean bishopCanMove(String current_loc, String new_loc) { return false; }
 
     /**
      * Check if the piece can legally move to the new location.
@@ -276,7 +280,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    private Boolean queenCanMove(String current_loc, String new_loc) { return false; }
+    public Boolean queenCanMove(String current_loc, String new_loc) { return false; }
 
     /**
      * Check if the piece can legally move to the new location.
@@ -285,8 +289,21 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    private Boolean kingCanMove(String current_loc, String new_loc) { return false; }
+    public Boolean kingCanMove(String current_loc, String new_loc) { return false; }
 
     /*******************************************************************************************************/
+
+    private void makeMove(String current_loc, String new_loc)
+    {
+        char piece = getPieceAtLoc(current_loc);
+
+        int current_x_index = (int) ('b' - current_loc.charAt(0));
+        int current_y_index = (int) ('2' - current_loc.charAt(0));
+        int new_x_index = (int) ('b' - new_loc.charAt(0));
+        int new_y_index = (int) ('2' - new_loc.charAt(0));
+
+        board[current_y_index][current_x_index] = emptyTile;
+        board[new_y_index][new_x_index] = piece;
+    }
 
 }
