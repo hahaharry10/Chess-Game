@@ -138,7 +138,7 @@ public class ChessBoard
      * @param y The y label of the location.
      * @return The character at the location.
      */
-    private char getPieceAtLoc(char x, char y)
+    public char getPieceAtLoc(char x, char y)
     {
         int col = (int) y - 48;
         int row = (int) x - 'a';
@@ -151,7 +151,7 @@ public class ChessBoard
      * @param location The location.
      * @return Teh character at teh location.
      */
-    private char getPieceAtLoc(String location)
+    public char getPieceAtLoc(String location)
     {
         int col = (int) location.charAt(0) - 48;
         int row = (int) location.charAt(1) - 'a';
@@ -159,9 +159,9 @@ public class ChessBoard
         return board[row][col];
     }
 
-    /****************************************************************************************************/
-    /*                The following methods implement the movements of the chess pieces:                */
-    /****************************************************************************************************/
+    /*******************************************************************************************************/
+    /* The following methods implement functions that test if pieces can legally move to the new location: */
+    /*******************************************************************************************************/
 
     /**
      * Check if the piece can legally move to the new location.
@@ -287,5 +287,6 @@ public class ChessBoard
      */
     private Boolean kingCanMove(String current_loc, String new_loc) { return false; }
 
-    /****************************************************************************************************/
+    /*******************************************************************************************************/
+
 }
