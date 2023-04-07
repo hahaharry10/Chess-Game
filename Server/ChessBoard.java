@@ -3,6 +3,8 @@ public class ChessBoard
     private char[][] board = new char[10][10]; // declare the 8x8 board plus tile coordinates.
     private int boardWidth = 10;
 
+    private char emptyTile = '·';
+
     /**
      * Initialise the board with all the pieces in their starting positions.
      */
@@ -12,7 +14,7 @@ public class ChessBoard
         for (int row = 0; row < boardWidth; row++)
         {
             for (int col = 0; col < boardWidth; col++)
-                board[row][col] = '·';
+                board[row][col] = emptyTile;
         }
 
         board[0][0] = ' ';
@@ -130,6 +132,33 @@ public class ChessBoard
         return boardString;
     }
 
+    /**
+     * Get the piece that is at the location.
+     * @param x The x label of the location.
+     * @param y The y label of the location.
+     * @return The character at the location.
+     */
+    private char getPieceAtLoc(char x, char y)
+    {
+        int col = (int) y - 48;
+        int row = (int) x - 'a';
+
+        return board[row][col];
+    }
+
+    /**
+     * Get the piece that is at the location.
+     * @param location The location.
+     * @return Teh character at teh location.
+     */
+    private char getPieceAtLoc(String location)
+    {
+        int col = (int) location.charAt(0) - 48;
+        int row = (int) location.charAt(1) - 'a';
+
+        return board[row][col];
+    }
+
     /****************************************************************************************************/
     /*                The following methods implement the movements of the chess pieces:                */
     /****************************************************************************************************/
@@ -141,7 +170,77 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    private Boolean pawnCanMove(String current_loc, String new_loc) { return false; }
+    private Boolean pawnCanMove(String current_loc, String new_loc)
+    { 
+        // split locations into seperate cordinates:
+        char current_x = current_loc.charAt(0);
+        char current_y = current_loc.charAt(1);
+        char new_x = new_loc.charAt(0);
+        char new_y = new_loc.charAt(1);
+        
+        char pawn = getPieceAtLoc(current_loc);
+        Boolean currentPieceIsBlack = (pawn >= 'A' && pawn <= 'Z');
+        char pieceAtNewLoc = getPieceAtLoc(new_loc);
+        
+        // REMEMBER: the board perspectives oof black and white are flipped.
+        if (currentPieceIsBlack)
+        {
+            if (current_y-1 == new_y) // is the pawn moving one tile forward?
+            {
+                // if the new location is forward one tile and if the next tile is empty.
+                if (pieceAtNewLoc == emptyTile)
+                    return true;
+
+                Boolean newLocContainsWhite = (pieceAtNewLoc >= 'a' && pieceAtNewLoc <= 'z');
+
+                // is the move capturing an opponents piece on the forward right diagonal tile?
+                if (current_x-1 == new_x && newLocContainsWhite)
+                    return true;
+
+                // is the move capturing an opponents piece on the forward left diagonal tile?
+                if (current_x+1 == new_x && newLocContainsWhite)
+                    return true;
+            }
+
+            // if the pawn is at its starting row.
+            else if (current_y == '7')
+            {
+                // if the pawn is jumping 2 steps forward and the jump path is clear.
+                char nextTile = getPieceAtLoc((char) (current_y-1), current_x);
+                if (current_y-2 == new_y && nextTile == emptyTile && pieceAtNewLoc == emptyTile)
+                    return true;
+            }
+        }
+        else
+        {
+            if (current_y+1 == new_y) // is the pawn moving one tile forward
+            {
+                // if the new location is forward one tile and if the next tile is empty.
+                if (pieceAtNewLoc == emptyTile)
+                    return true;
+
+                Boolean newLocContainsBlack = (pieceAtNewLoc >= 'a' && pieceAtNewLoc <= 'z');
+
+                // is the move capturing an opponents piece on the forward right diagonal tile?
+                if (current_x+1 == new_x && newLocContainsBlack)
+                    return true;
+                
+                // is the move capturing an opponents piece on the forward left diagonal tile?
+                if (current_x-1 == new_x && newLocContainsBlack)
+                    return true;
+            }
+
+            else if (current_y == '2')
+            {
+                // if the pawn is jumping 2 steps forward and the jump path is clear.
+                char nextTile = getPieceAtLoc((char) (current_y+1), current_x);
+                if (current_y+2 == new_y && nextTile == emptyTile && pieceAtNewLoc == emptyTile)
+                    return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * Check if the piece can legally move to the new location.
