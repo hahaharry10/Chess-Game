@@ -33,9 +33,29 @@ public class Server
         }
     }
 
-    private String makeMove(String current_loc, String new_loc)
+    /**
+     * Runs the code to make the move called by the player.
+     * @param current_loc The current location of the piece being moved.
+     * @param new_loc The new location the piee is being moved to.
+     * @param client The client number making the move.
+     * @return The error message if the move cannot be made. Otherwise null is returned.
+     */
+    private String makeMove(String current_loc, String new_loc, int client)
     {
-        return null;
+        char pieceBeingMoved = chessBoard.getPieceAtLoc(current_loc);
+        
+        if (client == 1)
+        {
+            switch (pieceBeingMoved)
+            {
+                case 'p':
+                    if (!chessBoard.movePawn(current_loc, new_loc))
+                        return "Invalid Move: cannot move pawn there.";
+                    break;
+                    
+
+            }
+        }
     }
 
     /**
