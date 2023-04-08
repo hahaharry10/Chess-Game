@@ -142,7 +142,7 @@ public class ChessBoard
     {
         int col = (int) y - 48;
         int row = (int) x - 'a';
-
+        
         return board[row][col];
     }
 
@@ -153,8 +153,8 @@ public class ChessBoard
      */
     public char getPieceAtLoc(String location)
     {
-        int col = (int) location.charAt(0) - 48;
-        int row = (int) location.charAt(1) - 'a';
+        int row = (int) location.charAt(0) - 'a';
+        int col = (int) location.charAt(1) - 48;
 
         return board[row][col];
     }
