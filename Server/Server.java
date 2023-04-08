@@ -52,10 +52,24 @@ public class Server
                     if (!chessBoard.movePawn(current_loc, new_loc))
                         return "Invalid Move: cannot move pawn there.";
                     break;
-                    
-
+                default:
+                    return "Invalid Move: cannot move piece";
             }
         }
+        else
+        {
+            switch(pieceBeingMoved)
+            {
+                case 'P':
+                    if (!chessBoard.movePawn(current_loc, new_loc))
+                        return "Invalid Move: cannot move pawn there.";
+                    break;
+                default:
+                    return "Invalid Move: cannot move piece";
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -80,7 +94,7 @@ public class Server
 
                 String[] move = c1Reader.readLine().split(" "); // read client1's move and split it into an array of locations.
 
-                String moveResponse = makeMove(move[0], move[1]);
+                String moveResponse = makeMove(move[0], move[1], 1);
                 
                 if (moveResponse != null) // if the move cannot be made.
                 {
