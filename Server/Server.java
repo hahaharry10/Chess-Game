@@ -83,23 +83,72 @@ public class Server
         // Start the game:
         while (true)
         {
-            c1Writer.println(chessBoard.getBoard(true));
-            c2Writer.println(chessBoard.getBoard(false));
-
+            // c1Writer.println(chessBoard.getBoard(true));
             c1Writer.println(terminator);
-            c2Writer.println(terminator);
+            
+            // c2Writer.println(chessBoard.getBoard(false));
 
             try
             {
-
-                String[] move = c1Reader.readLine().split(" "); // read client1's move and split it into an array of locations.
-
-                String moveResponse = makeMove(move[0], move[1], 1);
-                
-                if (moveResponse != null) // if the move cannot be made.
+                // start client 1's move:
+                while (true)
                 {
-                    c1Writer.println(moveResponse);
-                    c1Writer.println(terminator);
+                    System.out.println("Waiting for client1 to move...");
+                    c2Writer.println("Waiting for opponent to move...");
+                    String move = c1Reader.readLine(); // read client1's move and split it into an array of locations.
+                    if (move.equals("help"))
+                    {
+                        c1Writer.println("REJECTED");
+                        c1Writer.println("==========================================================\nThe accepted format of a move is:\n\t$ current_tile new_tile\n==========================================================");
+                        c1Writer.println(terminator);
+                        continue;
+                    }
+
+                    /////////////////////////////////////////
+                    c2Writer.println("Opponents move: " + move);
+                    /////////////////////////////////////////
+
+                    // make move
+
+                    // was the move rejected?
+                        // Send rejection message to client.
+                        
+                        // Otherwise send confirmation message.
+                    
+                    break;
+                }
+
+                // c1Writer.println(chessBoard.getBoard(false));
+                
+                // c2Writer.println(chessBoard.getBoard(true));
+                c2Writer.println(terminator);
+                
+                // start client 2's move:
+                while (true)
+                {
+                    System.out.println("Waiting for client2 to move...");
+                    c1Writer.println("Waiting for opponent to move...");
+                    String move = c2Reader.readLine(); // read client1's move and split it into an array of locations.
+                    if (move.equals("help"))
+                    {
+                        c2Writer.println("REJECTED");
+                        c2Writer.println("==========================================================\nThe accepted format of a move is:\n\t$ current_tile new_tile\n==========================================================");
+                        c2Writer.println(terminator);
+                        continue;
+                    }
+
+                    /////////////////////////////////////////
+                    c1Writer.println("Opponents move: " + move);
+                    /////////////////////////////////////////
+
+                    // make move
+
+                    // was the move rejected?
+                        // Send rejection message to client.
+                        
+                        // Otherwise send confirmation message.
+                    
+                    break;
                 }
             }
             catch ( IOException err )

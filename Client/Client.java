@@ -9,7 +9,6 @@ public class Client
     private Socket socket = null;
     private PrintWriter writer = null;
     private BufferedReader serverReader = null;
-    private BufferedReader stdin = null; // used to read from standard input.
 
     private int portNumber = 6174;
     private String terminator = "$$END$$";
@@ -26,10 +25,11 @@ public class Client
             while (true)
             {
                 row = serverReader.readLine();
+                System.out.println(row);
                 if (row.equals(terminator))
                     break;
-                else
-                    System.out.println(row);
+                // else
+                //     System.out.println(row);
             }
         }
         catch ( IOException err )
@@ -47,9 +47,8 @@ public class Client
     private boolean checkInputValidity(String input)
     {
         // Use regular expressions to validate input:
-        return Pattern.matches("[a-zA-Z][0-8]\s[a-zA-Z][0-8]", input);
+        return Pattern.matches("[AaBbCcDdEeFfGgHh][1-8]\s[AaBbCcDdEeFfGgHh][1-8]", input);
     }
-
 
     /**
      * Execute client logic.
@@ -78,58 +77,47 @@ public class Client
 
         printResponse(); // output the chess board.
 
-        // System.out.println("PASS...");
+        while (true)
+        {
+            String userInput = "";
 
-        // stdin = new BufferedReader(new InputStreamReader(System.in));
+            System.out.print("Enter move: ");
+            try
+            {
+                userInput = System.console().readLine(); // read from the terminal.
+            }
+            catch ( IOError err )
+            {
+                System.err.println("ERROR: failed to read user input.");
+                System.exit(1);
+            }
 
-        // while (true)
-        // {
-        //     String userInput = "";
+            if ( checkInputValidity(userInput) )
+            {
+                writer.println(userInput); // Send input to the server
+                printResponse(); // output server response
+            }
+            else
+            {
+                System.out.println("TRY AGAIN: input was invalid");
+            }
 
-        //     System.out.print("Enter move: ");
-        //     try
-        //     {
-        //         userInput = stdin.readLine(); // read from the terminal.
-        //     }
-        //     catch ( IOException err )
-        //     {
-        //         System.err.println("ERROR: failed to read user input.");
-        //         System.exit(1);
-        //     }
-
-        //     System.err.println("ERROR IS HERE");
-        //     if (userInput.equals("help"))
-        //     {
-        //         System.out.println("==========================================================");
-        //         System.out.println("The accepted format of a move is:\n\t$ current_tile new_tile");
-        //         System.out.println("==========================================================");
-        //         continue;
-        //     }
-
-        //     if ( checkInputValidity(userInput) )
-        //     {
-        //         writer.println(userInput); // Send input to the server
-        //         show(); // output server response
-        //     }
-        //     else
-        //     {
-        //         System.out.println("TRY AGAIN: input was invalid");
-        //     }
-        // }
+            // break;
+        }
 
         // free resources:
-        try
-        {
-            serverReader.close();
-            // stdin.close();
-            writer.close();
-            socket.close();
-        }
-        catch ( IOException err )
-        {
-            System.err.println("ERROR: failed to close connection. Forcing termination...");
-			System.exit(1);
-        }
+        // try
+        // {
+        //     serverReader.close();
+        //     // stdin.close();
+        //     writer.close();
+        //     socket.close();
+        // }
+        // catch ( IOException err )
+        // {
+        //     System.err.println("ERROR: failed to close connection. Forcing termination...");
+		// 	System.exit(1);
+        // }
     }
 
     public static void main(String[] args)
