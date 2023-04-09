@@ -185,7 +185,7 @@ public class ChessBoard
             if (current_y-1 == new_y) // is the pawn moving one tile forward?
             {
                 // if the new location is forward one tile and if the next tile is empty.
-                if (pieceAtNewLoc == emptyTile)
+                if (current_x == new_x && pieceAtNewLoc == emptyTile)
                     moveIsLegal = true;
 
                 Boolean newLocContainsWhite = (pieceAtNewLoc >= 'a' && pieceAtNewLoc <= 'z');
@@ -210,10 +210,11 @@ public class ChessBoard
         }
         else
         {
+
             if (current_y+1 == new_y) // is the pawn moving one tile forward
             {
                 // if the new location is forward one tile and if the next tile is empty.
-                if (pieceAtNewLoc == emptyTile)
+                if (current_x == new_x && pieceAtNewLoc == emptyTile)
                     moveIsLegal = true;
 
                 Boolean newLocContainsBlack = (pieceAtNewLoc >= 'A' && pieceAtNewLoc <= 'Z');
