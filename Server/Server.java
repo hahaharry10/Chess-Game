@@ -128,8 +128,8 @@ public class Server
                         break;
                     else
                     {
-                        c1Writer.println(moveResponse);
-                        c1Writer.println(terminator);
+                        c2Writer.println(moveResponse);
+                        c2Writer.println(terminator);
                     }
                 }
 
