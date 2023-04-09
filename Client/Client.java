@@ -25,11 +25,10 @@ public class Client
             while (true)
             {
                 row = serverReader.readLine();
-                System.out.println(row);
                 if (row.equals(terminator))
                     break;
-                // else
-                //     System.out.println(row);
+                else
+                    System.out.println(row);
             }
         }
         catch ( IOException err )
@@ -90,6 +89,15 @@ public class Client
             {
                 System.err.println("ERROR: failed to read user input.");
                 System.exit(1);
+            }
+
+            if (userInput.toLowerCase().equals("help"))
+            {
+                System.out.println("==========================================================");
+                System.out.println("The accepted format of a move is:");
+                System.out.println("\t$ current_tile new_tile");
+                System.out.println("==========================================================");
+                continue;
             }
 
             if ( checkInputValidity(userInput) )
