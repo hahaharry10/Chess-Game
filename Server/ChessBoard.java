@@ -140,8 +140,8 @@ public class ChessBoard
      */
     public char getPieceAtLoc(char x, char y)
     {
-        int col = (int) y - 48;
-        int row = (int) x - 'a';
+        int row = (int) ('9' - y);
+        int col = (int) (x - 'a' + 1);
         
         return board[row][col];
     }
@@ -153,8 +153,8 @@ public class ChessBoard
      */
     public char getPieceAtLoc(String location)
     {
-        int row = (int) location.charAt(0) - 'a';
-        int col = (int) location.charAt(1) - 48;
+        int row = (int) '9' - location.charAt(1);
+        int col = (int) location.charAt(0) - 'a' + 1;
 
         return board[row][col];
     }
@@ -203,7 +203,7 @@ public class ChessBoard
             else if (current_y == '7')
             {
                 // if the pawn is jumping 2 steps forward and the jump path is clear.
-                char nextTile = getPieceAtLoc((char) (current_y-1), current_x);
+                char nextTile = getPieceAtLoc(current_x, (char) (current_y-1));
                 if (current_y-2 == new_y && nextTile == emptyTile && pieceAtNewLoc == emptyTile)
                     moveIsLegal = true;
             }
@@ -216,7 +216,7 @@ public class ChessBoard
                 if (pieceAtNewLoc == emptyTile)
                     moveIsLegal = true;
 
-                Boolean newLocContainsBlack = (pieceAtNewLoc >= 'a' && pieceAtNewLoc <= 'z');
+                Boolean newLocContainsBlack = (pieceAtNewLoc >= 'A' && pieceAtNewLoc <= 'Z');
 
                 // is the move capturing an opponents piece on the forward right diagonal tile?
                 if (current_x+1 == new_x && newLocContainsBlack)
@@ -231,7 +231,7 @@ public class ChessBoard
             else if (current_y == '2')
             {
                 // if the pawn is jumping 2 steps forward and the jump path is clear.
-                char nextTile = getPieceAtLoc((char) (current_y+1), current_x);
+                char nextTile = getPieceAtLoc(current_x, (char) (current_y+1));
                 if (current_y+2 == new_y && nextTile == emptyTile && pieceAtNewLoc == emptyTile)
                     moveIsLegal = true;
             }
@@ -297,10 +297,10 @@ public class ChessBoard
     {
         char piece = getPieceAtLoc(current_loc);
 
-        int current_x_index = (int) ('b' - current_loc.charAt(0));
-        int current_y_index = (int) ('2' - current_loc.charAt(0));
-        int new_x_index = (int) ('b' - new_loc.charAt(0));
-        int new_y_index = (int) ('2' - new_loc.charAt(0));
+        int current_x_index = (int) (current_loc.charAt(0) - 'a' + 1);
+        int current_y_index = (int) ('9' - current_loc.charAt(1));
+        int new_x_index = (int) (new_loc.charAt(0) - 'a' + 1);
+        int new_y_index = (int) ('9' - new_loc.charAt(1));
 
         board[current_y_index][current_x_index] = emptyTile;
         board[new_y_index][new_x_index] = piece;
