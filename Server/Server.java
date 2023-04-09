@@ -43,6 +43,9 @@ public class Server
     private String makeMove(String current_loc, String new_loc, int client)
     {
         char pieceBeingMoved = chessBoard.getPieceAtLoc(current_loc);
+
+        if (current_loc.toLowerCase() == new_loc)
+            return "Invalid Move: piece has to move.";
         
         if (client == 1)
         {
@@ -53,7 +56,7 @@ public class Server
                         return "Invalid Move: cannot move pawn there.";
                     break;
                 default:
-                    return "Invalid Move: cannot move piece";
+                    return "Invalid Move: cannot move piece.";
             }
         }
         else
@@ -65,7 +68,7 @@ public class Server
                         return "Invalid Move: cannot move pawn there.";
                     break;
                 default:
-                    return "Invalid Move: cannot move piece";
+                    return "Invalid Move: cannot move piece.";
             }
         }
 
