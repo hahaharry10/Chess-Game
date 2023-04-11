@@ -4,6 +4,8 @@ public class ChessBoard
     private int boardWidth = 10;
 
     final char emptyTile = '·';
+    final char black = 1;
+    final char white = 2;
 
     /**
      * Initialise the board with all the pieces in their starting positions.
@@ -160,6 +162,21 @@ public class ChessBoard
     }
 
     /**
+     * Get the colour of a given piece.
+     * @param piece The piece being tested.
+     * @return The integer value of the colour of the piece.
+     */
+    private int getColourOfPiece(char piece)
+    {
+        if (Character.isLowerCase(piece))
+            return white;
+        else if (Character.isUpperCase(piece))
+            return black;
+        else
+            return 0;
+    }
+
+    /**
      * Check if the piece can legally move to the new location.
      * @param current_loc The current location of the piece.
      * @param new_loc The new location the piece is being sent to.
@@ -175,12 +192,13 @@ public class ChessBoard
         char new_y = new_loc.charAt(1);
         
         char pawn = getPieceAtLoc(current_loc);
-        Boolean currentPieceIsBlack = (pawn >= 'A' && pawn <= 'Z');
+        int pawnColour = getColourOfPiece(pawn);
         char pieceAtNewLoc = getPieceAtLoc(new_loc);
+        int newPieceColour = getColourOfPiece(pieceAtNewLoc);
         Boolean moveIsLegal = false;
         
         // REMEMBER: the board perspectives of black and white are flipped.
-        if (currentPieceIsBlack)
+        if (pawnColour == black)
         {
             if (current_y-1 == new_y) // is the pawn moving one tile forward?
             {
@@ -188,14 +206,12 @@ public class ChessBoard
                 if (current_x == new_x && pieceAtNewLoc == emptyTile)
                     moveIsLegal = true;
 
-                Boolean newLocContainsWhite = (pieceAtNewLoc >= 'a' && pieceAtNewLoc <= 'z');
-
                 // is the move capturing an opponents piece on the forward right diagonal tile?
-                if (current_x-1 == new_x && newLocContainsWhite)
+                if (current_x-1 == new_x && newPieceColour == white)
                     moveIsLegal = true;
 
                 // is the move capturing an opponents piece on the forward left diagonal tile?
-                if (current_x+1 == new_x && newLocContainsWhite)
+                if (current_x+1 == new_x && newPieceColour == white)
                     moveIsLegal = true;
             }
 
@@ -208,7 +224,7 @@ public class ChessBoard
                     moveIsLegal = true;
             }
         }
-        else
+        else if (pawnColour == white)
         {
 
             if (current_y+1 == new_y) // is the pawn moving one tile forward
@@ -217,14 +233,12 @@ public class ChessBoard
                 if (current_x == new_x && pieceAtNewLoc == emptyTile)
                     moveIsLegal = true;
 
-                Boolean newLocContainsBlack = (pieceAtNewLoc >= 'A' && pieceAtNewLoc <= 'Z');
-
                 // is the move capturing an opponents piece on the forward right diagonal tile?
-                if (current_x+1 == new_x && newLocContainsBlack)
+                if (current_x+1 == new_x && newPieceColour == black)
                     moveIsLegal = true;
                 
                 // is the move capturing an opponents piece on the forward left diagonal tile?
-                if (current_x-1 == new_x && newLocContainsBlack)
+                if (current_x-1 == new_x && newPieceColour == black)
                     moveIsLegal = true;
             }
 
@@ -254,7 +268,77 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public Boolean rookCanMove(String current_loc, String new_loc) { return false; }
+    public Boolean moveRook(String current_loc, String new_loc)
+    {
+        // split locations into seperate cordinates:
+        char current_x = current_loc.charAt(0);
+        char current_y = current_loc.charAt(1);
+        char new_x = new_loc.charAt(0);
+        char new_y = new_loc.charAt(1);
+
+        char rook = getPieceAtLoc(current_loc);
+        int rookColour = getColourOfPiece(rook);
+        char pieceAtNewLoc = getPieceAtLoc(new_loc);
+        int newPieceColour = getColourOfPiece(pieceAtNewLoc);
+
+        if (new_x == current_x) // if the rook is moving along the y axis (up and down).
+        {
+            char a, b;
+            if (new_y > current_y)
+            {
+                a = new_y;
+                b = current_y;
+            }
+            else
+            {
+                a = current_y;
+                b = new_y;
+            }
+
+            // check path is clear
+            for (int i = (int) b+1; b < (int) a-1; i++)
+            {
+                System.out.println("testing: ( " + current_x + ", " + (char) i + " )");
+                if (getPieceAtLoc(current_x, (char) i) != emptyTile)
+                    return false;
+            }
+
+            // check the final destination of the new location
+            if (rookColour == newPieceColour)
+                return false;
+        }
+        else if (new_y == current_y) // if the rook is moving along the x axis (side to side).
+        {
+            char a, b;
+            if (new_x > current_x)
+            {
+                a = new_x;
+                b = current_x;
+            }
+            else
+            {
+                a = current_x;
+                b = new_x;
+            }
+
+            // check path is clear
+            for (int i = (int) b+1; b < (int) a-1; i++)
+            {
+                System.out.println("testing: ( " + current_x + ", " + (char) i + " )");
+                if (getPieceAtLoc((char) i, current_y) != emptyTile)
+                    return false;
+            }
+
+            // check the final destination of the new location
+            if (rookColour == newPieceColour)
+                return false;
+        }
+        else
+            return false;
+
+        makeMove(current_loc, new_loc);
+        return true;
+    }
 
     /**
      * Check if the piece can legally move to the new location.
