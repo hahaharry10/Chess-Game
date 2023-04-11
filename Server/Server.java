@@ -35,6 +35,11 @@ public class Server
         }
     }
 
+    /**
+     * Check if the string is of valid format.
+     * @param move The string being tested.
+     * @return true if the string is valid. false if not.
+     */
     private Boolean moveIsValid(String move)
     {
         // Use regular expressions to validate input:
