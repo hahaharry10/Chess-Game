@@ -1,5 +1,7 @@
 import java.net.*;
 import java.io.*;
+import java.util.regex.*;  
+
 
 public class Server
 {
@@ -31,6 +33,12 @@ public class Server
             System.err.println("Client 2 has been disconnected.");
             System.exit(1);
         }
+    }
+
+    private Boolean moveIsValid(String move)
+    {
+        // Use regular expressions to validate input:
+        return Pattern.matches("[AaBbCcDdEeFfGgHh][1-8]\s[AaBbCcDdEeFfGgHh][1-8]", move);
     }
 
     /**
@@ -90,6 +98,9 @@ public class Server
                     c2Writer.println("Waiting for opponent to move...");
                     move = c1Reader.readLine(); // read client1's move and split it into an array of locations.
 
+                    if (!moveIsValid(move))
+                        continue;
+
                     String moveResponse = makeMove(move.substring(0, 2), move.substring(3, 5), 1);
 
                     if (moveResponse == null) // if the move was allowed.
@@ -113,6 +124,9 @@ public class Server
                     System.out.println("Waiting for client2 to move...");
                     c1Writer.println("Waiting for opponent to move...");
                     move = c2Reader.readLine(); // read client1's move and split it into an array of locations.
+
+                    if (!moveIsValid(move))
+                        continue;
 
                     String moveResponse = makeMove(move.substring(0, 2), move.substring(3, 5), 2);
 
