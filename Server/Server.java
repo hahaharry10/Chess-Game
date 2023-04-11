@@ -47,29 +47,18 @@ public class Server
         if (current_loc.toLowerCase() == new_loc)
             return "Invalid Move: piece has to move.";
         
-        if (client == 1)
+        switch (Character.toLowerCase(pieceBeingMoved))
         {
-            switch (pieceBeingMoved)
-            {
-                case 'p':
-                    if (!chessBoard.movePawn(current_loc, new_loc))
-                        return "Invalid Move: cannot move pawn there.";
-                    break;
-                default:
-                    return "Invalid Move: cannot move piece.";
-            }
-        }
-        else
-        {
-            switch(pieceBeingMoved)
-            {
-                case 'P':
-                    if (!chessBoard.movePawn(current_loc, new_loc))
-                        return "Invalid Move: cannot move pawn there.";
-                    break;
-                default:
-                    return "Invalid Move: cannot move piece.";
-            }
+            case 'p':
+                if (!chessBoard.movePawn(current_loc, new_loc))
+                    return "Invalid Move: cannot move pawn there.";
+                break;
+            case 'r':
+                if (!chessBoard.moveRook(current_loc, new_loc))
+                    return "Invalid Move: cannot move rook there.";
+                break;
+            default:
+                return "Invalid Move: cannot move piece.";
         }
 
         return null;
