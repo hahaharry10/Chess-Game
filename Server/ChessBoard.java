@@ -296,9 +296,8 @@ public class ChessBoard
             }
 
             // check path is clear
-            for (int i = (int) b+1; b < (int) a-1; i++)
+            for (int i = (int) b+1; i < (int) a; i++)
             {
-                System.out.println("testing: ( " + current_x + ", " + (char) i + " )");
                 if (getPieceAtLoc(current_x, (char) i) != emptyTile)
                     return false;
             }
@@ -322,9 +321,8 @@ public class ChessBoard
             }
 
             // check path is clear
-            for (int i = (int) b+1; b < (int) a-1; i++)
+            for (int i = (int) b+1; i < (int) a; i++)
             {
-                System.out.println("testing: ( " + current_x + ", " + (char) i + " )");
                 if (getPieceAtLoc((char) i, current_y) != emptyTile)
                     return false;
             }
