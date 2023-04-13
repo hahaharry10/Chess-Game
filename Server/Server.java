@@ -76,6 +76,10 @@ public class Server
                 if (!chessBoard.moveKnight(current_loc, new_loc))
                     return "Invalid Move: cannot move knight there.";
                 break;
+            case 'b':
+                if (!chessBoard.moveBishop(current_loc, new_loc))
+                    return "Invalid Move: cannot move bishop there.";
+                break;
             default:
                 return "Invalid Move: cannot move piece.";
         }

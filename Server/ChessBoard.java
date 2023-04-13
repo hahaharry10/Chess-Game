@@ -349,8 +349,6 @@ public class ChessBoard
      */
     public Boolean moveKnight(String current_loc, String new_loc)
     {
-        System.out.println("Starting Knight Move...");
-
         // split locations into seperate cordinates:
         char current_x = current_loc.charAt(0);
         char current_y = current_loc.charAt(1);
@@ -361,8 +359,6 @@ public class ChessBoard
 
         int x_dif = Math.abs(current_x - new_x);
         int y_dif = Math.abs(current_y - new_y);
-
-        System.out.println("x_dif = " + x_dif + "\ty_dif = " + y_dif);
 
         if ( ( ((x_dif == 2) && (y_dif == 1)) || ((x_dif == 1) && (y_dif == 2)) ) && currentColour != newColour )
         {
@@ -380,7 +376,42 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public Boolean bishopCanMove(String current_loc, String new_loc) { return false; }
+    public Boolean moveBishop(String current_loc, String new_loc)
+    {
+        // split locations into seperate cordinates:
+        char current_x = current_loc.charAt(0);
+        char current_y = current_loc.charAt(1);
+        char new_x = new_loc.charAt(0);
+        char new_y = new_loc.charAt(1);
+        int currentColour = getColourOfPiece( getPieceAtLoc(current_loc) );
+        int newColour = getColourOfPiece( getPieceAtLoc(new_loc) );
+
+        int x_dif = Math.abs(current_x - new_x);
+        int y_dif = Math.abs(current_y - new_y);
+
+        if ( (x_dif != y_dif) || (x_dif == 0) )
+            return false;
+        else
+        {
+            // check path is empty:
+            for (int x = current_x+1; x < new_x; x++)
+            {
+                for (int y = current_y+1; y < new_y; y++)
+                {
+                    if (getPieceAtLoc((char) x, (char) y) != emptyTile)
+                        return false;
+                }
+            }
+
+            if (currentColour == newColour)
+                return false;
+            else
+            {
+                makeMove(current_loc, new_loc);
+                return true;
+            }
+        }
+    }
 
     /**
      * Check if the piece can legally move to the new location.
