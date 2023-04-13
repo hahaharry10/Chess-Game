@@ -345,7 +345,29 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public Boolean knightCanMove(String current_loc, String new_loc) { return false; }
+    public Boolean moveKnight(String current_loc, String new_loc)
+    {
+        // split locations into seperate cordinates:
+        char current_x = current_loc.charAt(0);
+        char current_y = current_loc.charAt(1);
+        char new_x = new_loc.charAt(0);
+        char new_y = new_loc.charAt(1);
+
+        int x_dif = current_x - new_x;
+        int y_dif = current_y - new_y;
+
+        System.out.println("x_dif = " + x_dif + "\ty_dif = " + y_dif);
+
+        if ( !(((x_dif == 2) || (x_dif == -2)) && ((y_dif == 1) || (y_dif == -1))) )
+            return false;
+        else if ( !(((y_dif == 2) || (y_dif == -2)) && ((x_dif == 1) || (x_dif == -1))) )
+            return false;
+        else
+        {
+            makeMove(current_loc, new_loc);
+            return true;
+        }
+    }
 
     /**
      * Check if the piece can legally move to the new location.
