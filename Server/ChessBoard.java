@@ -144,6 +144,8 @@ public class ChessBoard
      */
     public char getPieceAtLoc(char x, char y)
     {
+        x = Character.toLowerCase(x);
+        y = Character.toLowerCase(y);
         int row = (int) ('9' - y);
         int col = (int) (x - 'a' + 1);
         
@@ -157,6 +159,7 @@ public class ChessBoard
      */
     public char getPieceAtLoc(String location)
     {
+        location = location.toLowerCase();
         int row = (int) '9' - location.charAt(1);
         int col = (int) location.charAt(0) - 'a' + 1;
 
@@ -440,7 +443,26 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public Boolean kingCanMove(String current_loc, String new_loc) { return false; }
+    public Boolean kingCanMove(String current_loc, String new_loc)
+    {
+        // split locations into seperate cordinates:
+        char current_x = current_loc.charAt(0);
+        char current_y = current_loc.charAt(1);
+        char new_x = new_loc.charAt(0);
+        char new_y = new_loc.charAt(1);
+        int currentColour = getColourOfPiece( getPieceAtLoc(current_loc) );
+        int newColour = getColourOfPiece( getPieceAtLoc(new_loc) );
+
+        int x_dif = Math.abs(current_x - new_x);
+        int y_dif = Math.abs(current_y - new_y);
+
+        if (x_dif > 1 || y_dif > 1)
+            return false;
+        else if (currentColour == newColour)
+            return false;
+        else
+            return true;
+    }
 
     /*******************************************************************************************************/
 
