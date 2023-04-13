@@ -1,3 +1,5 @@
+import java.lang.Math.*;
+
 public class ChessBoard
 {
     private char[][] board = new char[10][10]; // declare the 8x8 board plus tile coordinates.
@@ -347,26 +349,28 @@ public class ChessBoard
      */
     public Boolean moveKnight(String current_loc, String new_loc)
     {
+        System.out.println("Starting Knight Move...");
+
         // split locations into seperate cordinates:
         char current_x = current_loc.charAt(0);
         char current_y = current_loc.charAt(1);
         char new_x = new_loc.charAt(0);
         char new_y = new_loc.charAt(1);
+        int currentColour = getColourOfPiece( getPieceAtLoc(current_loc) );
+        int newColour = getColourOfPiece( getPieceAtLoc(new_loc) );
 
-        int x_dif = current_x - new_x;
-        int y_dif = current_y - new_y;
+        int x_dif = Math.abs(current_x - new_x);
+        int y_dif = Math.abs(current_y - new_y);
 
         System.out.println("x_dif = " + x_dif + "\ty_dif = " + y_dif);
 
-        if ( !(((x_dif == 2) || (x_dif == -2)) && ((y_dif == 1) || (y_dif == -1))) )
-            return false;
-        else if ( !(((y_dif == 2) || (y_dif == -2)) && ((x_dif == 1) || (x_dif == -1))) )
-            return false;
-        else
+        if ( ( ((x_dif == 2) && (y_dif == 1)) || ((x_dif == 1) && (y_dif == 2)) ) && currentColour != newColour )
         {
             makeMove(current_loc, new_loc);
             return true;
         }
+        else
+            return false;
     }
 
     /**
