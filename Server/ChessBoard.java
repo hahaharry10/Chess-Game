@@ -394,13 +394,15 @@ public class ChessBoard
         else
         {
             // check path is empty:
-            for (int x = current_x+1; x < new_x; x++)
+            int x = (int) current_x + 1;
+            int y = (int) current_y + 1;
+            while (x < new_x && y < new_y)
             {
-                for (int y = current_y+1; y < new_y; y++)
-                {
-                    if (getPieceAtLoc((char) x, (char) y) != emptyTile)
-                        return false;
-                }
+                System.out.println("( " + x + " , " + y + " )");
+                if (getPieceAtLoc((char) x, (char) y) != emptyTile)
+                    return false;
+
+                x++; y++;
             }
 
             if (currentColour == newColour)
@@ -420,7 +422,16 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public Boolean queenCanMove(String current_loc, String new_loc) { return false; }
+    public Boolean moveQueen(String current_loc, String new_loc)
+    {
+        // the queen can either move like a rook or a bishop.
+        if (moveRook(current_loc, new_loc))
+            return true;
+        else if (moveBishop(current_loc, new_loc))
+            return true;
+        else
+            return false;
+    }
 
     /**
      * Check if the piece can legally move to the new location.

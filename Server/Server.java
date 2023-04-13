@@ -66,19 +66,23 @@ public class Server
         {
             case 'p':
                 if (!chessBoard.movePawn(current_loc, new_loc))
-                    return "Invalid Move: cannot move pawn there.";
+                    return "Invalid Move: cannot move Pawn there.";
                 break;
             case 'r':
                 if (!chessBoard.moveRook(current_loc, new_loc))
-                    return "Invalid Move: cannot move rook there.";
+                    return "Invalid Move: cannot move Rook there.";
                 break;
             case 'n':
                 if (!chessBoard.moveKnight(current_loc, new_loc))
-                    return "Invalid Move: cannot move knight there.";
+                    return "Invalid Move: cannot move Knight there.";
                 break;
             case 'b':
                 if (!chessBoard.moveBishop(current_loc, new_loc))
-                    return "Invalid Move: cannot move bishop there.";
+                    return "Invalid Move: cannot move Bishop there.";
+                break;
+            case 'q':
+                if (!chessBoard.moveQueen(current_loc, new_loc))
+                    return "Invalid Move: cannot move Queen there.";
                 break;
             default:
                 return "Invalid Move: cannot move piece.";
