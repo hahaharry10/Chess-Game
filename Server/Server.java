@@ -70,6 +70,11 @@ public class Server
                 if (!chessBoard.moveRook(current_loc, new_loc))
                     return "Invalid Move: cannot move rook there.";
                 break;
+            case 'k':
+            if (!chessBoard.moveKnight(current_loc, new_loc))
+                return "Invalid Move: cannot move knight there.";
+            break;
+
             default:
                 return "Invalid Move: cannot move piece.";
         }
