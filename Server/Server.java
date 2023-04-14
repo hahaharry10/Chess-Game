@@ -85,8 +85,8 @@ public class Server
                     return "Invalid Move: cannot move Queen there.";
                 break;
             case 'k':
-                if (!chessBoard.moveQueen(current_loc, new_loc))
-                    return "Invalid Move: cannot move Queen there.";
+                if (!chessBoard.moveKing(current_loc, new_loc))
+                    return "Invalid Move: cannot move King there.";
                 break;
             default:
                 return "Invalid Move: cannot move piece.";

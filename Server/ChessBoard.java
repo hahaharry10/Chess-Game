@@ -443,7 +443,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public Boolean kingCanMove(String current_loc, String new_loc)
+    public Boolean moveKing(String current_loc, String new_loc)
     {
         // split locations into seperate cordinates:
         char current_x = current_loc.charAt(0);
@@ -456,12 +456,15 @@ public class ChessBoard
         int x_dif = Math.abs(current_x - new_x);
         int y_dif = Math.abs(current_y - new_y);
 
-        if (x_dif > 1 || y_dif > 1)
+        if ( x_dif + y_dif == 0)
             return false;
-        else if (currentColour == newColour)
-            return false;
-        else
+        else if ( (x_dif <= 1 && y_dif <= 1) && (currentColour != newColour) )
+        {
+            makeMove(current_loc, new_loc);
             return true;
+        }
+        else
+            return false;
     }
 
     /*******************************************************************************************************/
