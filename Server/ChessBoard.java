@@ -467,8 +467,11 @@ public class ChessBoard
             return false;
     }
 
-    /*******************************************************************************************************/
-
+    /**
+     * Move the piece from its current location to the new location.
+     * @param current_loc The location of the piece being moved.
+     * @param new_loc The new location the piece is being moved to.
+     */
     private void makeMove(String current_loc, String new_loc)
     {
         char piece = getPieceAtLoc(current_loc);
