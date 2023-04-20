@@ -133,22 +133,22 @@ public class Server
                     String moveResponse = makeMove(move.substring(0, 2), move.substring(3, 5), 1);
                     
                     if (moveResponse == null) // if the move was allowed.
-                    break;
+                        break;
                     else
                     {
                         c1Writer.println(moveResponse);
                         c1Writer.println(terminator);
                     }
                 }
-
-                if (chessBoard.isInCheck(false))
-                    System.out.println("BLACK IS IN CHECK");
-                else
-                    System.out.println("BLACK IS NOT IN CHECK");
-
-                c1Writer.println(chessBoard.getBoard(true));
                 
+                c1Writer.println(chessBoard.getBoard(true));
                 c2Writer.println("Opponents move: " + move);
+                if (chessBoard.isInCheck(false))
+                {
+                    c2Writer.println("You are in check!");
+                    c1Writer.println("They are in check!");
+                }
+                
                 c2Writer.println(chessBoard.getBoard(false));
                 c2Writer.println(terminator);
 
@@ -173,12 +173,12 @@ public class Server
                     }
                 }
 
-                if (chessBoard.isInCheck(true))
-                    System.out.println("WHITE IS IN CHECK");
-                else
-                    System.out.println("WHITE IS NOT IN CHECK");
-
                 c1Writer.println("Opponents move: " + move);
+                if (chessBoard.isInCheck(true))
+                {
+                    c1Writer.println("You are in check!");
+                    c1Writer.println("They are in check!");
+                }
             }
             catch ( IOException err )
             {
