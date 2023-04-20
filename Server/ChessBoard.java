@@ -1,5 +1,3 @@
-import java.lang.Math.*;
-
 public class ChessBoard
 {
     private char[][] board = new char[10][10]; // declare the 8x8 board plus tile coordinates.
