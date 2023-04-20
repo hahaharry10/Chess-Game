@@ -461,6 +461,8 @@ public class ChessBoard
      */
     public void makeMove(String current_loc, String new_loc)
     {
+        current_loc = current_loc.toLowerCase();
+        new_loc = new_loc.toLowerCase();
         char piece = getPieceAtLoc(current_loc);
 
         int current_x_index = (int) (current_loc.charAt(0) - 'a' + 1);
@@ -514,6 +516,8 @@ public class ChessBoard
                         case 'p':
                             if (movePawn(current_loc, kingsLoc))
                                 return true;
+                            else
+                                System.out.println("")
                             break;
                         case 'r':
                             if (moveRook(current_loc, kingsLoc))
