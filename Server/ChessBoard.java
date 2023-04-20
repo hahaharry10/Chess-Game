@@ -394,7 +394,6 @@ public class ChessBoard
             int y = (int) current_y + 1;
             while (x < new_x && y < new_y)
             {
-                System.out.println("( " + x + " , " + y + " )");
                 if (getPieceAtLoc((char) x, (char) y) != emptyTile)
                     return false;
 
@@ -474,10 +473,13 @@ public class ChessBoard
         board[new_y_index][new_x_index] = piece;
     }
 
+    /**
+     * Tests if a colour is in check.
+     * @param forWhite Boolean value saying if white is being tested.
+     */
     public Boolean isInCheck(Boolean forWhite)
     {
-        // int kingColour = (forWhite ? white : black); // get colour of king being checked.
-        char king = (forWhite ? 'K' : 'k');
+        char king = (forWhite ? 'k' : 'K');
         int attackingColour = (forWhite ? black : white); // get the colour of the pieces that are checking the king.
 
         // get the location of the piece:
@@ -499,8 +501,6 @@ public class ChessBoard
             System.out.println("ERROR: King not found.");
             return false;
         }
-
-        System.out.println("Kings Location: " + kingsLoc);
         
         // Iterate through the attacking pieces:
         for (int row = 1; row < boardWidth; row++)
