@@ -67,26 +67,32 @@ public class Server
             case 'p':
                 if (!chessBoard.movePawn(current_loc, new_loc))
                     return "Invalid Move: cannot move Pawn there.";
+                chessBoard.makeMove(current_loc, new_loc);
                 break;
             case 'r':
                 if (!chessBoard.moveRook(current_loc, new_loc))
                     return "Invalid Move: cannot move Rook there.";
+                chessBoard.makeMove(current_loc, new_loc);
                 break;
             case 'n':
                 if (!chessBoard.moveKnight(current_loc, new_loc))
                     return "Invalid Move: cannot move Knight there.";
+                chessBoard.makeMove(current_loc, new_loc);
                 break;
             case 'b':
                 if (!chessBoard.moveBishop(current_loc, new_loc))
                     return "Invalid Move: cannot move Bishop there.";
+                chessBoard.makeMove(current_loc, new_loc);
                 break;
             case 'q':
                 if (!chessBoard.moveQueen(current_loc, new_loc))
                     return "Invalid Move: cannot move Queen there.";
+                chessBoard.makeMove(current_loc, new_loc);
                 break;
             case 'k':
                 if (!chessBoard.moveKing(current_loc, new_loc))
                     return "Invalid Move: cannot move King there.";
+                chessBoard.makeMove(current_loc, new_loc);
                 break;
             default:
                 return "Invalid Move: cannot move piece.";
@@ -125,15 +131,20 @@ public class Server
                         continue;
 
                     String moveResponse = makeMove(move.substring(0, 2), move.substring(3, 5), 1);
-
+                    
                     if (moveResponse == null) // if the move was allowed.
-                        break;
+                    break;
                     else
                     {
                         c1Writer.println(moveResponse);
                         c1Writer.println(terminator);
                     }
                 }
+
+                if (chessBoard.isInCheck(false))
+                    System.out.println("BLACK IS IN CHECK");
+                else
+                    System.out.println("BLACK IS NOT IN CHECK");
 
                 c1Writer.println(chessBoard.getBoard(true));
                 
@@ -161,6 +172,11 @@ public class Server
                         c2Writer.println(terminator);
                     }
                 }
+
+                if (chessBoard.isInCheck(true))
+                    System.out.println("WHITE IS IN CHECK");
+                else
+                    System.out.println("WHITE IS NOT IN CHECK");
 
                 c1Writer.println("Opponents move: " + move);
             }

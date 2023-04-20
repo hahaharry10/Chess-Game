@@ -258,10 +258,7 @@ public class ChessBoard
         }
 
         if (moveIsLegal)
-        {
-            makeMove(current_loc, new_loc);
             return true;
-        }
 
         return false;
     }
@@ -339,7 +336,6 @@ public class ChessBoard
         else
             return false;
 
-        makeMove(current_loc, new_loc);
         return true;
     }
 
@@ -364,10 +360,7 @@ public class ChessBoard
         int y_dif = Math.abs(current_y - new_y);
 
         if ( ( ((x_dif == 2) && (y_dif == 1)) || ((x_dif == 1) && (y_dif == 2)) ) && currentColour != newColour )
-        {
-            makeMove(current_loc, new_loc);
             return true;
-        }
         else
             return false;
     }
@@ -411,10 +404,7 @@ public class ChessBoard
             if (currentColour == newColour)
                 return false;
             else
-            {
-                makeMove(current_loc, new_loc);
                 return true;
-            }
         }
     }
 
@@ -459,10 +449,7 @@ public class ChessBoard
         if ( x_dif + y_dif == 0)
             return false;
         else if ( (x_dif <= 1 && y_dif <= 1) && (currentColour != newColour) )
-        {
-            makeMove(current_loc, new_loc);
             return true;
-        }
         else
             return false;
     }
@@ -472,7 +459,7 @@ public class ChessBoard
      * @param current_loc The location of the piece being moved.
      * @param new_loc The new location the piece is being moved to.
      */
-    private void makeMove(String current_loc, String new_loc)
+    public void makeMove(String current_loc, String new_loc)
     {
         char piece = getPieceAtLoc(current_loc);
 
@@ -485,4 +472,72 @@ public class ChessBoard
         board[new_y_index][new_x_index] = piece;
     }
 
+    public Boolean isInCheck(Boolean forWhite)
+    {
+        // int kingColour = (forWhite ? white : black); // get colour of king being checked.
+        char king = (forWhite ? 'K' : 'k');
+        int attackingColour = (forWhite ? black : white); // get the colour of the pieces that are checking the king.
+
+        // get the location of the piece:
+        String kingsLoc = null;
+        for (int row = 1; row < boardWidth; row++)
+        {
+            for (int col = 1; col < boardWidth; col++)
+            {
+                if ( board[row][col] == king )
+                {
+                    kingsLoc = Character.toString((char) col - 1 + 'a') + Character.toString((char) '9' - row);
+                    break;
+                }
+            }
+        }
+        
+        if (kingsLoc == null)
+        {
+            System.out.println("ERROR: King not found.");
+            return false;
+        }
+
+        System.out.println("Kings Location: " + kingsLoc);
+        
+        // Iterate through the attacking pieces:
+        for (int row = 1; row < boardWidth; row++)
+        {
+            for (int col = 1; col < boardWidth; col++)
+            {
+                char piece = board[row][col];
+                if ( getColourOfPiece(piece) == attackingColour)
+                {
+                    String current_loc = Character.toString((char) col - 1 + 'a') + Character.toString((char) '9' - row);
+                    switch (Character.toLowerCase(piece))
+                    {
+                        case 'p':
+                            if (movePawn(current_loc, kingsLoc))
+                                return true;
+                            break;
+                        case 'r':
+                            if (moveRook(current_loc, kingsLoc))
+                                return true;
+                            break;
+                        case 'n':
+                            if (moveKnight(current_loc, kingsLoc))
+                                return true;
+                            break;
+                        case 'b':
+                            if (moveBishop(current_loc, kingsLoc))
+                                return true;
+                            break;
+                        case 'q':
+                            if (moveQueen(current_loc, kingsLoc))
+                                return true;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 }
