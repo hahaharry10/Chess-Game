@@ -516,8 +516,6 @@ public class ChessBoard
                         case 'p':
                             if (movePawn(current_loc, kingsLoc))
                                 return true;
-                            else
-                                System.out.println("")
                             break;
                         case 'r':
                             if (moveRook(current_loc, kingsLoc))
