@@ -18,6 +18,11 @@ public class Server
     private int portNumber = 6174;
     private String terminator = "$$END$$"; // used to mark the end of a transmission.
 
+    // Define ANSI colour codes:
+    private String setTextRed = "\u001B[0;31m";
+    private String setTextGreen = "\u001B[0;32m";
+    private String resetTextColour = "\u001B[0m";
+
     /**
      * Check both clients are conencted.
      */
@@ -145,8 +150,8 @@ public class Server
                 c2Writer.println("Opponents move: " + move);
                 if (chessBoard.isInCheck(false))
                 {
-                    c2Writer.println("You are in check!");
-                    c1Writer.println("They are in check!");
+                    c2Writer.println(setTextRed + "You are in check!" + resetTextColour);
+                    c1Writer.println(setTextGreen + "They are in check!" + resetTextColour);
                 }
                 
                 c2Writer.println(chessBoard.getBoard(false));
@@ -176,8 +181,8 @@ public class Server
                 c1Writer.println("Opponents move: " + move);
                 if (chessBoard.isInCheck(true))
                 {
-                    c1Writer.println("You are in check!");
-                    c1Writer.println("They are in check!");
+                    c1Writer.println(setTextRed + "You are in check!" + resetTextColour);
+                    c2Writer.println(setTextGreen + "They are in check!" + resetTextColour);
                 }
             }
             catch ( IOException err )
