@@ -1,16 +1,16 @@
 public class ChessBoard
 {
-    private static char[][] board = new char[10][10]; // declare the 8x8 board plus tile coordinates.
-    private static int boardWidth = 10;
+    private char[][] board = new char[10][10]; // declare the 8x8 board plus tile coordinates.
+    private int boardWidth = 10;
 
-    final static char emptyTile = '·';
-    final static char black = 1;
-    final static char white = 2;
+    final char emptyTile = '·';
+    final char black = 1;
+    final char white = 2;
 
     /**
      * Initialise the board with all the pieces in their starting positions.
      */
-    public static void createNewBoard()
+    public void createNewBoard()
     {
         // fill all tiles with blanck space:
         for (int row = 0; row < boardWidth; row++)
@@ -65,7 +65,7 @@ public class ChessBoard
      * @param chr The character being translated into ascii representation.
      * @return The translated ASCII character.
      */
-    private static char translateCharacter(char chr)
+    private char translateCharacter(char chr)
     {
         switch (chr) {
             case 'P':
@@ -102,7 +102,7 @@ public class ChessBoard
      * @param client Boolean value saying whether the board will be created in teh perspective of client 1 (white).
      * @return the chessboard in the form of a string.
      */
-    public static String getBoard(Boolean client1View)
+    public String getBoard(Boolean client1View)
     {
         String boardString = "";
 
@@ -140,14 +140,12 @@ public class ChessBoard
      * @param y The y label of the location.
      * @return The character at the location.
      */
-    public static char getPieceAtLoc(char x, char y)
+    public char getPieceAtLoc(char x, char y)
     {
         x = Character.toLowerCase(x);
         y = Character.toLowerCase(y);
         int row = (int) ('9' - y);
         int col = (int) (x - 'a' + 1);
-
-        System.out.println("( " + row + " , " + col + " )");
         
         return board[row][col];
     }
@@ -157,7 +155,7 @@ public class ChessBoard
      * @param location The location.
      * @return Teh character at teh location.
      */
-    public static char getPieceAtLoc(String location)
+    public char getPieceAtLoc(String location)
     {
         location = location.toLowerCase();
         int row = (int) '9' - location.charAt(1);
@@ -171,7 +169,7 @@ public class ChessBoard
      * @param piece The piece being tested.
      * @return The integer value of the colour of the piece.
      */
-    private static int getColourOfPiece(char piece)
+    private int getColourOfPiece(char piece)
     {
         if (Character.isLowerCase(piece))
             return white;
@@ -188,7 +186,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public static Boolean movePawn(String current_loc, String new_loc)
+    public Boolean movePawn(String current_loc, String new_loc)
     { 
         // split locations into seperate cordinates:
         char current_x = current_loc.charAt(0);
@@ -270,7 +268,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public static Boolean moveRook(String current_loc, String new_loc)
+    public Boolean moveRook(String current_loc, String new_loc)
     {
         // split locations into seperate cordinates:
         char current_x = current_loc.charAt(0);
@@ -346,7 +344,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public static Boolean moveKnight(String current_loc, String new_loc)
+    public Boolean moveKnight(String current_loc, String new_loc)
     {
         // split locations into seperate cordinates:
         char current_x = current_loc.charAt(0);
@@ -372,7 +370,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public static Boolean moveBishop(String current_loc, String new_loc)
+    public Boolean moveBishop(String current_loc, String new_loc)
     {
         // split locations into seperate cordinates:
         char current_x = current_loc.charAt(0);
@@ -394,6 +392,7 @@ public class ChessBoard
             int y = (int) current_y + 1;
             while (x < new_x && y < new_y)
             {
+                System.out.println("Checking path: " + getPieceAtLoc((char) x, (char) y));
                 if (getPieceAtLoc((char) x, (char) y) != emptyTile)
                     return false;
 
@@ -414,7 +413,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public static Boolean moveQueen(String current_loc, String new_loc)
+    public Boolean moveQueen(String current_loc, String new_loc)
     {
         // the queen can either move like a rook or a bishop.
         if (moveRook(current_loc, new_loc))
@@ -432,7 +431,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public static Boolean moveKing(String current_loc, String new_loc)
+    public Boolean moveKing(String current_loc, String new_loc)
     {
         // split locations into seperate cordinates:
         char current_x = current_loc.charAt(0);
@@ -458,7 +457,7 @@ public class ChessBoard
      * @param current_loc The location of the piece being moved.
      * @param new_loc The new location the piece is being moved to.
      */
-    public static void makeMove(String current_loc, String new_loc)
+    public void makeMove(String current_loc, String new_loc)
     {
         current_loc = current_loc.toLowerCase();
         new_loc = new_loc.toLowerCase();
@@ -477,7 +476,7 @@ public class ChessBoard
      * Tests if a colour is in check.
      * @param forWhite Boolean value saying if white is being tested.
      */
-    public static Boolean isInCheck(Boolean forWhite)
+    public Boolean isInCheck(Boolean forWhite)
     {
         char king = (forWhite ? 'k' : 'K');
         int attackingColour = (forWhite ? black : white); // get the colour of the pieces that are checking the king.
@@ -546,6 +545,9 @@ public class ChessBoard
 
     public static void main(String[] args)
     {
-        System.out.println("pawn is empty tile: " + (getPieceAtLoc('a', '5') == emptyTile));
+        ChessBoard cb = new ChessBoard();
+        cb.createNewBoard();
+
+        System.out.println(cb.getBoard(true));
     }
 }
