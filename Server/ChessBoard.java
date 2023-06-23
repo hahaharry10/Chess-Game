@@ -383,20 +383,24 @@ public class ChessBoard
         int x_dif = Math.abs(current_x - new_x);
         int y_dif = Math.abs(current_y - new_y);
 
-        if ( (x_dif != y_dif) || (x_dif == 0) )
+        System.out.println("x_dif = " + x_dif + "\ny_dif = " + y_dif);
+
+        if ( (x_dif != y_dif) || (x_dif == 0) || (y_dif == 0) )
             return false;
         else
         {
             // check path is empty:
             int x = (int) current_x + 1;
             int y = (int) current_y + 1;
-            while (x < new_x && y < new_y)
+            while (x != new_x && y != new_y)
             {
                 System.out.println("Checking path: " + getPieceAtLoc((char) x, (char) y));
                 if (getPieceAtLoc((char) x, (char) y) != emptyTile)
                     return false;
 
-                x++; y++;
+                if (x < new_x) { x++; y++; }
+                else if (x > new_x) { x--; y--; }
+                else return false;
             }
 
             if (currentColour == newColour)
@@ -543,11 +547,23 @@ public class ChessBoard
     }
 
 
-    public static void main(String[] args)
-    {
-        ChessBoard cb = new ChessBoard();
-        cb.createNewBoard();
+    // public static void main(String[] args)
+    // {
+    //     ChessBoard cb = new ChessBoard();
+    //     cb.createNewBoard();
 
-        System.out.println(cb.getBoard(true));
-    }
+    //     System.out.println(cb.getBoard(true));
+    //     System.out.println(cb.moveBishop("c1", "a3"));
+    //     System.out.println(cb.moveBishop("c1", "e3"));
+
+    //     System.out.println(cb.moveBishop("f1", "h3"));
+    //     System.out.println(cb.moveBishop("f1", "d3"));
+
+    //     System.out.println(cb.moveBishop("c8", "a6"));
+    //     System.out.println(cb.moveBishop("c8", "e6"));
+
+    //     System.out.println(cb.moveBishop("c8", "e6"));
+    //     System.out.println(cb.moveBishop("c8", "e6"));
+    //     System.out.println("------------------------------------");
+    // }
 }
