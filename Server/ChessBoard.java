@@ -407,7 +407,7 @@ public class ChessBoard
             }
 
             if (currentColour == newColour)
-                { System.out.println("\tSAME COLOUR"); return false; }
+                { return false; }
             else
                 return true;
         }
@@ -604,20 +604,5 @@ public class ChessBoard
             System.out.println("f8 -> h6");
 
         System.out.println("------------------------------------\n");        
-
-
-        // System.out.println("Test Bishops can move in each direction (SHOULD ALL PASS):");
-        // System.out.println("c1 -> a3: " + cb.moveBishop("c1", "a3"));
-        // System.out.println("c1 -> e3: " + cb.moveBishop("c1", "e3"));
-        // System.out.println("");
-        // System.out.println("f1 -> d3: " + cb.moveBishop("f1", "d3"));
-        // System.out.println("f1 -> h3: " + cb.moveBishop("f1", "h3"));
-        // System.out.println("");
-        // System.out.println("c8 -> a6: " + cb.moveBishop("c8", "a6"));
-        // System.out.println("c8 -> e6: " + cb.moveBishop("c8", "e6"));
-        // System.out.println("");
-        // System.out.println("f8 -> d6: " + cb.moveBishop("f8", "d6"));
-        // System.out.println("f8 -> h6: " + cb.moveBishop("f8", "h6"));
-        // System.out.println("------------------------------------\n");
     }
 }
