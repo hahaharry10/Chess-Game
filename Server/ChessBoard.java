@@ -383,28 +383,31 @@ public class ChessBoard
         int x_dif = Math.abs(current_x - new_x);
         int y_dif = Math.abs(current_y - new_y);
 
-        System.out.println("x_dif = " + x_dif + "\ny_dif = " + y_dif);
 
         if ( (x_dif != y_dif) || (x_dif == 0) || (y_dif == 0) )
             return false;
         else
         {
             // check path is empty:
-            int x = (int) current_x + 1;
-            int y = (int) current_y + 1;
+            char x, y;
+            if ((int) current_x < (int) new_x)  { x = (char) ( (int) current_x + 1); }
+            else                                { x = (char) ( (int) current_x - 1); }
+            if ((int) current_y < (int) new_y)  { y = (char) ( (int) current_y + 1); }
+            else                                { y = (char) ( (int) current_y - 1); }
+
             while (x != new_x && y != new_y)
             {
-                System.out.println("Checking path: " + getPieceAtLoc((char) x, (char) y));
-                if (getPieceAtLoc((char) x, (char) y) != emptyTile)
-                    return false;
+                if (getPieceAtLoc(x, y) != emptyTile)
+                { return false; }
 
-                if (x < new_x) { x++; y++; }
-                else if (x > new_x) { x--; y--; }
-                else return false;
+                if (x < new_x)  { x = (char) ((int) x + 1); }
+                else            { x = (char) ((int) x - 1); }
+                if (y < new_y)  { y = (char) ((int) y + 1); }
+                else            { y = (char) ((int) y - 1); }
             }
 
             if (currentColour == newColour)
-                return false;
+                { System.out.println("\tSAME COLOUR"); return false; }
             else
                 return true;
         }
@@ -547,23 +550,74 @@ public class ChessBoard
     }
 
 
-    // public static void main(String[] args)
-    // {
-    //     ChessBoard cb = new ChessBoard();
-    //     cb.createNewBoard();
+    public static void main(String[] args)
+    {
+        ChessBoard cb = new ChessBoard();
+        cb.createNewBoard();
 
-    //     System.out.println(cb.getBoard(true));
-    //     System.out.println(cb.moveBishop("c1", "a3"));
-    //     System.out.println(cb.moveBishop("c1", "e3"));
+        System.out.println(cb.getBoard(true));
 
-    //     System.out.println(cb.moveBishop("f1", "h3"));
-    //     System.out.println(cb.moveBishop("f1", "d3"));
+        System.out.println("Test Bishops cannot jump over pieces (SHOULD ALL FAIL):");
+        System.out.println("c1 -> a3: " + cb.moveBishop("c1", "a3"));
+        System.out.println("c1 -> e3: " + cb.moveBishop("c1", "e3"));
+        System.out.println("");
+        System.out.println("f1 -> h3: " + cb.moveBishop("f1", "h3"));
+        System.out.println("f1 -> d3: " + cb.moveBishop("f1", "d3"));
+        System.out.println("");
+        System.out.println("c8 -> a6: " + cb.moveBishop("c8", "a6"));
+        System.out.println("c8 -> e6: " + cb.moveBishop("c8", "e6"));
+        System.out.println("");
+        System.out.println("f8 -> h6: " + cb.moveBishop("f8", "h6"));
+        System.out.println("f8 -> d6: " + cb.moveBishop("f8", "d6"));
+        System.out.println("------------------------------------\n");
 
-    //     System.out.println(cb.moveBishop("c8", "a6"));
-    //     System.out.println(cb.moveBishop("c8", "e6"));
+        System.out.println("Moving pawns out of the way...\n");
+        cb.makeMove("b2", "b4");
+        cb.makeMove("d2", "d4");
+        cb.makeMove("e2", "e4");
+        cb.makeMove("g2", "g4");
+        cb.makeMove("b7", "b5");
+        cb.makeMove("d7", "d5");
+        cb.makeMove("e7", "e5");
+        cb.makeMove("g7", "g5");
+        System.out.println("------------------------------------\n");
 
-    //     System.out.println(cb.moveBishop("c8", "e6"));
-    //     System.out.println(cb.moveBishop("c8", "e6"));
-    //     System.out.println("------------------------------------");
-    // }
+        System.out.println(cb.getBoard(true));
+
+        System.out.println("------------------------------------\n");
+
+        if (cb.moveBishop("c1", "a3"))
+            System.out.println("c1 -> a3");
+        if (cb.moveBishop("c1", "e3"))
+            System.out.println("c1 -> e3");
+        if (cb.moveBishop("f1", "d3"))
+            System.out.println("f1 -> d3");
+        if (cb.moveBishop("f1", "h3"))
+            System.out.println("f1 -> h3");
+        if (cb.moveBishop("c8", "a6"))
+            System.out.println("c8 -> a6");
+        if (cb.moveBishop("c8", "e6"))
+            System.out.println("c8 -> e6");
+        if (cb.moveBishop("f8", "d6"))
+            System.out.println("f8 -> d6");
+        if (cb.moveBishop("f8", "h6"))
+            System.out.println("f8 -> h6");
+
+        System.out.println("------------------------------------\n");        
+
+
+        // System.out.println("Test Bishops can move in each direction (SHOULD ALL PASS):");
+        // System.out.println("c1 -> a3: " + cb.moveBishop("c1", "a3"));
+        // System.out.println("c1 -> e3: " + cb.moveBishop("c1", "e3"));
+        // System.out.println("");
+        // System.out.println("f1 -> d3: " + cb.moveBishop("f1", "d3"));
+        // System.out.println("f1 -> h3: " + cb.moveBishop("f1", "h3"));
+        // System.out.println("");
+        // System.out.println("c8 -> a6: " + cb.moveBishop("c8", "a6"));
+        // System.out.println("c8 -> e6: " + cb.moveBishop("c8", "e6"));
+        // System.out.println("");
+        // System.out.println("f8 -> d6: " + cb.moveBishop("f8", "d6"));
+        // System.out.println("f8 -> h6: " + cb.moveBishop("f8", "h6"));
+        // System.out.println("------------------------------------\n");
+    }
 }
