@@ -479,11 +479,17 @@ public class ChessBoard
         board[new_y_index][new_x_index] = piece;
     }
 
+
+    /*****************************************************************************************************/
+    /*                  The following code implements the feature that tests for check.                  */
+    /*****************************************************************************************************/
+
     /**
-     * Tests if a colour is in check.
+     * Tests if a player is in check or checkmate.
      * @param forWhite Boolean value saying if white is being tested.
+     * @return true if in check, false if not in check.
      */
-    public Boolean isInCheck(Boolean forWhite)
+    private Boolean isInCheck(Boolean forWhite)
     {
         char king = (forWhite ? 'k' : 'K');
         int attackingColour = (forWhite ? black : white); // get the colour of the pieces that are checking the king.
@@ -504,7 +510,7 @@ public class ChessBoard
         
         if (kingsLoc == null)
         {
-            System.out.println("ERROR: King not found.");
+            System.err.println("ERROR: King not found.");
             return false;
         }
         
@@ -548,6 +554,52 @@ public class ChessBoard
 
         return false;
     }
+
+    /**
+     * Test whether the king in check can be moved outside of check.
+     * @param forwhite Boolean value saying if white is being tested.
+     * @return true if the king can move out of check, false if the king cnanot.
+     */
+    private Boolean kingCanEscapeCheck(Boolean forwhite)
+    {
+        return false;
+    }
+
+    /**
+     * Test whetehr the piece threatening check is itself under threat.
+     * @param forwhite Boolean value saying if white is being tested.
+     * @return true if the check threatening piece can be taken, false otherwise.
+     */
+    private Boolean attackingPieceInThreat(Boolean forwhite)
+    {
+        return false;
+    }
+
+    /**
+     * Tests whether the check can be obstructed.
+     * @param forwhite Boolean value saying if white is being tested.
+     * @return true if the path between the king and the piece threatening check can be obstructed, false otehrwise.
+     */
+    private Boolean checkCanBeObstructed(Boolean forwhite)
+    {
+        return false;
+    }
+
+    /**
+     * Calculate whether the player is in check, checkmate, or neither.
+     * @param forWhite Boolean value 
+     * @return 0 if not in check, 1 if in check, 2 if in checkmate.
+     */
+    public int isInCheckOrCheckmate(Boolean forWhite)
+    {
+        if (!isInCheck(forWhite)) // If the player is in check.
+            return 0;
+        else if (kingCanEscapeCheck(forWhite) || attackingPieceInThreat(forWhite) || checkCanBeObstructed(forWhite)) // If check can be avoided next move.
+            return 1;
+        else // If the player is in check and check cannot be avoided.
+            return 2;
+    }
+    /*****************************************************************************************************/
 
 
     public static void main(String[] args)
