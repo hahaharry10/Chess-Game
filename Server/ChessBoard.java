@@ -485,7 +485,7 @@ public class ChessBoard
     /*****************************************************************************************************/
 
     /**
-     * Tests if a player is in check or checkmate.
+     * Tests if any attacking piece threatens the king - i.e. tests if a player is in checks.
      * @param forWhite Boolean value saying if white is being tested.
      * @return true if in check, false if not in check.
      */
@@ -560,8 +560,43 @@ public class ChessBoard
      * @param forwhite Boolean value saying if white is being tested.
      * @return true if the king can move out of check, false if the king cnanot.
      */
-    private Boolean kingCanEscapeCheck(Boolean forwhite)
+    private Boolean kingCanEscapeCheck(Boolean forWhite)
     {
+        char king = (forWhite ? 'k' : 'K');
+        
+        // get the location of the piece:
+        String kingsLoc = null;
+        for (int row = 1; row < boardWidth; row++)
+        {
+            for (int col = 1; col < boardWidth; col++)
+            {
+                if ( board[row][col] == king )
+                {
+                    kingsLoc = Character.toString((char) col - 1 + 'a') + Character.toString((char) '9' - row);
+                    break;
+                }
+            }
+        }
+
+        // Create array of neighbours of the king.
+        String[] neighbours = new String[8];
+        neighbours[0] = Character.toString( kingsLoc.charAt(0) + 1 ) + Character.toString( kingsLoc.charAt(0) - 1 );  // Top left diagonal neighbour.
+        neighbours[1] = Character.toString( kingsLoc.charAt(0) + 1 ) + Character.toString(kingsLoc.charAt(0));        // Above neighbour.
+        neighbours[2] = Character.toString( kingsLoc.charAt(0) + 1 ) + Character.toString( kingsLoc.charAt(0) + 1 );  // Top right diagonal neighbour.
+        neighbours[3] = Character.toString(kingsLoc.charAt(0)) + Character.toString(kingsLoc.charAt(0) + 1);          // Right neighbour.
+        neighbours[4] = Character.toString( kingsLoc.charAt(0) - 1 ) + Character.toString( kingsLoc.charAt(0) + 1 );  // Bottom right neighbour.
+        neighbours[5] = Character.toString( kingsLoc.charAt(0) - 1 ) + Character.toString(kingsLoc.charAt(0));        // Below neighbour.
+        neighbours[6] = Character.toString( kingsLoc.charAt(0) - 1 ) + Character.toString( kingsLoc.charAt(0) - 1 );  // Bottom left neighbour.
+        neighbours[7] = Character.toString(kingsLoc.charAt(0)) + Character.toString( kingsLoc.charAt(0) - 1 );        // Left neighbour.
+
+
+        // Iterate through the neighbours and check if the move is valid.
+        for (String neighbour : neighbours)
+        {
+            if (moveKing(kingsLoc, neighbour)) // If the king can move to a neighbour, the king can escape.
+                return true;
+        }
+
         return false;
     }
 
