@@ -745,7 +745,7 @@ public class ChessBoard
     {
         if (!isInCheck(forWhite)) // If the player is in check.
             return 0;
-        else if (kingCanEscapeCheck(forWhite) || attackingPieceInThreat(forWhite) || checkCanBeObstructed(forWhite)) // If check can be avoided next move.
+        else if (kingCanEscapeCheck(forWhite) || checkCanBeObstructed(forWhite)) // If check can be avoided next move.
             return 1;
         else // If the player is in check and check cannot be avoided.
             return 2;
