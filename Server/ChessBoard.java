@@ -215,32 +215,26 @@ public class ChessBoard
             case 'p':
                 if (!movePawn(current_loc, new_loc))
                     return "Invalid Move: cannot move Pawn there.";
-                makeMove(current_loc, new_loc);
                 break;
             case 'r':
                 if (!moveRook(current_loc, new_loc))
                     return "Invalid Move: cannot move Rook there.";
-                makeMove(current_loc, new_loc);
                 break;
             case 'n':
                 if (!moveKnight(current_loc, new_loc))
                     return "Invalid Move: cannot move Knight there.";
-                makeMove(current_loc, new_loc);
                 break;
             case 'b':
                 if (!moveBishop(current_loc, new_loc))
                     return "Invalid Move: cannot move Bishop there.";
-                makeMove(current_loc, new_loc);
                 break;
             case 'q':
                 if (!moveQueen(current_loc, new_loc))
                     return "Invalid Move: cannot move Queen there.";
-                makeMove(current_loc, new_loc);
                 break;
             case 'k':
                 if (!moveKing(current_loc, new_loc))
                     return "Invalid Move: cannot move King there.";
-                makeMove(current_loc, new_loc);
                 break;
             default:
                 return "Invalid Move: cannot move piece.";
