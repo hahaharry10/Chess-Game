@@ -678,62 +678,42 @@ public class ChessBoard
         //
         char king = (forWhite ? 'k' : 'K');
         int attackingColour = (forWhite ? black : white); // get the colour of the pieces that are checking the king.
-        List<String> neighbours = new ArrayList<>();
+        List<String> path = new ArrayList<>();
 
         // get the location of the king:
         String kingsLoc = null;
-        for (int row = 1; row < boardWidth; row++)
+        for (int row = 1; row < boardWidth - 1; row++)
         {
-            for (int col = 1; col < boardWidth; col++)
+            for (int col = 1; col < boardWidth - 1; col++)
             {
                 if ( board[row][col] == king )
                 {
-                    kingsLoc = Character.toString((char) col - 1 + 'a') + Character.toString((char) '9' - row);
+                    kingsLoc = convertCoords(row, col);
                     break;
                 }
             }
         }
 
         // find the piece/ pieces threatening check:
-        List<String> threats = new ArrayList<>(); // create a list to hold the pieces that threaten check.
-        for (int row = 1; row < boardWidth; row++)
+        List<String> threats = new ArrayList<>(); // create a list to hold the coordinates that threaten check.
+        for (int row = 1; row < boardWidth - 1; row++)
         {
-            for (int col = 1; col < boardWidth; col++)
+            for (int col = 1; col < boardWidth - 1; col++)
             {
                 char piece = board[row][col];
                 if ( getColourOfPiece(piece) == attackingColour)
                 {
-                    String current_loc = Character.toString((char) col - 1 + 'a') + Character.toString((char) '9' - row);
-                    switch (Character.toLowerCase(piece))
-                    {
-                        case 'p':
-                            if (movePawn(current_loc, kingsLoc))
-                                threats.add(current_loc);
-                            break;
-                        case 'r':
-                            if (moveRook(current_loc, kingsLoc))
-                                threats.add(current_loc);
-                            break;
-                        case 'n':
-                            if (moveKnight(current_loc, kingsLoc))
-                                threats.add(current_loc);
-                            break;
-                        case 'b':
-                            if (moveBishop(current_loc, kingsLoc))
-                                threats.add(current_loc);
-                            break;
-                        case 'q':
-                            if (moveQueen(current_loc, kingsLoc))
-                                threats.add(current_loc);
-                            break;
-                        default:
-                            break;
-                    }
+                    String current_loc = convertCoords(row, col);
+                    if ( movePiece(current_loc, kingsLoc) == null )
+                        threats.add(current_loc);
                 }
             }
         }
-        
 
+        // create array of tiles between the threatening piece and the king:
+        String current_loc = threats.get(0);
+        
+        return false;
     }
 
     /**
