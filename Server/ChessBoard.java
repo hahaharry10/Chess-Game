@@ -528,7 +528,7 @@ public class ChessBoard
      * @param current_loc The location of the piece being moved.
      * @param new_loc The new location the piece is being moved to.
      */
-    private void makeMove(String current_loc, String new_loc)
+    public void makeMove(String current_loc, String new_loc)
     {
         current_loc = current_loc.toLowerCase();
         new_loc = new_loc.toLowerCase();
