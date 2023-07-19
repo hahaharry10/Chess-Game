@@ -60,7 +60,12 @@ public class Server
      */
     private String makeMove(String current_loc, String new_loc, int client)
     {
-        return chessBoard.movePiece(current_loc, new_loc);
+        String response = chessBoard.movePiece(current_loc, new_loc);
+
+        if (response == null)
+            chessBoard.makeMove(current_loc, new_loc);
+        
+        return response;
     }
 
     /**
