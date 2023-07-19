@@ -60,50 +60,7 @@ public class Server
      */
     private String makeMove(String current_loc, String new_loc, int client)
     {
-        char pieceBeingMoved = chessBoard.getPieceAtLoc(current_loc);
-
-        // System.out.println("Piece being moved: " + pieceBeingMoved); // FOR TESTING PURPOSES
-
-        if (current_loc.toLowerCase() == new_loc)
-            return "Invalid Move: piece has to move.";
-        
-        switch (Character.toLowerCase(pieceBeingMoved))
-        {
-            case 'p':
-                if (!chessBoard.movePawn(current_loc, new_loc))
-                    return "Invalid Move: cannot move Pawn there.";
-                chessBoard.makeMove(current_loc, new_loc);
-                break;
-            case 'r':
-                if (!chessBoard.moveRook(current_loc, new_loc))
-                    return "Invalid Move: cannot move Rook there.";
-                chessBoard.makeMove(current_loc, new_loc);
-                break;
-            case 'n':
-                if (!chessBoard.moveKnight(current_loc, new_loc))
-                    return "Invalid Move: cannot move Knight there.";
-                chessBoard.makeMove(current_loc, new_loc);
-                break;
-            case 'b':
-                if (!chessBoard.moveBishop(current_loc, new_loc))
-                    return "Invalid Move: cannot move Bishop there.";
-                chessBoard.makeMove(current_loc, new_loc);
-                break;
-            case 'q':
-                if (!chessBoard.moveQueen(current_loc, new_loc))
-                    return "Invalid Move: cannot move Queen there.";
-                chessBoard.makeMove(current_loc, new_loc);
-                break;
-            case 'k':
-                if (!chessBoard.moveKing(current_loc, new_loc))
-                    return "Invalid Move: cannot move King there.";
-                chessBoard.makeMove(current_loc, new_loc);
-                break;
-            default:
-                return "Invalid Move: cannot move piece.";
-        }
-
-        return null;
+        return chessBoard.movePiece(current_loc, new_loc);
     }
 
     /**

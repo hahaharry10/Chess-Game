@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class ChessBoard
 {
     private char[][] board = new char[10][10]; // declare the 8x8 board plus tile coordinates.
@@ -180,13 +183,67 @@ public class ChessBoard
     }
 
     /**
+     * The interface function linking all piece specific move validators.
+     * @param current_loc The current location of the piece about to be moved.
+     * @param new_loc The location where the piece is being moved to.
+     * @return String describing the error. If no error occurs null is returned.
+     */
+    public String movePiece(String current_loc, String new_loc)
+    {
+        char pieceBeingMoved = getPieceAtLoc(current_loc);
+
+        // System.out.println("Piece being moved: " + pieceBeingMoved); // FOR TESTING PURPOSES
+
+        if (current_loc.toLowerCase() == new_loc)
+            return "Invalid Move: piece has to move.";
+        
+        switch (Character.toLowerCase(pieceBeingMoved))
+        {
+            case 'p':
+                if (!movePawn(current_loc, new_loc))
+                    return "Invalid Move: cannot move Pawn there.";
+                makeMove(current_loc, new_loc);
+                break;
+            case 'r':
+                if (!moveRook(current_loc, new_loc))
+                    return "Invalid Move: cannot move Rook there.";
+                makeMove(current_loc, new_loc);
+                break;
+            case 'n':
+                if (!moveKnight(current_loc, new_loc))
+                    return "Invalid Move: cannot move Knight there.";
+                makeMove(current_loc, new_loc);
+                break;
+            case 'b':
+                if (!moveBishop(current_loc, new_loc))
+                    return "Invalid Move: cannot move Bishop there.";
+                makeMove(current_loc, new_loc);
+                break;
+            case 'q':
+                if (!moveQueen(current_loc, new_loc))
+                    return "Invalid Move: cannot move Queen there.";
+                makeMove(current_loc, new_loc);
+                break;
+            case 'k':
+                if (!moveKing(current_loc, new_loc))
+                    return "Invalid Move: cannot move King there.";
+                makeMove(current_loc, new_loc);
+                break;
+            default:
+                return "Invalid Move: cannot move piece.";
+        }
+
+        return null;
+    }
+
+    /**
      * Check if the piece can legally move to the new location.
      * @param current_loc The current location of the piece.
      * @param new_loc The new location the piece is being sent to.
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public Boolean movePawn(String current_loc, String new_loc)
+    private Boolean movePawn(String current_loc, String new_loc)
     { 
         // split locations into seperate cordinates:
         char current_x = current_loc.charAt(0);
@@ -268,7 +325,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public Boolean moveRook(String current_loc, String new_loc)
+    private Boolean moveRook(String current_loc, String new_loc)
     {
         // split locations into seperate cordinates:
         char current_x = current_loc.charAt(0);
@@ -344,7 +401,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public Boolean moveKnight(String current_loc, String new_loc)
+    private Boolean moveKnight(String current_loc, String new_loc)
     {
         // split locations into seperate cordinates:
         char current_x = current_loc.charAt(0);
@@ -370,7 +427,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public Boolean moveBishop(String current_loc, String new_loc)
+    private Boolean moveBishop(String current_loc, String new_loc)
     {
         // split locations into seperate cordinates:
         char current_x = current_loc.charAt(0);
@@ -420,7 +477,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public Boolean moveQueen(String current_loc, String new_loc)
+    private Boolean moveQueen(String current_loc, String new_loc)
     {
         // the queen can either move like a rook or a bishop.
         if (moveRook(current_loc, new_loc))
@@ -438,7 +495,7 @@ public class ChessBoard
      * 
      * @return true if the move is legal, false otherwise.
      */
-    public Boolean moveKing(String current_loc, String new_loc)
+    private Boolean moveKing(String current_loc, String new_loc)
     {
         // split locations into seperate cordinates:
         char current_x = current_loc.charAt(0);
@@ -464,7 +521,7 @@ public class ChessBoard
      * @param current_loc The location of the piece being moved.
      * @param new_loc The new location the piece is being moved to.
      */
-    public void makeMove(String current_loc, String new_loc)
+    private void makeMove(String current_loc, String new_loc)
     {
         current_loc = current_loc.toLowerCase();
         new_loc = new_loc.toLowerCase();
@@ -564,7 +621,7 @@ public class ChessBoard
     {
         char king = (forWhite ? 'k' : 'K');
         
-        // get the location of the piece:
+        // get the location of the king:
         String kingsLoc = null;
         for (int row = 1; row < boardWidth; row++)
         {
@@ -601,23 +658,73 @@ public class ChessBoard
     }
 
     /**
-     * Test whetehr the piece threatening check is itself under threat.
-     * @param forwhite Boolean value saying if white is being tested.
-     * @return true if the check threatening piece can be taken, false otherwise.
-     */
-    private Boolean attackingPieceInThreat(Boolean forwhite)
-    {
-        return false;
-    }
-
-    /**
      * Tests whether the check can be obstructed.
      * @param forwhite Boolean value saying if white is being tested.
      * @return true if the path between the king and the piece threatening check can be obstructed, false otehrwise.
      */
-    private Boolean checkCanBeObstructed(Boolean forwhite)
+    private Boolean checkCanBeObstructed(Boolean forWhite)
     {
-        return false;
+        //
+        // Create an array of tiles between the check-threatening piece and the king (including the attacking piece and excluding the king).
+        //
+        char king = (forWhite ? 'k' : 'K');
+        int attackingColour = (forWhite ? black : white); // get the colour of the pieces that are checking the king.
+        List<String> neighbours = new ArrayList<>();
+
+        // get the location of the king:
+        String kingsLoc = null;
+        for (int row = 1; row < boardWidth; row++)
+        {
+            for (int col = 1; col < boardWidth; col++)
+            {
+                if ( board[row][col] == king )
+                {
+                    kingsLoc = Character.toString((char) col - 1 + 'a') + Character.toString((char) '9' - row);
+                    break;
+                }
+            }
+        }
+
+        // find the piece/ pieces threatening check:
+        List<String> threats = new ArrayList<>(); // create a list to hold the pieces that threaten check.
+        for (int row = 1; row < boardWidth; row++)
+        {
+            for (int col = 1; col < boardWidth; col++)
+            {
+                char piece = board[row][col];
+                if ( getColourOfPiece(piece) == attackingColour)
+                {
+                    String current_loc = Character.toString((char) col - 1 + 'a') + Character.toString((char) '9' - row);
+                    switch (Character.toLowerCase(piece))
+                    {
+                        case 'p':
+                            if (movePawn(current_loc, kingsLoc))
+                                threats.add(current_loc);
+                            break;
+                        case 'r':
+                            if (moveRook(current_loc, kingsLoc))
+                                threats.add(current_loc);
+                            break;
+                        case 'n':
+                            if (moveKnight(current_loc, kingsLoc))
+                                threats.add(current_loc);
+                            break;
+                        case 'b':
+                            if (moveBishop(current_loc, kingsLoc))
+                                threats.add(current_loc);
+                            break;
+                        case 'q':
+                            if (moveQueen(current_loc, kingsLoc))
+                                threats.add(current_loc);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+        
+
     }
 
     /**
