@@ -183,6 +183,19 @@ public class ChessBoard
     }
 
     /**
+     * Converts indexing coordinates into chess coordinates.
+     */
+    public String convertCoords(int row, int col)
+    {
+        return Character.toString((char) col - 1 + 'a') + Character.toString((char) '9' - row);
+    }
+
+
+    /*****************************************************************************************************/
+    /*                      The following functions implement the move validators.                       */
+    /*****************************************************************************************************/
+
+    /**
      * The interface function linking all piece specific move validators.
      * @param current_loc The current location of the piece about to be moved.
      * @param new_loc The location where the piece is being moved to.
@@ -536,6 +549,8 @@ public class ChessBoard
         board[new_y_index][new_x_index] = piece;
     }
 
+    /*****************************************************************************************************/
+
 
     /*****************************************************************************************************/
     /*                  The following code implements the feature that tests for check.                  */
@@ -741,6 +756,7 @@ public class ChessBoard
         else // If the player is in check and check cannot be avoided.
             return 2;
     }
+    
     /*****************************************************************************************************/
 
 
