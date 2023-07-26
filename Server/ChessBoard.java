@@ -710,8 +710,79 @@ public class ChessBoard
             }
         }
 
-        // create array of tiles between the threatening piece and the king:
-        String current_loc = threats.get(0);
+        if (threats.size() > 1) // double check cannot be blocked.
+            return false;
+
+        // create array of tiles between the first threatening piece and the king:
+        String attacking_loc = threats.get(0); // Get the first threat location.
+
+        char king_x = kingsLoc.charAt(0);
+        char king_y = kingsLoc.charAt(1);
+
+        char threateningPiece = getPieceAtLoc(attacking_loc);
+
+        // Hopefully by this point all threatening pieces should be checked to make sure they can reach the king. Therefore writing
+        //  an abstract path mapping algorithm should allow for simpler code. The only exception is that the knght is the only piece
+        //  whose path cannot be obstructed. To block a knights atack you must take the knight or move out of the way.
+        switch ( Character.toLowerCase(threateningPiece) )
+        {
+            case 'k': // Knights path cannot be obstructed. We only need to check if the piece can be taken.
+                // Iterate through all defending pieces and see if they can take the knight:
+                for (int row = 1; row < boardWidth-1; row++)
+                {
+                    for (int col = 1; col < boardWidth-1; col++)
+                    {
+                        String defending_loc = convertCoords(row, col);
+                        if (getColourOfPiece(getPieceAtLoc(defending_loc)) != attackingColour) // if the piece belongs to the defending player.
+                        {
+                            if (movePiece(defending_loc, attacking_loc) == null)
+                                return true;
+                        }
+                    }
+                }
+                break;
+            
+            /********************************************************************************************************************************/
+            /* The code csn be simplified if the algorithm searched for a check obstruction after every location in the path is found. As   */
+            /* oppose to finding all location in the path and then finding if each tile can be obstructed.                                  */
+            /********************************************************************************************************************************/
+            default:
+                char attacking_x = attacking_loc.charAt(0);
+                char attacking_y = attacking_loc.charAt(1);
+
+                while (attacking_x != king_x && attacking_y != king_y)
+                {
+                    path.add(convertCoords(attacking_x, attacking_y)); // add to the path list.
+                    
+                    if (attacking_x < king_x)   { attacking_x++; }
+                    else                        { attacking_x--; }
+                    if (attacking_y < king_y)   { attacking_y++; }
+                    else                        { attacking_y--; }
+                }
+
+                // Check if the path can be obstructed
+                for (String path_loc : path) // iterate through path.
+                {
+                    // Iterate through all defending pieces and see if they can take the piece:
+                    for (int row = 1; row < boardWidth-1; row++)
+                    {
+                        for (int col = 1; col < boardWidth-1; col++)
+                        {
+                            String defending_loc = convertCoords(row, col);
+                            if (getColourOfPiece(getPieceAtLoc(defending_loc)) != attackingColour) // if the piece belongs to the defending player.
+                            {
+                                if (movePiece(defending_loc, path_loc) == null)
+                                    return true;
+                            }
+                        }
+                    }
+                }
+                break;
+            /*********************************************************************************************************************************/
+
+
+                
+        }
         
         return false;
     }
