@@ -1,7 +1,7 @@
 import java.net.*;
 import java.io.*;
 
-import java.util.regex.*;  
+import java.util.regex.*;
 
 public class Client
 {
