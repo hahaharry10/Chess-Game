@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.*;
 
 public class ChessBoard
 {
@@ -582,25 +583,32 @@ public class ChessBoard
      * @param forwhite Boolean value saying if white is being tested.
      * @return true if the king can move out of check, false if the king cnanot.
      */
-    private Boolean kingCanEscapeCheck(Boolean forWhite)
+    private Boolean kingCanEscapeCheck(Boolean forWhite, String kingsLoc)
     {
         // Create array of neighbours of the king.
         String[] neighbours = new String[8];
-        neighbours[0] = Character.toString( kingsLoc.charAt(0) + 1 ) + Character.toString( kingsLoc.charAt(0) - 1 );  // Top left diagonal neighbour.
-        neighbours[1] = Character.toString( kingsLoc.charAt(0) + 1 ) + Character.toString(kingsLoc.charAt(0));        // Above neighbour.
-        neighbours[2] = Character.toString( kingsLoc.charAt(0) + 1 ) + Character.toString( kingsLoc.charAt(0) + 1 );  // Top right diagonal neighbour.
-        neighbours[3] = Character.toString(kingsLoc.charAt(0)) + Character.toString(kingsLoc.charAt(0) + 1);          // Right neighbour.
-        neighbours[4] = Character.toString( kingsLoc.charAt(0) - 1 ) + Character.toString( kingsLoc.charAt(0) + 1 );  // Bottom right neighbour.
-        neighbours[5] = Character.toString( kingsLoc.charAt(0) - 1 ) + Character.toString(kingsLoc.charAt(0));        // Below neighbour.
-        neighbours[6] = Character.toString( kingsLoc.charAt(0) - 1 ) + Character.toString( kingsLoc.charAt(0) - 1 );  // Bottom left neighbour.
-        neighbours[7] = Character.toString(kingsLoc.charAt(0)) + Character.toString( kingsLoc.charAt(0) - 1 );        // Left neighbour.
+        neighbours[0] = Character.toString( kingsLoc.charAt(0) + 1 ) + Character.toString( kingsLoc.charAt(1) - 1 );  // Top left diagonal neighbour.
+        neighbours[1] = Character.toString( kingsLoc.charAt(0) + 1 ) + Character.toString(kingsLoc.charAt(1));        // Above neighbour.
+        neighbours[2] = Character.toString( kingsLoc.charAt(0) + 1 ) + Character.toString( kingsLoc.charAt(1) + 1 );  // Top right diagonal neighbour.
+        neighbours[3] = Character.toString(kingsLoc.charAt(0)) + Character.toString(kingsLoc.charAt(1) + 1);          // Right neighbour.
+        neighbours[4] = Character.toString( kingsLoc.charAt(0) - 1 ) + Character.toString( kingsLoc.charAt(1) + 1 );  // Bottom right neighbour.
+        neighbours[5] = Character.toString( kingsLoc.charAt(0) - 1 ) + Character.toString(kingsLoc.charAt(1));        // Below neighbour.
+        neighbours[6] = Character.toString( kingsLoc.charAt(0) - 1 ) + Character.toString( kingsLoc.charAt(1) - 1 );  // Bottom left neighbour.
+        neighbours[7] = Character.toString(kingsLoc.charAt(0)) + Character.toString( kingsLoc.charAt(1) - 1 );        // Left neighbour.
 
 
         // Iterate through the neighbours and check if the move is valid.
         for (String neighbour : neighbours)
         {
-            if (moveKing(kingsLoc, neighbour)) // If the king can move to a neighbour, the king can escape.
-                return true;
+            if ( Pattern.matches("[AaBbCcDdEeFfGgHh][1-8]", neighbour) )
+            {
+                System.out.println("Testing " + neighbour);
+                if (moveKing(kingsLoc, neighbour)) // If the king can move to a neighbour, the king can escape.
+                {
+                    if ( !isInCheck(forWhite, neighbour) )
+                        return true;
+                }
+            }
         }
 
         return false;
