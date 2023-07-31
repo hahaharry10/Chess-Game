@@ -555,30 +555,9 @@ public class ChessBoard
      * @param forWhite Boolean value saying if white is being tested.
      * @return true if in check, false if not in check.
      */
-    private Boolean isInCheck(Boolean forWhite)
+    private Boolean isInCheck(Boolean forWhite, String kingsLoc)
     {
-        char king = (forWhite ? 'k' : 'K');
         int attackingColour = (forWhite ? black : white); // get the colour of the pieces that are checking the king.
-
-        // get the location of the piece:
-        String kingsLoc = null;
-        for (int row = 1; row < boardWidth; row++)
-        {
-            for (int col = 1; col < boardWidth; col++)
-            {
-                if ( board[row][col] == king )
-                {
-                    kingsLoc = Character.toString((char) col - 1 + 'a') + Character.toString((char) '9' - row);
-                    break;
-                }
-            }
-        }
-        
-        if (kingsLoc == null)
-        {
-            System.err.println("ERROR: King not found.");
-            return false;
-        }
         
         // Iterate through the attacking pieces:
         for (int row = 1; row < boardWidth; row++)
@@ -628,22 +607,6 @@ public class ChessBoard
      */
     private Boolean kingCanEscapeCheck(Boolean forWhite)
     {
-        char king = (forWhite ? 'k' : 'K');
-        
-        // get the location of the king:
-        String kingsLoc = null;
-        for (int row = 1; row < boardWidth; row++)
-        {
-            for (int col = 1; col < boardWidth; col++)
-            {
-                if ( board[row][col] == king )
-                {
-                    kingsLoc = Character.toString((char) col - 1 + 'a') + Character.toString((char) '9' - row);
-                    break;
-                }
-            }
-        }
-
         // Create array of neighbours of the king.
         String[] neighbours = new String[8];
         neighbours[0] = Character.toString( kingsLoc.charAt(0) + 1 ) + Character.toString( kingsLoc.charAt(0) - 1 );  // Top left diagonal neighbour.
@@ -671,28 +634,13 @@ public class ChessBoard
      * @param forwhite Boolean value saying if white is being tested.
      * @return true if the path between the king and the piece threatening check can be obstructed, false otehrwise.
      */
-    private Boolean checkCanBeObstructed(Boolean forWhite)
+    private Boolean checkCanBeObstructed(Boolean forWhite, String kingsLoc)
     {
         //
         // Create an array of tiles between the check-threatening piece and the king (including the attacking piece and excluding the king).
         //
-        char king = (forWhite ? 'k' : 'K');
         int attackingColour = (forWhite ? black : white); // get the colour of the pieces that are checking the king.
         List<String> path = new ArrayList<>();
-
-        // get the location of the king:
-        String kingsLoc = null;
-        for (int row = 1; row < boardWidth - 1; row++)
-        {
-            for (int col = 1; col < boardWidth - 1; col++)
-            {
-                if ( board[row][col] == king )
-                {
-                    kingsLoc = convertCoords(row, col);
-                    break;
-                }
-            }
-        }
 
         // find the piece/ pieces threatening check:
         List<String> threats = new ArrayList<>(); // create a list to hold the coordinates that threaten check.
@@ -790,13 +738,35 @@ public class ChessBoard
     /**
      * Calculate whether the player is in check, checkmate, or neither.
      * @param forWhite Boolean value 
-     * @return 0 if not in check, 1 if in check, 2 if in checkmate.
+     * @return 0 if not in check, 1 if in check, 2 if in checkmate, 3 if error occurs.
      */
     public int isInCheckOrCheckmate(Boolean forWhite)
     {
-        if (!isInCheck(forWhite)) // If the player is in check.
+        char king = (forWhite ? 'k' : 'K');
+        
+        // get the location of the king:
+        String kingsLoc = null;
+        for (int row = 1; row < boardWidth; row++)
+        {
+            for (int col = 1; col < boardWidth; col++)
+            {
+                if ( board[row][col] == king )
+                {
+                    kingsLoc = Character.toString((char) col - 1 + 'a') + Character.toString((char) '9' - row);
+                    break;
+                }
+            }
+        }
+
+        if (kingsLoc == null)
+        {
+            System.err.println("ERROR: King not found.");
+            return 3; // return error signal
+        }
+
+        if (!isInCheck(forWhite, kingsLoc)) // If the player is in check.
             return 0;
-        else if (kingCanEscapeCheck(forWhite) || checkCanBeObstructed(forWhite)) // If check can be avoided next move.
+        else if (kingCanEscapeCheck(forWhite, kingsLoc) || checkCanBeObstructed(forWhite, kingsLoc)) // If check can be avoided next move.
             return 1;
         else // If the player is in check and check cannot be avoided.
             return 2;
