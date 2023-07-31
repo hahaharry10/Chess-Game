@@ -190,7 +190,6 @@ public class ChessBoard
         return Character.toString((char) col - 1 + 'a') + Character.toString((char) '9' - row);
     }
 
-
     /*****************************************************************************************************/
     /*                      The following functions implement the move validators.                       */
     /*****************************************************************************************************/
@@ -560,39 +559,17 @@ public class ChessBoard
         int attackingColour = (forWhite ? black : white); // get the colour of the pieces that are checking the king.
         
         // Iterate through the attacking pieces:
-        for (int row = 1; row < boardWidth; row++)
+        for (int row = 1; row < boardWidth-1; row++)
         {
-            for (int col = 1; col < boardWidth; col++)
+            for (int col = 1; col < boardWidth-1; col++)
             {
                 char piece = board[row][col];
                 if ( getColourOfPiece(piece) == attackingColour)
                 {
-                    String current_loc = Character.toString((char) col - 1 + 'a') + Character.toString((char) '9' - row);
-                    switch (Character.toLowerCase(piece))
-                    {
-                        case 'p':
-                            if (movePawn(current_loc, kingsLoc))
-                                return true;
-                            break;
-                        case 'r':
-                            if (moveRook(current_loc, kingsLoc))
-                                return true;
-                            break;
-                        case 'n':
-                            if (moveKnight(current_loc, kingsLoc))
-                                return true;
-                            break;
-                        case 'b':
-                            if (moveBishop(current_loc, kingsLoc))
-                                return true;
-                            break;
-                        case 'q':
-                            if (moveQueen(current_loc, kingsLoc))
-                                return true;
-                            break;
-                        default:
-                            break;
-                    }
+                    String current_loc = convertCoords(row, col);
+                    
+                    if (movePiece(current_loc, kingsLoc) == null);
+                        return true;
                 }
             }
         }
