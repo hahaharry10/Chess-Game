@@ -569,7 +569,7 @@ public class ChessBoard
                 {
                     String current_loc = convertCoords(row, col);
                     
-                    if (movePiece(current_loc, kingsLoc) == null);
+                    if (movePiece(current_loc, kingsLoc) == null)
                         return true;
                 }
             }
@@ -584,7 +584,7 @@ public class ChessBoard
      * @return true if the king can move out of check, false if the king cnanot.
      */
     private Boolean kingCanEscapeCheck(Boolean forWhite, String kingsLoc)
-    {
+    {   
         // Create array of neighbours of the king.
         String[] neighbours = new String[8];
         neighbours[0] = Character.toString( kingsLoc.charAt(0) + 1 ) + Character.toString( kingsLoc.charAt(1) - 1 );  // Top left diagonal neighbour.
@@ -602,8 +602,7 @@ public class ChessBoard
         {
             if ( Pattern.matches("[AaBbCcDdEeFfGgHh][1-8]", neighbour) )
             {
-                System.out.println("Testing " + neighbour);
-                if (moveKing(kingsLoc, neighbour)) // If the king can move to a neighbour, the king can escape.
+                if (moveKing(kingsLoc, neighbour)) // can the king move to the neighbour.
                 {
                     if ( !isInCheck(forWhite, neighbour) )
                         return true;
