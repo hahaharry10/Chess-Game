@@ -620,9 +620,8 @@ public class ChessBoard
      */
     private Boolean checkCanBeObstructed(Boolean forWhite, String kingsLoc)
     {
-        //
-        // Create an array of tiles between the check-threatening piece and the king (including the attacking piece and excluding the king).
-        //
+        System.out.println("ENTERING checkCanBeObstructed()...");
+
         int attackingColour = (forWhite ? black : white); // get the colour of the pieces that are checking the king.
         List<String> path = new ArrayList<>();
 
@@ -642,11 +641,16 @@ public class ChessBoard
             }
         }
 
-        if (threats.size() > 1) // double check cannot be blocked.
+        System.out.println("Number of check-threatening pieces: " + threats.size());
+
+        if (threats.size() > 1) // make sure the player is not in double check
+        {
+            System.out.println("EXITING checkCanBeObstructed() RETURNING false...");
             return false;
+        }
 
         // create array of tiles between the first threatening piece and the king:
-        String attacking_loc = threats.get(0); // Get the first threat location.
+        String attacking_loc = threats.get(0);
 
         char king_x = kingsLoc.charAt(0);
         char king_y = kingsLoc.charAt(1);
@@ -658,7 +662,7 @@ public class ChessBoard
         //  whose path cannot be obstructed. To block a knights atack you must take the knight or move out of the way.
         switch ( Character.toLowerCase(threateningPiece) )
         {
-            case 'k': // Knights path cannot be obstructed. We only need to check if the piece can be taken.
+            case 'n': // Knights path cannot be obstructed. We only need to check if the piece can be taken.
                 // Iterate through all defending pieces and see if they can take the knight:
                 for (int row = 1; row < boardWidth-1; row++)
                 {
@@ -675,21 +679,24 @@ public class ChessBoard
                 break;
             
             /********************************************************************************************************************************/
-            /* The code csn be simplified if the algorithm searched for a check obstruction after every location in the path is found. As   */
+            /* The code can be simplified if the algorithm searched for a check obstruction after every location in the path is found. As   */
             /* oppose to finding all location in the path and then finding if each tile can be obstructed.                                  */
             /********************************************************************************************************************************/
             default:
                 char attacking_x = attacking_loc.charAt(0);
                 char attacking_y = attacking_loc.charAt(1);
 
-                while (attacking_x != king_x && attacking_y != king_y)
+                System.out.println("Path finding starting from " + attacking_loc + " to " + kingsLoc);
+
+                while (attacking_x != king_x || attacking_y != king_y)
                 {
-                    path.add(convertCoords(attacking_x, attacking_y)); // add to the path list.
+                    System.out.println("Adding " + attacking_x + attacking_y + " to path.");
+                    path.add(Character.toString(attacking_x) + Character.toString(attacking_y)); // add to the path list.
                     
-                    if (attacking_x < king_x)   { attacking_x++; }
-                    else                        { attacking_x--; }
-                    if (attacking_y < king_y)   { attacking_y++; }
-                    else                        { attacking_y--; }
+                    if (attacking_x < king_x)       { attacking_x++; }
+                    else if (attacking_x > king_x)  { attacking_x--; }
+                    if (attacking_y < king_y)       { attacking_y++; }
+                    else if (attacking_y > king_y)  { attacking_y--; }
                 }
 
                 // Check if the path can be obstructed
