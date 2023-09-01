@@ -205,8 +205,6 @@ public class ChessBoard
     {
         char pieceBeingMoved = getPieceAtLoc(current_loc);
 
-        // System.out.println("Piece being moved: " + pieceBeingMoved); // FOR TESTING PURPOSES
-
         if (current_loc.toLowerCase() == new_loc)
             return "Invalid Move: piece has to move.";
         
@@ -237,7 +235,7 @@ public class ChessBoard
                     return "Invalid Move: cannot move King there.";
                 break;
             default:
-                return "Invalid Move: cannot move piece.";
+                return "Invalid Move: cannot move piece in that location.";
         }
 
         return null;
