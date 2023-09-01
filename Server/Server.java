@@ -71,14 +71,16 @@ public class Server
     /**
      * Sun the logic of the chess game.
      */
-    private void startGame()
+    private void playGame()
     {
+        // Create a new chess game
         chessBoard = new ChessBoard();
         chessBoard.createNewBoard();
         
         // Start the game:
         while (true)
         {
+            // Send chessboard to both players:
             c1Writer.println(chessBoard.getBoard(true));
             c1Writer.println(terminator);
             
@@ -110,10 +112,15 @@ public class Server
                 
                 c1Writer.println(chessBoard.getBoard(true));
                 c2Writer.println("Opponents move: " + move);
-                if (chessBoard.isInCheck(false))
+                int checkOrCheckmate = chessBoard.isInCheckOrCheckmate(false);
+                if (checkOrCheckmate == 1)
                 {
                     c2Writer.println(setTextRed + "You are in check!" + resetTextColour);
                     c1Writer.println(setTextGreen + "They are in check!" + resetTextColour);
+                }
+                else if (checkOrCheckmate == 2)
+                {
+                    // ToDo: process that quits the game...
                 }
                 
                 c2Writer.println(chessBoard.getBoard(false));
@@ -132,7 +139,9 @@ public class Server
                     String moveResponse = makeMove(move.substring(0, 2), move.substring(3, 5), 2);
 
                     if (moveResponse == null) // if the move was allowed.
+                    {
                         break;
+                    }
                     else
                     {
                         c2Writer.println(moveResponse);
@@ -141,10 +150,15 @@ public class Server
                 }
 
                 c1Writer.println("Opponents move: " + move);
-                if (chessBoard.isInCheck(true))
+                checkOrCheckmate = chessBoard.isInCheckOrCheckmate(true);
+                if (checkOrCheckmate == 1)
                 {
                     c1Writer.println(setTextRed + "You are in check!" + resetTextColour);
                     c2Writer.println(setTextGreen + "They are in check!" + resetTextColour);
+                }
+                else if (checkOrCheckmate == 2)
+                {
+                    // ToDo: process that quits the game...
                 }
             }
             catch ( IOException err )
@@ -211,7 +225,7 @@ public class Server
         c2Writer.println(terminator);
 
         System.out.println("Starting game...");
-        startGame();
+        playGame();
 
         c1Writer.println("Closing server...");
         c2Writer.println("Closing server...");
