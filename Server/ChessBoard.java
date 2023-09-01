@@ -45,7 +45,7 @@ public class ChessBoard
         // The peices will be represented by the starting letter of the piece (i.e. pawn will be shown with a 'P' or 'p').
         // The characters will either be in capital or lower case; capital case represents white, lowercase represents black.
 
-        // place all black pieces onto the board:
+        // place all white pieces onto the board:
         for (int i = 1; i < 9; i++)
             board[2][i] = 'P'; // Pawns
         board[1][1] = 'R'; board[1][8] = 'R'; // Rooks
@@ -54,7 +54,7 @@ public class ChessBoard
         board[1][4] = 'Q'; // Queen
         board[1][5] = 'K'; // King
 
-        // place all white pieces onto the board:
+        // place all black pieces onto the board:
         for (int i = 1; i < 9; i++)
             board[7][i] = 'p'; // Pawns
         board[8][1] = 'r'; board[8][8] = 'r'; // Rooks
@@ -175,9 +175,9 @@ public class ChessBoard
      */
     private int getColourOfPiece(char piece)
     {
-        if (Character.isLowerCase(piece))
+        if (Character.isUpperCase(piece))
             return white;
-        else if (Character.isUpperCase(piece))
+        else if (Character.isLowerCase(piece))
             return black;
         else
             return 0;
