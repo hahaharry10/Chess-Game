@@ -94,15 +94,25 @@ public class Server
                 {
                     System.out.println("Waiting for client1 to move...");
                     c2Writer.println("Waiting for opponent to move...");
-                    move = c1Reader.readLine(); // read client1's move and split it into an array of locations.
+                    move = c1Reader.readLine();
+                    String current_loc = move.substring(0, 2);
+                    String new_loc = move.substring(3, 5);
 
                     if (!moveIsValid(move))
                         continue;
 
-                    String moveResponse = makeMove(move.substring(0, 2), move.substring(3, 5), 1);
-                    
-                    if (moveResponse == null) // if the move was allowed.
+                    String moveResponse = makeMove(current_loc, new_loc, 1);
+
+                    if (moveResponse == null) // if the piece can move
+                    {
+                        int putsSelfInCheck = chessBoard.isInCheckOrCheckmate(true);
+                        if (putsSelfInCheck != 0)
+                        {
+                            // ToDo: IMPLEMENT A REVERSE MOVE FUNCTION
+                        }
+                        
                         break;
+                    }
                     else
                     {
                         c1Writer.println(moveResponse);
@@ -112,13 +122,13 @@ public class Server
                 
                 c1Writer.println(chessBoard.getBoard(true));
                 c2Writer.println("Opponents move: " + move);
-                int checkOrCheckmate = chessBoard.isInCheckOrCheckmate(false);
-                if (checkOrCheckmate == 1)
+                int putsOppInCheck = chessBoard.isInCheckOrCheckmate(false);
+                if (putsOppInCheck == 1)
                 {
                     c2Writer.println(setTextRed + "You are in check!" + resetTextColour);
                     c1Writer.println(setTextGreen + "They are in check!" + resetTextColour);
                 }
-                else if (checkOrCheckmate == 2)
+                else if (putsOppInCheck == 2)
                 {
                     // ToDo: process that quits the game...
                 }
@@ -131,15 +141,22 @@ public class Server
                 {
                     System.out.println("Waiting for client2 to move...");
                     c1Writer.println("Waiting for opponent to move...");
-                    move = c2Reader.readLine(); // read client1's move and split it into an array of locations.
+                    move = c2Reader.readLine();
+                    String current_loc = move.substring(0, 2);
+                    String new_loc = move.substring(3, 5);
 
                     if (!moveIsValid(move))
                         continue;
 
-                    String moveResponse = makeMove(move.substring(0, 2), move.substring(3, 5), 2);
+                    String moveResponse = makeMove(current_loc, new_loc, 2);
 
                     if (moveResponse == null) // if the move was allowed.
                     {
+                        int putsSelfInCheck = chessBoard.isInCheckOrCheckmate(false);
+                        if (putsSelfInCheck != 0)
+                        {
+                            // ToDo: IMPLEMENT A REVERSE MOVE FUNCTION
+                        }
                         break;
                     }
                     else
@@ -150,13 +167,13 @@ public class Server
                 }
 
                 c1Writer.println("Opponents move: " + move);
-                checkOrCheckmate = chessBoard.isInCheckOrCheckmate(true);
-                if (checkOrCheckmate == 1)
+                putsOppInCheck = chessBoard.isInCheckOrCheckmate(true);
+                if (putsOppInCheck == 1)
                 {
                     c1Writer.println(setTextRed + "You are in check!" + resetTextColour);
                     c2Writer.println(setTextGreen + "They are in check!" + resetTextColour);
                 }
-                else if (checkOrCheckmate == 2)
+                else if (putsOppInCheck == 2)
                 {
                     // ToDo: process that quits the game...
                 }
