@@ -10,6 +10,10 @@ public class ChessBoard
     final char emptyTile = '·';
     final char black = 1; // Denoted as an upper case character.
     final char white = 2; // Denoted as a lower case character
+    
+    // Following vriables relates to the undo move feature:
+    char[] prevMovedPieces = {'.', '.'};
+    String[] prevMovedLocs = {"00", "00"};
 
     /**
      * Initialise the board with all the pieces in their starting positions.
@@ -190,6 +194,27 @@ public class ChessBoard
     {
         return Character.toString((char) col - 1 + 'a') + Character.toString((char) '9' - row);
     }
+
+    /**
+     * Converts indexing coordinates into chess coordinates.
+     * 
+     * @return Integer array of length 2 in format [x, y] such that <code>board</code> is accessed using <code>board[x][y]</code>
+     */
+    public int[] convertCoords(String coord)
+    {
+        char letter = coord.charAt(0);
+        char num = coord.charAt(1);
+        int[] returnArr = { (int) ('9' - num), (int) (letter + 1 - 'a') };
+        return returnArr;
+    }
+
+    /**
+     * Check if the string is of valid format.
+     * @param input The string being tested.
+     * @return true if the string is valid. false if not.
+     */
+    // private boolean isValidCoord(String input) { return Pattern.matches("[AaBbCcDdEeFfGgHh][1-8]\s[AaBbCcDdEeFfGgHh][1-8]", input); }
+    public static boolean isValidCoord(String input) { return Pattern.matches("[AaBbCcDdEeFfGgHh][1-8]", input); }
 
     /*****************************************************************************************************/
     /*                      The following functions implement the move validators.                       */
@@ -530,7 +555,11 @@ public class ChessBoard
     {
         current_loc = current_loc.toLowerCase();
         new_loc = new_loc.toLowerCase();
-        char piece = getPieceAtLoc(current_loc);
+        char movingPiece = getPieceAtLoc(current_loc);
+        char takenPiece = getPieceAtLoc(new_loc);
+
+        prevMovedPieces[0] = movingPiece;
+        prevMovedPieces[1] = takenPiece;
 
         int current_x_index = (int) (current_loc.charAt(0) - 'a' + 1);
         int current_y_index = (int) ('9' - current_loc.charAt(1));
@@ -538,9 +567,33 @@ public class ChessBoard
         int new_y_index = (int) ('9' - new_loc.charAt(1));
 
         board[current_y_index][current_x_index] = emptyTile;
-        board[new_y_index][new_x_index] = piece;
+        board[new_y_index][new_x_index] = movingPiece;
+
+        prevMovedLocs[0] = current_loc;
+        prevMovedLocs[1] = new_loc;
     }
 
+    /**
+     * Undo the most recent move.
+     * @return int, 0 upon success, otherwise upon failure.
+     */
+    public int reverseMove()
+    {
+        if ( !isValidCoord(prevMovedLocs[0]) || !isValidCoord(prevMovedLocs[1]) )
+            return 1;
+
+        
+        int[] prevStartLoc = convertCoords(prevMovedLocs[0]);
+        int[] prevEndLoc = convertCoords(prevMovedLocs[1]);
+
+
+        board[prevStartLoc[0]][prevStartLoc[1]] = prevMovedPieces[0];
+        board[prevEndLoc[0]][prevEndLoc[1]] = prevMovedPieces[1];
+
+        prevMovedLocs[0] = "00"; prevMovedLocs[1] = "00"; // Reset prevMovedLocs to invalid values.
+
+        return 0;
+    }
     /*****************************************************************************************************/
 
 
