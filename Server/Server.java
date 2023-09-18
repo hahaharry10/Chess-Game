@@ -108,10 +108,17 @@ public class Server
                         int putsSelfInCheck = chessBoard.isInCheckOrCheckmate(true);
                         if (putsSelfInCheck != 0)
                         {
-                            // ToDo: IMPLEMENT A REVERSE MOVE FUNCTION
+                            if (chessBoard.reverseMove() != 0)
+                            {
+                                // ToDo: process that quits the game...
+                                System.exit(1);
+                            }
+                            
+                            c1Writer.println("Invalid Move!");
+                            c1Writer.println(terminator);
                         }
-                        
-                        break;
+                        else
+                            break;
                     }
                     else
                     {
@@ -155,9 +162,17 @@ public class Server
                         int putsSelfInCheck = chessBoard.isInCheckOrCheckmate(false);
                         if (putsSelfInCheck != 0)
                         {
-                            // ToDo: IMPLEMENT A REVERSE MOVE FUNCTION
+                            if (chessBoard.reverseMove() != 0)
+                            {
+                                // ToDo: process that quits the game...
+                                System.exit(1);
+                            }
+                            
+                            c1Writer.println("Invalid Move!");
+                            c1Writer.println(terminator);
                         }
-                        break;
+                        else
+                            break;
                     }
                     else
                     {
@@ -176,6 +191,7 @@ public class Server
                 else if (putsOppInCheck == 2)
                 {
                     // ToDo: process that quits the game...
+                    System.exit(1);
                 }
             }
             catch ( IOException err )
