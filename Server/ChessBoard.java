@@ -213,8 +213,7 @@ public class ChessBoard
      * @param input The string being tested.
      * @return true if the string is valid. false if not.
      */
-    // private boolean isValidCoord(String input) { return Pattern.matches("[AaBbCcDdEeFfGgHh][1-8]\s[AaBbCcDdEeFfGgHh][1-8]", input); }
-    public static boolean isValidCoord(String input) { return Pattern.matches("[AaBbCcDdEeFfGgHh][1-8]", input); }
+    private boolean isValidCoord(String input) { return Pattern.matches("[AaBbCcDdEeFfGgHh][1-8]", input); }
 
     /*****************************************************************************************************/
     /*                      The following functions implement the move validators.                       */
