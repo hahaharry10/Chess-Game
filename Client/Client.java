@@ -50,6 +50,14 @@ public class Client
     }
 
     /**
+     * Handle logic of closing the client.
+     */
+    private void closeClient()
+    {
+        System.exit(0);
+    }
+
+    /**
      * Execute client logic.
      */
     private void runClient()
@@ -99,8 +107,29 @@ public class Client
                 System.out.println("==========================================================");
                 continue;
             }
+            if ( userInput.toLowerCase().equals("quit") )
+            {
+                System.out.print("Are you sure you want to resign (enter 'yes' to confirm)? ");
+                String confirmation = "";
+                try
+                {
+                    confirmation = System.console().readLine(); // read from the terminal.
+                }
+                catch ( IOError err )
+                {
+                    System.err.println("ERROR: failed to read user input.");
+                    System.exit(1);
+                }
 
-            if ( checkInputValidity(userInput) )
+                if (confirmation.toLowerCase().equals("yes"))
+                {
+                    System.out.println("Resigning game...");
+                    writer.println(confirmation);
+                    printResponse();
+                    closeClient();
+                }
+            }
+            else if ( checkInputValidity(userInput) )
             {
                 writer.println(userInput); // Send input to the server
                 printResponse(); // output server response
