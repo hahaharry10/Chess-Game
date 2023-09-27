@@ -124,7 +124,7 @@ public class Client
                 if (confirmation.toLowerCase().equals("yes"))
                 {
                     System.out.println("Resigning game...");
-                    writer.println(confirmation);
+                    writer.println("quit");
                     printResponse();
                     closeClient();
                 }

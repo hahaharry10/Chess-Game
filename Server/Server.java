@@ -107,6 +107,11 @@ public class Server
 
                     if ( move.toLowerCase().equals("quit") )
                     {
+                        System.out.println("Resigning client1...");
+                        c1Writer.println( setTextRed + "You have resigned and therefore lost the game!" + resetTextColour);
+                        c2Writer.println("Opponent has resigned." + setTextGreen + " CONGRATULATIONS! YOU HAVE WON!" + resetTextColour);
+                        c1Writer.println(terminator);
+                        c2Writer.println(terminator);
                         quitGame();
                         break;
                     }
@@ -169,6 +174,11 @@ public class Server
                     
                     if ( move.toLowerCase().equals("quit") )
                     {
+                        System.out.println("Resigning client1...");
+                        c2Writer.println( setTextRed + "You have resigned and therefore lost the game!" + resetTextColour);
+                        c1Writer.println("Opponent has resigned." + setTextGreen + " CONGRATULATIONS! YOU HAVE WON!" + resetTextColour);
+                        c2Writer.println(terminator);
+                        c1Writer.println(terminator);
                         quitGame();
                         break;
                     }
