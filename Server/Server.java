@@ -69,6 +69,14 @@ public class Server
     }
 
     /**
+     * Handles the logic in quitting the game and closing the server.
+     */
+    private void quitGame()
+    {
+        System.exit(1);
+    }
+
+    /**
      * Sun the logic of the chess game.
      */
     private void playGame()
@@ -111,7 +119,7 @@ public class Server
                             if (chessBoard.reverseMove() != 0)
                             {
                                 // ToDo: process that quits the game...
-                                System.exit(1);
+                                quitGame();
                             }
                             
                             c1Writer.println("Invalid Move!");
@@ -138,6 +146,7 @@ public class Server
                 else if (putsOppInCheck == 2)
                 {
                     // ToDo: process that quits the game...
+                    quitGame();
                 }
                 
                 c2Writer.println(chessBoard.getBoard(false));
@@ -165,7 +174,7 @@ public class Server
                             if (chessBoard.reverseMove() != 0)
                             {
                                 // ToDo: process that quits the game...
-                                System.exit(1);
+                                quitGame();
                             }
                             
                             c1Writer.println("Invalid Move!");
@@ -191,7 +200,7 @@ public class Server
                 else if (putsOppInCheck == 2)
                 {
                     // ToDo: process that quits the game...
-                    System.exit(1);
+                    quitGame();
                 }
             }
             catch ( IOException err )
