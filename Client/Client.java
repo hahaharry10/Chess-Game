@@ -46,7 +46,7 @@ public class Client
     private boolean checkInputValidity(String input)
     {
         // Use regular expressions to validate input:
-        return Pattern.matches("[AaBbCcDdEeFfGgHh][1-8]\s[AaBbCcDdEeFfGgHh][1-8]|[Qq][Uu][Ii][Tt]", input);
+        return Pattern.matches("[AaBbCcDdEeFfGgHh][1-8]\s[AaBbCcDdEeFfGgHh][1-8]", input);
     }
 
     /**
@@ -107,7 +107,7 @@ public class Client
                 System.out.println("==========================================================");
                 continue;
             }
-            if ( userInput.toLowerCase().equals("quit") )
+            if ( userInput.toLowerCase().equals("resign") )
             {
                 System.out.print("Are you sure you want to resign (enter 'yes' to confirm)? ");
                 String confirmation = "";
