@@ -73,6 +73,7 @@ public class Server
      */
     private void quitGame()
     {
+        System.out.println("Quitting game...");
         System.exit(1);
     }
 
