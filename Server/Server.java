@@ -104,11 +104,18 @@ public class Server
                     System.out.println("Waiting for client1 to move...");
                     c2Writer.println("Waiting for opponent to move...");
                     move = c1Reader.readLine();
+
+                    if ( move.toLowerCase().equals("quit") )
+                    {
+                        quitGame();
+                        break;
+                    }
+
                     String current_loc = move.substring(0, 2);
                     String new_loc = move.substring(3, 5);
 
                     if (!moveIsValid(move))
-                        continue;
+                            continue;
 
                     String moveResponse = makeMove(current_loc, new_loc, 1);
 
@@ -159,11 +166,18 @@ public class Server
                     System.out.println("Waiting for client2 to move...");
                     c1Writer.println("Waiting for opponent to move...");
                     move = c2Reader.readLine();
+                    
+                    if ( move.toLowerCase().equals("quit") )
+                    {
+                        quitGame();
+                        break;
+                    }
+
                     String current_loc = move.substring(0, 2);
                     String new_loc = move.substring(3, 5);
 
                     if (!moveIsValid(move))
-                        continue;
+                            continue;
 
                     String moveResponse = makeMove(current_loc, new_loc, 2);
 
