@@ -12,6 +12,8 @@ public class Client
 
     private int portNumber = 6174;
     private String terminator = "$$END$$";
+    private String winTerminator = "$$WIN$$";
+    private String lossTerminator = "$$LOSS$$";
 
     /**
      * Display the output of the server to the client.
