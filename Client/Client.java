@@ -14,6 +14,31 @@ public class Client
     private String terminator = "$$STOP$$"; // terminator marking the end of a transmission.
     private String endGameTerminator = "$$END$$"; // terminator marking the game has finished.
 
+    // Define ANSI colour codes:
+    private String setTextRed = "\u001B[0;31m";
+    private String resetTextColour = "\u001B[0m";
+
+    
+    private void endGame()
+    {
+        System.out.println("Thank you for playing!\nClosing Game...");
+
+        try
+        {
+            // Close sockets:
+            writer.close();
+            serverReader.close();
+            socket.close();
+        }
+        catch (IOException e)
+        {
+            System.err.println(setTextRed + "Failed to close Socket. Force closing connection..." + resetTextColour + "\nlog:\n" + e);
+            System.exit(1);
+        }
+
+        System.exit(1);
+    }
+    
     /**
      * Display the output of the server to the client.
      */
@@ -39,9 +64,8 @@ public class Client
             }
 
             if (gameIsFinished)
-            {
-                // Proceed to endGame function...
-            }
+                endGame();
+
         }
         catch ( IOException err )
         {
