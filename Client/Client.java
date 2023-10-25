@@ -58,7 +58,7 @@ public class Client
     private boolean checkInputValidity(String input)
     {
         // Use regular expressions to validate input:
-        return Pattern.matches("[AaBbCcDdEeFfGgHh][1-8]\s[AaBbCcDdEeFfGgHh][1-8]", input);
+        return Pattern.matches("^(?:[a-h][1-8] [a-h][1-8]|quit)$", input);
     }
 
     /**

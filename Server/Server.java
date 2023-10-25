@@ -49,7 +49,7 @@ public class Server
     private Boolean moveIsValid(String move)
     {
         // Use regular expressions to validate input:
-        return Pattern.matches("[AaBbCcDdEeFfGgHh][1-8]\s[AaBbCcDdEeFfGgHh][1-8]", move);
+        return Pattern.matches("^(?:[a-h][1-8] [a-h][1-8])$", move);
     }
 
     /**
