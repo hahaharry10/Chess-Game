@@ -1,6 +1,6 @@
 import java.net.*;
 import java.io.*;
-import java.util.regex.*;  
+import java.util.regex.*;
 
 
 public class Server
@@ -70,12 +70,25 @@ public class Server
     }
 
     /**
-     * Handles the logic in quitting the game and closing the server.
+     * Handles the logic in ending the game and closing the server.
      */
-    private void quitGame()
+    private void endGame()
     {
-        System.out.println("Quitting game...");
-        System.exit(1);
+        // Close connections:
+        try
+        {
+            c1Writer.close(); c2Writer.close();
+            c1Reader.close(); c2Writer.close();
+            client1.close(); client2.close();
+            server.close();
+        }
+        catch (IOException e)
+        {
+            System.err.println("Failed to properly close connection. Shutting down server...\n\nlog:\n" + e);
+            System.exit(1);
+        }
+
+        System.exit(0);
     }
 
     /**
@@ -108,12 +121,14 @@ public class Server
 
                     if ( move.toLowerCase().equals("quit") )
                     {
-                        System.out.println("Resigning client1...");
-                        c1Writer.println( setTextRed + "You have resigned and therefore lost the game!" + resetTextColour);
-                        c2Writer.println("Opponent has resigned." + setTextGreen + " CONGRATULATIONS! YOU HAVE WON!" + resetTextColour);
-                        c1Writer.println(terminator);
-                        c2Writer.println(terminator);
-                        quitGame();
+                        // client 1 resigns
+                        System.out.println("Resigning client2...");
+                        c1Writer.println( setTextRed + "Game Lost! " + resetTextColour + "- loss by resignation.");
+                        c2Writer.println( setTextGreen + "Game Won! " + resetTextColour + "- win by oponent resignation.");
+
+                        c1Writer.println(endGameTerminator);
+                        c2Writer.println(endGameTerminator);
+                        endGame();
                         break;
                     }
 
@@ -132,8 +147,13 @@ public class Server
                         {
                             if (chessBoard.reverseMove() != 0)
                             {
-                                // ToDo: process that quits the game...
-                                quitGame();
+                                // server failure...
+                                System.err.println("Failed to reverse move... Ending game...");
+                                c1Writer.println(setTextRed + "Server Error! " + resetTextColour + "terminating game...");
+                                c2Writer.println(setTextRed + "Server Error! " + resetTextColour + "terminating game...");
+                                c1Writer.println(endGameTerminator);
+                                c2Writer.println(endGameTerminator);
+                                endGame();
                             }
                             
                             c1Writer.println("Invalid Move!");
@@ -159,8 +179,14 @@ public class Server
                 }
                 else if (putsOppInCheck == 2)
                 {
-                    // ToDo: process that quits the game...
-                    quitGame();
+                    // client 1 wins.
+                    c1Writer.println(setTextGreen + "Game Won! " + resetTextColour + "- Win by checkamte.");
+                    c2Writer.println(setTextRed + "Game Lost! " + resetTextColour + "- Loss by checkmate.");
+
+                    c1Writer.println(endGameTerminator);
+                    c2Writer.println(endGameTerminator);
+
+                    endGame();
                 }
                 
                 c2Writer.println(chessBoard.getBoard(false));
@@ -175,12 +201,14 @@ public class Server
                     
                     if ( move.toLowerCase().equals("quit") )
                     {
-                        System.out.println("Resigning client1...");
-                        c2Writer.println( setTextRed + "You have resigned and therefore lost the game!" + resetTextColour);
-                        c1Writer.println("Opponent has resigned." + setTextGreen + " CONGRATULATIONS! YOU HAVE WON!" + resetTextColour);
-                        c2Writer.println(terminator);
-                        c1Writer.println(terminator);
-                        quitGame();
+                        // client 2 resigns
+                        System.out.println("Resigning client2...");
+                        c2Writer.println( setTextRed + "Game Lost! " + resetTextColour + "- loss by resignation.");
+                        c1Writer.println( setTextGreen + "Game Won! " + resetTextColour + "- win by oponent resignation.");
+
+                        c2Writer.println(endGameTerminator);
+                        c1Writer.println(endGameTerminator);
+                        endGame();
                         break;
                     }
 
@@ -199,8 +227,13 @@ public class Server
                         {
                             if (chessBoard.reverseMove() != 0)
                             {
-                                // ToDo: process that quits the game...
-                                quitGame();
+                                // server failure...
+                                System.err.println("Failed to reverse move... Ending game...");
+                                c1Writer.println(setTextRed + "Server Error! " + resetTextColour + "terminating game...");
+                                c2Writer.println(setTextRed + "Server Error! " + resetTextColour + "terminating game...");
+                                c1Writer.println(endGameTerminator);
+                                c2Writer.println(endGameTerminator);
+                                endGame();
                             }
                             
                             c1Writer.println("Invalid Move!");
@@ -225,8 +258,14 @@ public class Server
                 }
                 else if (putsOppInCheck == 2)
                 {
-                    // ToDo: process that quits the game...
-                    quitGame();
+                    // client 2 wins.
+                    c1Writer.println(setTextGreen + "Game Won! " + resetTextColour + "- Win by checkamte.");
+                    c2Writer.println(setTextRed + "Game Lost! " + resetTextColour + "- Loss by checkmate.");
+
+                    c1Writer.println(endGameTerminator);
+                    c2Writer.println(endGameTerminator);
+
+                    endGame();
                 }
             }
             catch ( IOException err )
