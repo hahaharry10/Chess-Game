@@ -16,7 +16,8 @@ public class Server
     private ChessBoard chessBoard = null;
 
     private int portNumber = 6174;
-    private String terminator = "$$END$$"; // used to mark the end of a transmission.
+    private String terminator = "$$STOP$$"; // used to mark the end of a transmission.
+    private String endGameTerminator = "$$END$$"; // used to mark the game has finished.
 
     // Define ANSI colour codes:
     private String setTextRed = "\u001B[0;31m";

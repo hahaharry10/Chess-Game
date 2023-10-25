@@ -11,9 +11,8 @@ public class Client
     private BufferedReader serverReader = null;
 
     private int portNumber = 6174;
-    private String terminator = "$$END$$";
-    private String winTerminator = "$$WIN$$";
-    private String lossTerminator = "$$LOSS$$";
+    private String terminator = "$$STOP$$"; // terminator marking the end of a transmission.
+    private String endGameTerminator = "$$END$$"; // terminator marking the game has finished.
 
     /**
      * Display the output of the server to the client.
@@ -21,6 +20,7 @@ public class Client
     private void printResponse()
     {
         String row;
+        Boolean gameIsFinished = false;
 
         try
         {
@@ -29,8 +29,18 @@ public class Client
                 row = serverReader.readLine();
                 if (row.equals(terminator))
                     break;
+                else if (row.equals(endGameTerminator))
+                {
+                    gameIsFinished = true;
+                    break;
+                }
                 else
                     System.out.println(row);
+            }
+
+            if (gameIsFinished)
+            {
+                // Proceed to endGame function...
             }
         }
         catch ( IOException err )
