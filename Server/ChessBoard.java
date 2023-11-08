@@ -8,8 +8,8 @@ public class ChessBoard
     private int boardWidth = 10;
 
     final char emptyTile = '·';
-    final char black = 1; // Denoted as an upper case character.
-    final char white = 2; // Denoted as a lower case character
+    final char black = 1; // Denoted as an LOWER case character.
+    final char white = 2; // Denoted as a UPPER case character
     
     // Following vriables relates to the undo move feature:
     char[] prevMovedPieces = {'.', '.'};
@@ -49,7 +49,7 @@ public class ChessBoard
         // The peices will be represented by the starting letter of the piece (i.e. pawn will be shown with a 'P' or 'p').
         // The characters will either be in capital or lower case; capital case represents white, lowercase represents black.
 
-        // place all black pieces onto the board:
+        // place all white pieces onto the board:
         for (int i = 1; i < 9; i++)
             board[2][i] = 'P'; // Pawns
         board[1][1] = 'R'; board[1][8] = 'R'; // Rooks
@@ -58,7 +58,7 @@ public class ChessBoard
         board[1][4] = 'Q'; // Queen
         board[1][5] = 'K'; // King
 
-        // place all white pieces onto the board:
+        // place all black pieces onto the board:
         for (int i = 1; i < 9; i++)
             board[7][i] = 'p'; // Pawns
         board[8][1] = 'r'; board[8][8] = 'r'; // Rooks
@@ -180,9 +180,9 @@ public class ChessBoard
     private int getColourOfPiece(char piece)
     {
         if (Character.isUpperCase(piece))
-            return black;
-        else if (Character.isLowerCase(piece))
             return white;
+        else if (Character.isLowerCase(piece))
+            return black;
         else
             return 0;
     }
@@ -760,7 +760,7 @@ public class ChessBoard
      */
     public int isInCheckOrCheckmate(Boolean forWhite)
     {
-        char king = (forWhite ? 'k' : 'K');
+        char king = (forWhite ? 'K' : 'k');
         
         // get the location of the king:
         String kingsLoc = null;
