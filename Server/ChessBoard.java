@@ -76,29 +76,29 @@ public class ChessBoard
     private char translateCharacter(char chr)
     {
         switch (chr) {
-            case 'P':
-                return '\u265F';
             case 'p':
+                return '\u265F';
+            case 'P':
                 return '\u2659';
-            case 'R':
-                return '\u265C';
             case 'r':
+                return '\u265C';
+            case 'R':
                 return '\u2656';
-            case 'N':
-                return '\u265E';
             case 'n':
+                return '\u265E';
+            case 'N':
                 return '\u2658';
-            case 'B':
-                return '\u265D';
             case 'b':
+                return '\u265D';
+            case 'B':
                 return '\u2657';
-            case 'Q':
-                return '\u265B';
             case 'q':
+                return '\u265B';
+            case 'Q':
                 return '\u2655';
-            case 'K':
-                return '\u265A';
             case 'k':
+                return '\u265A';
+            case 'K':
                 return '\u2654';
             default:
                 return chr;
