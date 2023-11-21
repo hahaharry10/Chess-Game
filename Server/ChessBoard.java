@@ -727,7 +727,7 @@ public class ChessBoard
                 {
                     String locInPath = Character.toString(attacking_x) + Character.toString(attacking_y);
 
-                    // Iterate through all defending pieces and see if they can move into the path:
+                    // Iterate through all tiles on the board, and see if each defending piece can move into the path:
                     for (int row = 1; row < boardWidth-1; row++)
                     {
                         for (int col = 1; col < boardWidth-1; col++)
@@ -736,7 +736,13 @@ public class ChessBoard
                             if (getColourOfPiece(getPieceAtLoc(defending_loc)) == defendingColour)
                             {
                                 if (movePiece(defending_loc, locInPath) == null)
-                                    return true;
+                                {
+                                    makeMove(defending_loc, locInPath);
+                                    if (!isInCheck(forWhite, locInPath))
+                                        return true;
+                                    else
+                                        reverseMove();
+                                }
                             }
                         }
                     }
