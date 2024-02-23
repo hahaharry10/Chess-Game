@@ -833,87 +833,100 @@ public class ChessBoard
         {
             for( int col = 1; col < boardWidth-1; col++)
             {
-                piece = getPieceAtLoc( convertCoords(row, col) );
-                if( piece  != emptyTile )
+                char piece = getPieceAtLoc( convertCoords(row, col) );
+                if( piece != emptyTile )
                 {
+                    String[] neighbours = new String[8];
+                    int length;
                     switch( piece )
                     {
                         //  Lower case = black and moves with increasing  row value.
                         //  Upper case = white and moves with decreasing row value.
+
+                        // Rooks are unidirectional:
                         case 'p':
-                            String[] neighbours = new String[8];
+                            length = 3;
                             neighbours[0] = convertCoords(row - 1, col - 1);
                             neighbours[1] = convertCoords(row - 1, col);
                             neighbours[2] = convertCoords(row - 1, col + 1);
-
-                            for( neighbour : neighbours )
-                            {
-                                if( movePiece(convertCoords(row, col), neighbour) == null )
-                                    return false;
-                            }
                             break;
+
                         case 'P':
-                            String[] neighbours = new String[8];
+                            length = 3;
                             neighbours[0] = convertCoords(row + 1, col - 1);
                             neighbours[1] = convertCoords(row + 1, col);
                             neighbours[2] = convertCoords(row + 1, col + 1);
-
-                            for( neighbour : neighbours )
-                            {
-                                if( movePiece(convertCoords(row, col), neighbour) == null )
-                                    return false;
-                            }
                             break;
 
-                        // Rooks, Knights, Bishops, Queens, Kings have identical movements no matter the colour.
+                        // Rooks, Knights, Bishops, Queens, Kings are bidirectional:
                         case 'r':
                         case 'R':
-                            String[] neigbours = new String[1];
+                            length = 2;
                             neighbours[0] = convertCoords(row - 1, col);
                             neighbours[1] = convertCoords(row + 1, col);
-
-                            for( neighbour : neighbours )
-                            {
-                                if( movePiece(convertCoords(row, col), neighbour) == null ))
-                                    return false;
-                            }
                             break;
 
                         case 'n':
                         case 'N':
-                            String[] neighbours = new String[8];
-                            neighbour[0] = convertcoords(row - 2, col - 1); // up 2 left 1.
-                            neighbour[1] = convertcoords(row - 2, col + 1); // up 2 right 1.
-                            neighbour[2] = convertcoords(row - 1, col + 2); // right 2 up 1.
-                            neighbour[3] = convertcoords(row + 1, col + 2); // right 2 down 1.
-                            neighbour[4] = convertcoords(row + 2, col - 1); // down 2 left 1.
-                            neighbour[5] = convertcoords(row + 2, col + 1); // down 2 right 1.
-                            neighbour[6] = convertCoords(row + 1, col - 2); // right 2 down 1.
-                            neighbour[7] = convertCoords(row - 1, col - 2); // right 2 up 1.
-
-                            for( neighbour : neighbours )
-                            {
-                                if( movePiece(convertCoords(row, col), neighbour) == null ))
-                                    return false;
-                            }
+                            length = 8;
+                            neighbours[0] = convertCoords(row - 2, col - 1); // up 2 left 1.
+                            neighbours[1] = convertCoords(row - 2, col + 1); // up 2 right 1.
+                            neighbours[2] = convertCoords(row - 1, col + 2); // right 2 up 1.
+                            neighbours[3] = convertCoords(row + 1, col + 2); // right 2 down 1.
+                            neighbours[4] = convertCoords(row + 2, col - 1); // down 2 left 1.
+                            neighbours[5] = convertCoords(row + 2, col + 1); // down 2 right 1.
+                            neighbours[6] = convertCoords(row + 1, col - 2); // right 2 down 1.
+                            neighbours[7] = convertCoords(row - 1, col - 2); // right 2 up 1.
                             break;
 
                         case 'b':
+                        case 'B':
+                            length = 4;
+                            neighbours[0] = convertCoords(row - 1, col - 1);
+                            neighbours[1] = convertCoords(row - 1, col + 1);
+                            neighbours[2] = convertCoords(row + 1, col - 1);
+                            neighbours[3] = convertCoords(row + 1, col + 1);
                             break;
-                        case 'b':
-                            break;
+
                         case 'q':
+                        case 'Q':
+                            length = 8;
+                            neighbours[0] = convertCoords(row - 1, col - 1);
+                            neighbours[1] = convertCoords(row - 1, col);
+                            neighbours[2] = convertCoords(row - 1, col + 1);
+                            neighbours[3] = convertCoords(row, col + 1);
+                            neighbours[4] = convertCoords(row, col - 1);
+                            neighbours[5] = convertCoords(row + 1, col - 1);
+                            neighbours[6] = convertCoords(row + 1, col);
+                            neighbours[7] = convertCoords(row + 1, col + 1);
                             break;
-                        case 'q':
-                            break;
+
                         case 'k':
+                        case 'K':
+                            length = 8;
+                            neighbours[0] = convertCoords(row - 1, col - 1);
+                            neighbours[1] = convertCoords(row - 1, col);
+                            neighbours[2] = convertCoords(row - 1, col + 1);
+                            neighbours[3] = convertCoords(row, col + 1);
+                            neighbours[4] = convertCoords(row, col - 1);
+                            neighbours[5] = convertCoords(row + 1, col - 1);
+                            neighbours[6] = convertCoords(row + 1, col);
+                            neighbours[7] = convertCoords(row + 1, col + 1);
                             break;
-                        case 'k':
+                        default:
+                            length = 8;
                             break;
+                    }
+
+                    for( int i = 0; i < length; i++ )
+                    {
+                        if( movePiece(convertCoords(row, col), neighbours[i]) == null )
+                            return false;
                     }
                 }
             }
         }
+        return true;
     }
     /*****************************************************************************************************/
 
@@ -921,7 +934,7 @@ public class ChessBoard
     public static void main(String[] args)
     {
         //
-        // TEST CHECKMATE:
+        // TEST STALEMATE:
         //
         String red = "\u001B[0;31m";
         String green = "\u001B[0;32m";
@@ -931,173 +944,6 @@ public class ChessBoard
         ChessBoard cb = new ChessBoard();
         cb.createNewBoard();
 
-        for (int i = 1; i < 9; i++)
-        {
-            for (int j = 1; j < 9; j++)
-                cb.board[i][j] = cb.emptyTile;
-        }
-
-        // Trapped king:
-        cb.board[5][5] = 'N';
-        cb.board[5][6] = 'p';
-        cb.board[5][7] = 'r';
-        cb.board[5][8] = 'r';
-        cb.board[6][6] = 'r';
-        cb.board[6][7] = 'k';
-        cb.board[6][8] = 'r';
-        cb.board[7][6] = 'r';
-        cb.board[7][7] = 'r';
-        cb.board[7][8] = 'r';
-
-        System.out.println(cb.getBoard(true));
-        System.out.println("checkmate: " + (cb.isInCheckOrCheckmate(false, false) == 2 ? (green + "true" + reset) : (red + "false" + reset)));
-
-        System.out.println("Change f4 pawn to rook...");
-        cb.board[5][6] = 'r';
-        System.out.println("Is in check: " + (cb.isInCheckOrCheckmate(false, false) == 1 ? (green + "true" + reset) : (red + "false" + reset)));
-
-        System.out.println("Swap colours...");
-        for (int i=1;i<cb.boardWidth;i++)
-        {
-            for (int j=1;j<cb.boardWidth;j++)
-            {
-                if(Character.isLowerCase(cb.board[i][j]))
-                    cb.board[i][j]=Character.toUpperCase(cb.board[i][j]);
-                else
-                    cb.board[i][j]=Character.toLowerCase(cb.board[i][j]);
-            }
-        }
-
-        System.out.println("Is in check: " + (cb.isInCheckOrCheckmate(true, false) == 1 ? (green + "true" + reset) : (red + "false" + reset)));
-        System.out.println("Swapping rook back to pawn...");
-        cb.board[5][6] = 'P';
-        System.out.println("checkmate: " + (cb.isInCheckOrCheckmate(true, false) == 2 ? (green + "true" + reset) : (red + "false" + reset)));
-
-        // King can escape:
-        System.out.println("Remove G4...");
-        cb.board[5][7] = cb.emptyTile;
-
-        System.out.println(cb.getBoard(true));
-
-        System.out.println("check: " + (cb.isInCheckOrCheckmate(true, false) == 1 ? (green + "true" + reset) : (red + "false" + reset)));
-        System.out.println("Swap colours...");
-        for (int i=1;i<cb.boardWidth;i++)
-        {
-            for (int j=1;j<cb.boardWidth;j++)
-            {
-                if(Character.isLowerCase(cb.board[i][j]))
-                    cb.board[i][j]=Character.toUpperCase(cb.board[i][j]);
-                else
-                    cb.board[i][j]=Character.toLowerCase(cb.board[i][j]);
-            }
-        }
-        System.out.println("check: " + (cb.isInCheckOrCheckmate(false, false) == 1 ? (green + "true" + reset) : (red + "false" + reset)));
-
-        System.out.println("Add black Bishop to g4...");
-        cb.board[5][7] = 'B';
-        System.out.println(cb.getBoard(true)); // Where the fuck did the king go???????????
-        System.out.println("check: " + (cb.isInCheckOrCheckmate(false, false) == 1 ? (green + "true" + reset) : (red + "false" + reset)));
-        System.out.println("Swap colours...");
-        for (int i=1;i<cb.boardWidth;i++)
-        {
-            for (int j=1;j<cb.boardWidth;j++)
-            {
-                if(Character.isLowerCase(cb.board[i][j]))
-                    cb.board[i][j]=Character.toUpperCase(cb.board[i][j]);
-                else
-                    cb.board[i][j]=Character.toLowerCase(cb.board[i][j]);
-            }
-        }
-        System.out.println("check: " + (cb.isInCheckOrCheckmate(true, false) == 1 ? (green + "true" + reset) : (red + "false" + reset)));
-
-        System.out.println("Move B->e6...");
-        cb.makeMove("g4", "e6");
-        System.out.println("checkmate: " + (cb.isInCheckOrCheckmate(true, false) == 2 ? (green + "true" + reset) : (red + "false" + reset)));
-        System.out.println("Swap colours...");
-        for (int i=1;i<cb.boardWidth;i++)
-        {
-            for (int j=1;j<cb.boardWidth;j++)
-            {
-                if(Character.isLowerCase(cb.board[i][j]))
-                    cb.board[i][j]=Character.toUpperCase(cb.board[i][j]);
-                else
-                    cb.board[i][j]=Character.toLowerCase(cb.board[i][j]);
-            }
-        }
-        System.out.println("checkmate: " + (cb.isInCheckOrCheckmate(false, false) == 2 ? (green + "true" + reset) : (red + "false" + reset)));
-
-
-        System.out.println("Changing Board...");
-        for (int i = 1; i < 9; i++)
-        {
-            for (int j = 1; j < 9; j++)
-                cb.board[i][j] = cb.emptyTile;
-        }
-
-        // Piece cannot block check:
-        cb.board[6][7] = 'B';
-        cb.board[6][8] = 'K';
-        cb.board[7][7] = 'P';
-        cb.board[7][8] = 'P';
-        cb.board[3][5] = 'b';
-        cb.board[5][2] = 'r';
-
-
-        System.out.println(cb.getBoard(true));
-        System.out.println("checkmate: " + (cb.isInCheckOrCheckmate(true, false) == 2 ? (green + "true" + reset) : (red + "false" + reset)));
-        System.out.println("Swap colours...");
-        for (int i=1;i<cb.boardWidth;i++)
-        {
-            for (int j=1;j<cb.boardWidth;j++)
-            {
-                if(Character.isLowerCase(cb.board[i][j]))
-                    cb.board[i][j]=Character.toUpperCase(cb.board[i][j]);
-                else
-                    cb.board[i][j]=Character.toLowerCase(cb.board[i][j]);
-            }
-        }
-        System.out.println("checkmate: " + (cb.isInCheckOrCheckmate(false, false) == 2 ? (green + "true" + reset) : (red + "false" + reset)));
-
-        System.out.println("Swap back colours...");
-        for (int i=1;i<cb.boardWidth;i++)
-        {
-            for (int j=1;j<cb.boardWidth;j++)
-            {
-                if(Character.isLowerCase(cb.board[i][j]))
-                    cb.board[i][j]=Character.toUpperCase(cb.board[i][j]);
-                else
-                    cb.board[i][j]=Character.toLowerCase(cb.board[i][j]);
-            }
-        }
-
-        // Piece can block check:
-        cb.board[6][7] = 'R';
-
-        System.out.println("Change bishop to rook...");
-
-        System.out.println(cb.getBoard(true));
-
-
-        System.out.println("Testing checkCanBeObstructed():" + cb.checkCanBeObstructed(true, "h3"));
-
-
-
-        int checkOrCheckmate = cb.isInCheckOrCheckmate(true, false);
-        System.out.println("Is in check: " + (checkOrCheckmate == 1 ? (green + "true" + reset) : (red + "false" + reset)) + "(" + checkOrCheckmate + ")");
-
-        System.out.println("Swap colours...");
-        for (int i=1;i<cb.boardWidth;i++)
-        {
-            for (int j=1;j<cb.boardWidth;j++)
-            {
-                if(Character.isLowerCase(cb.board[i][j]))
-                    cb.board[i][j]=Character.toUpperCase(cb.board[i][j]);
-                else
-                    cb.board[i][j]=Character.toLowerCase(cb.board[i][j]);
-            }
-        }
-
-        checkOrCheckmate = cb.isInCheckOrCheckmate(false, false);
-        System.out.println("Is in check: " + (checkOrCheckmate == 1 ? (green + "true" + reset) : (red + "false" + reset)) + "(" + checkOrCheckmate + ")");
+        System.out.println(cb.stalemate());
     }
 }
