@@ -733,8 +733,6 @@ public class ChessBoard
                 {
                     String locInPath = Character.toString(attacking_x) + Character.toString(attacking_y);
 
-//                    System.out.println("\t testing " + locInPath);
-
                     // Iterate through all tiles on the board, and see if each defending piece can move into the path:
                     for (int row = 1; row < boardWidth-1; row++)
                     {
@@ -743,12 +741,9 @@ public class ChessBoard
                             String defending_loc = convertCoords(row, col);
                             if (getColourOfPiece(getPieceAtLoc(defending_loc)) == defendingColour && Character.toLowerCase(getPieceAtLoc(defending_loc)) != 'k')
                             {
-//                                System.out.println("\t\tcan " + defending_loc + " defend: " + (movePiece(defending_loc, locInPath) == null));
                                 if (movePiece(defending_loc, locInPath) == null)
                                 {
                                     makeMove(defending_loc, locInPath);
-//                                    System.out.println(getBoard(true));
-//                                    System.out.println("\t\t\tIs in check: " + isInCheck(forWhite, kingsLoc));
 
                                     if (!isInCheck(forWhite, kingsLoc))
                                     {
@@ -824,6 +819,102 @@ public class ChessBoard
             return 2;
     }
     
+    /*****************************************************************************************************/
+
+
+    /*****************************************************************************************************/
+    /* The followig functions are to do with checking for Draws (including Stalemate):                   */
+    /*****************************************************************************************************/
+    public Boolean stalemate()
+    {
+        // Iterate through all the pieces and check that they can be move.
+        // The algorithm will only test moves directly accessible to each piece.
+        for( int row = 1; row < boardWidth-1; row++)
+        {
+            for( int col = 1; col < boardWidth-1; col++)
+            {
+                piece = getPieceAtLoc( convertCoords(row, col) );
+                if( piece  != emptyTile )
+                {
+                    switch( piece )
+                    {
+                        //  Lower case = black and moves with increasing  row value.
+                        //  Upper case = white and moves with decreasing row value.
+                        case 'p':
+                            String[] neighbours = new String[8];
+                            neighbours[0] = convertCoords(row - 1, col - 1);
+                            neighbours[1] = convertCoords(row - 1, col);
+                            neighbours[2] = convertCoords(row - 1, col + 1);
+
+                            for( neighbour : neighbours )
+                            {
+                                if( movePiece(convertCoords(row, col), neighbour) == null )
+                                    return false;
+                            }
+                            break;
+                        case 'P':
+                            String[] neighbours = new String[8];
+                            neighbours[0] = convertCoords(row + 1, col - 1);
+                            neighbours[1] = convertCoords(row + 1, col);
+                            neighbours[2] = convertCoords(row + 1, col + 1);
+
+                            for( neighbour : neighbours )
+                            {
+                                if( movePiece(convertCoords(row, col), neighbour) == null )
+                                    return false;
+                            }
+                            break;
+
+                        // Rooks, Knights, Bishops, Queens, Kings have identical movements no matter the colour.
+                        case 'r':
+                        case 'R':
+                            String[] neigbours = new String[1];
+                            neighbours[0] = convertCoords(row - 1, col);
+                            neighbours[1] = convertCoords(row + 1, col);
+
+                            for( neighbour : neighbours )
+                            {
+                                if( movePiece(convertCoords(row, col), neighbour) == null ))
+                                    return false;
+                            }
+                            break;
+
+                        case 'n':
+                        case 'N':
+                            String[] neighbours = new String[8];
+                            neighbour[0] = convertcoords(row - 2, col - 1); // up 2 left 1.
+                            neighbour[1] = convertcoords(row - 2, col + 1); // up 2 right 1.
+                            neighbour[2] = convertcoords(row - 1, col + 2); // right 2 up 1.
+                            neighbour[3] = convertcoords(row + 1, col + 2); // right 2 down 1.
+                            neighbour[4] = convertcoords(row + 2, col - 1); // down 2 left 1.
+                            neighbour[5] = convertcoords(row + 2, col + 1); // down 2 right 1.
+                            neighbour[6] = convertCoords(row + 1, col - 2); // right 2 down 1.
+                            neighbour[7] = convertCoords(row - 1, col - 2); // right 2 up 1.
+
+                            for( neighbour : neighbours )
+                            {
+                                if( movePiece(convertCoords(row, col), neighbour) == null ))
+                                    return false;
+                            }
+                            break;
+
+                        case 'b':
+                            break;
+                        case 'b':
+                            break;
+                        case 'q':
+                            break;
+                        case 'q':
+                            break;
+                        case 'k':
+                            break;
+                        case 'k':
+                            break;
+                    }
+                }
+            }
+        }
+    }
     /*****************************************************************************************************/
 
 
