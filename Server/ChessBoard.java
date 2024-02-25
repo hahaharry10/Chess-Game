@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.*;
+import java.lang.Exception;
 
 public class ChessBoard
 {
@@ -825,8 +826,27 @@ public class ChessBoard
     /*****************************************************************************************************/
     /* The followig functions are to do with checking for Draws (including Stalemate):                   */
     /*****************************************************************************************************/
-    public Boolean stalemate()
+
+    /**
+     * test whether the game is in a stalemate.
+     * @param whitesTurn boolean, the player we are checking is able to move.
+     * @return boolean, true if stalemate is present. False otherwise.
+     */
+    public Boolean stalemate(Boolean whitesTurn) 
     {
+        // This will be seen as inefficient but a key part of a player being in
+        // stalemate is the fact they are not in check or checkmate:
+        try {
+            if( isInCheckOrCheckmate(true, false) != 0 )
+            {
+                throw new Exception();
+            }
+        } catch ( Exception e ) {
+            String errorMessage = "Stalemate check called when " + ( whitesTurn ? "white" : "black" ) + " is in check/checkmate";
+            System.err.println(errorMessage);
+            System.exit(1);
+        }
+
         // Iterate through all the pieces and check that they can be move.
         // The algorithm will only test moves directly accessible to each piece.
         for( int row = 1; row < boardWidth-1; row++)
@@ -943,7 +963,22 @@ public class ChessBoard
 
         ChessBoard cb = new ChessBoard();
         cb.createNewBoard();
+        
+        for( int i = 1; i < cb.boardWidth - 1; i++)
+        {
+            for( int j = 1; j < cb.boardWidth - 1; j++ )
+                cb.board[i][j] = cb.emptyTile;
+        }
 
-        System.out.println(cb.stalemate());
+        // Set the board such that white is to play and it is stalemate:
+        for( int col = 1; col < cb.boardWidth - 1; col = col+2 )
+        {
+            cb.board[5][col] = 'P';
+            cb.board[4][col] = 'p';
+        }
+
+        // Create a stalemate board with all the pieces being unable to move:
+        System.out.println(cb.getBoard(true));
+        System.out.println(cb.stalemate(true));
     }
 }
