@@ -9,8 +9,8 @@ public class ChessBoard
     private int boardWidth = 10;
 
     final char emptyTile = '·';
-    final char black = 1; // Denoted as an LOWER case character.
-    final char white = 2; // Denoted as a UPPER case character
+    final int  black = 1; // Denoted as an UPPER case character.
+    final int  white = 2; // Denoted as a LOWER  case character
     
     // Following vriables relates to the undo move feature:
     char[] prevMovedPieces = {'.', '.'};
@@ -778,7 +778,9 @@ public class ChessBoard
     public int isInCheckOrCheckmate(Boolean forWhite, Boolean verbose)
     {
         char king = (forWhite ? 'K' : 'k');
-        
+        if( verbose )
+            System.out.println("Searching for: " + king);
+
         // get the location of the king:
         String kingsLoc = null;
         for (int row = 1; row < boardWidth; row++)
@@ -837,15 +839,17 @@ public class ChessBoard
         // This will be seen as inefficient but a key part of a player being in
         // stalemate is the fact they are not in check or checkmate:
         try {
-            if( isInCheckOrCheckmate(true, false) != 0 )
+            if( isInCheckOrCheckmate(whitesTurn, true) != 0 )
             {
                 throw new Exception();
             }
         } catch ( Exception e ) {
-            String errorMessage = "Stalemate check called when " + ( whitesTurn ? "white" : "black" ) + " is in check/checkmate";
+            String errorMessage = "ERROR: Stalemate check called when " + ( whitesTurn ? "white" : "black" ) + " is in check/checkmate";
             System.err.println(errorMessage);
             System.exit(1);
         }
+
+        int attackingColour = ( whitesTurn ? black : white );
 
         // Iterate through all the pieces and check that they can be move.
         // The algorithm will only test moves directly accessible to each piece.
@@ -864,14 +868,14 @@ public class ChessBoard
                         //  Upper case = white and moves with decreasing row value.
 
                         // Rooks are unidirectional:
-                        case 'p':
+                        case 'P':
                             length = 3;
                             neighbours[0] = convertCoords(row - 1, col - 1);
                             neighbours[1] = convertCoords(row - 1, col);
                             neighbours[2] = convertCoords(row - 1, col + 1);
                             break;
 
-                        case 'P':
+                        case 'p':
                             length = 3;
                             neighbours[0] = convertCoords(row + 1, col - 1);
                             neighbours[1] = convertCoords(row + 1, col);
@@ -940,8 +944,21 @@ public class ChessBoard
 
                     for( int i = 0; i < length; i++ )
                     {
-                        if( movePiece(convertCoords(row, col), neighbours[i]) == null )
-                            return false;
+                        int pieceColour = getColourOfPiece(getPieceAtLoc(convertCoords(row, col)));
+                        if( pieceColour != attackingColour )
+                        {
+                            if( movePiece(convertCoords(row, col), neighbours[i]) == null )
+                            {
+                                if( isInCheckOrCheckmate(whitesTurn, false) != 0 )
+                                {
+                                    System.out.println("valid move: " + convertCoords(row, col) + " -> " + neighbours[i]);
+                                    reverseMove();
+                                    return false;
+                                }
+                                else
+                                    reverseMove();
+                            }
+                        }
                     }
                 }
             }
@@ -973,9 +990,19 @@ public class ChessBoard
         // Set the board such that white is to play and it is stalemate:
         for( int col = 1; col < cb.boardWidth - 1; col = col+2 )
         {
-            cb.board[5][col] = 'P';
-            cb.board[4][col] = 'p';
+            cb.board[5][col] = 'p';
+            cb.board[4][col] = 'P';
         }
+
+        cb.board[1][2] = 'r';
+        cb.board[1][4] = 'r';
+        cb.board[3][1] = 'b';
+        cb.board[1][5] = 'b';
+
+        // Place Black king:
+        cb.board[2][3] = 'K';
+        System.out.println("k = " + cb.translateCharacter('k'));
+        System.out.println("K = " + cb.translateCharacter('K'));
 
         // Create a stalemate board with all the pieces being unable to move:
         System.out.println(cb.getBoard(true));
