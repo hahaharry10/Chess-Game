@@ -80,29 +80,29 @@ public class ChessBoard {
      */
     private char translateCharacter(char chr) {
         switch (chr) {
-            case 'P':
-                return '\u265F'; // Black pawn.
             case 'p':
+                return '\u265F'; // Black pawn.
+            case 'P':
                 return '\u2659'; // White pawn.
-            case 'R':
-                return '\u265C'; // Black rook.
             case 'r':
+                return '\u265C'; // Black rook.
+            case 'R':
                 return '\u2656'; // White rook.
-            case 'N':
-                return '\u265E'; // Black knight.
             case 'n':
+                return '\u265E'; // Black knight.
+            case 'N':
                 return '\u2658'; // White knight.
-            case 'B':
-                return '\u265D'; // Black bishop.
             case 'b':
+                return '\u265D'; // Black bishop.
+            case 'B':
                 return '\u2657'; // White bishop.
-            case 'Q':
-                return '\u265B'; // Black queen.
             case 'q':
+                return '\u265B'; // Black queen.
+            case 'Q':
                 return '\u2655'; // White queen.
-            case 'K':
-                return '\u265A'; // Black king.
             case 'k':
+                return '\u265A'; // Black king.
+            case 'K':
                 return '\u2654'; // White king.
             default:
                 return chr;
@@ -1035,7 +1035,7 @@ public class ChessBoard {
         rows[5] = "4········4";
         rows[6] = "3········3";
         rows[7] = "2RRRRRRRR2";
-        rows[8] = "8RNBQKBNR8";
+        rows[8] = "1RNBQKBNR1";
         rows[9] = " abcdefgh ";
 
         char[][] expectedBoard = new char[10][10];
@@ -1049,7 +1049,7 @@ public class ChessBoard {
         for( int i = 0; i < 10; i++ ) {
             for( int j = 0; j < 10; j++ ) {
                 if( cb.board[i][j] != expectedBoard[i][j] ) {
-                    System.err.printf("%sFAIL:%s Incorrect board initialisation.\n", red, reset);
+                    System.out.printf("%sFAIL:%s Incorrect board initialisation.\n", red, reset);
                     errorCount++;
                     // Output Boards:
                     System.out.println("EXPECTED:\t\tACTUAL:");
@@ -1114,7 +1114,7 @@ public class ChessBoard {
         if( errorCount == 0 ) {
             System.out.printf("translateCharacter: %sPASSED%s all %d tests.\n", green, reset, totalTests);
         } else {
-            System.out.printf("createNewBoard: %sFAILED%s %d of %d tests.\n", red, reset, errorCount, totalTests);
+            System.out.printf("translateCharacter: %sFAILED%s %d of %d tests.\n", red, reset, errorCount, totalTests);
         }
     }
 
@@ -1124,38 +1124,41 @@ public class ChessBoard {
         String green = "\u001B[0;32m";
         String reset = "\u001B[0m";
 
-        int totalTests = 5;
+        int totalTests = 6;
         int errorCount = 0;
 
         ChessBoard cb = new ChessBoard();
+        String[] rows = new String[10];
         int rw = 20; // Row Width
+        String expected;
+        String actual;
 
         // TEST: Board with no pieces (white perspective):
-        String[] rows = new String[10];
-        //expectedChars[0] = '\u2654';  expectedChars[1] = '\u2655';
-        //expectedChars[2] = '\u2656';  expectedChars[3] = '\u2657';
-        //expectedChars[4] = '\u2658';  expectedChars[5] = '\u2659';
-        //expectedChars[6] = '\u265A';  expectedChars[7] = '\u265B';
-        //expectedChars[8] = '\u265C';  expectedChars[9] = '\u265D';
-        //expectedChars[10] = '\u265E'; expectedChars[11] = '\u265F';
+        //
+        // WHITE KING   = '\u2654';                     WHITE QUEEN  = '\u2655';
+        // WHITE ROOK   = '\u2656';                     WHITE BISHOP = '\u2657';
+        // WHITE KNIGHT = '\u2658';                     WHITE PAWN   = '\u2659';
+        //
+        // BLACK KING   = '\u265A';                     BLACK QUEEN  = '\u265B';
+        // BLACK ROOK   = '\u265C';                     BLACK BISHOP = '\u265D';
+        // BLACK KNIGHT = '\u265E';                     BLACK PAWN   = '\u265F';
         rows[0] = " abcdefgh ";
-        rows[1] = "8rnbqkbnr8";
-        rows[2] = "7rrrrrrrr7";
+        rows[1] = "8········8";
+        rows[2] = "7········7";
         rows[3] = "6········6";
         rows[4] = "5········5";
         rows[5] = "4········4";
         rows[6] = "3········3";
-        rows[7] = "2RRRRRRRR2";
-        rows[8] = "1RNBQKBNR1";
+        rows[7] = "2········2";
+        rows[8] = "1········1";
         rows[9] = " abcdefgh ";
-
         for( int i = 0; i < 10; i++ ) {
             for( int j = 0; j < 10; j++ ) {
                 cb.board[i][j] = rows[i].charAt(j);
             }
         }
 
-        String expected = "";
+        expected = "";
         for( int i = 0; i < 10; i++ ) {
             for( int j = 0; j < 10; j++ ) {
                 expected += rows[i].charAt(j);
@@ -1163,11 +1166,263 @@ public class ChessBoard {
                 else { expected += "\n"; }
             }
         }
-        String actual = cb.getBoard(true);
+        actual = cb.getBoard(true);
 
         for( int i = 0; i < 10*10; i++ ) {
             if( expected.charAt(i) != actual.charAt(i) ) {
-                System.err.printf("%sFAIL:%s Incorrect output of empty board.\n", red, reset);
+                errorCount++;
+                System.out.print("\n");
+                System.out.printf("%sFAIL:%s Incorrect output of empty board (white perspective).\n", red, reset);
+                System.out.println("Expected:\t\tActual:");
+                for( int c = 0; c < 10; c++ ) {
+                    System.out.print(expected.substring(c*rw, (c*rw)+rw-1)); // Ignore new line.
+                    System.out.print("\t\t");
+                    System.out.print(actual.substring(c*rw, (c*rw)+rw));
+                }
+                break;
+            }
+        } 
+
+        // TEST: Board with no pieces (black perspective):
+        //
+        // WHITE KING   = '\u2654';                     WHITE QUEEN  = '\u2655';
+        // WHITE ROOK   = '\u2656';                     WHITE BISHOP = '\u2657';
+        // WHITE KNIGHT = '\u2658';                     WHITE PAWN   = '\u2659';
+        //
+        // BLACK KING   = '\u265A';                     BLACK QUEEN  = '\u265B';
+        // BLACK ROOK   = '\u265C';                     BLACK BISHOP = '\u265D';
+        // BLACK KNIGHT = '\u265E';                     BLACK PAWN   = '\u265F';
+        rows[0] = " hgfedcba ";
+        rows[1] = "1········1";
+        rows[2] = "2········2";
+        rows[3] = "3········3";
+        rows[4] = "4········4";
+        rows[5] = "5········5";
+        rows[6] = "6········6";
+        rows[7] = "7········7";
+        rows[8] = "8········8";
+        rows[9] = " hgfedcba ";
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                cb.board[i][j] = rows[i].charAt(j);
+            }
+        }
+
+        expected = "";
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                expected += rows[i].charAt(j);
+                if( j != 9 ) { expected += " "; }
+                else { expected += "\n"; }
+            }
+        }
+        actual = cb.getBoard(true);
+
+        for( int i = 0; i < 10*10; i++ ) {
+            if( expected.charAt(i) != actual.charAt(i) ) {
+                errorCount++;
+                System.out.print("\n");
+                System.out.printf("%sFAIL:%s Incorrect output of empty board (black perspective).\n", red, reset);
+                System.out.println("Expected:\t\tActual:");
+                for( int c = 0; c < 10; c++ ) {
+                    System.out.print(expected.substring(c*rw, (c*rw)+rw-1)); // Ignore new line.
+                    System.out.print("\t\t");
+                    System.out.print(actual.substring(c*rw, (c*rw)+rw));
+                }
+                break;
+            }
+        } 
+
+        // TEST: Starting board from white perspective:
+        //
+        // WHITE KING   = '\u2654';                     WHITE QUEEN  = '\u2655';
+        // WHITE ROOK   = '\u2656';                     WHITE BISHOP = '\u2657';
+        // WHITE KNIGHT = '\u2658';                     WHITE PAWN   = '\u2659';
+        //
+        // BLACK KING   = '\u265A';                     BLACK QUEEN  = '\u265B';
+        // BLACK ROOK   = '\u265C';                     BLACK BISHOP = '\u265D';
+        // BLACK KNIGHT = '\u265E';                     BLACK PAWN   = '\u265F';
+        rows[0] = " abcdefgh ";
+        rows[1] = "8\u265C\u265E\u265D\u265B\u265A\u265D\u265E\u265C8";
+        rows[2] = "7\u265F\u265F\u265F\u265F\u265F\u265F\u265F\u265F7";
+        rows[3] = "6········6";
+        rows[4] = "5········5";
+        rows[5] = "4········4";
+        rows[6] = "3········3";
+        rows[7] = "2\u2659\u2659\u2659\u2659\u2659\u2659\u2659\u26592";
+        rows[8] = "1\u2656\u2658\u2657\u2655\u2654\u2657\u2658\u26561";
+        rows[9] = " abcdefgh ";
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                cb.board[i][j] = rows[i].charAt(j);
+            }
+        }
+
+        expected = "";
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                expected += rows[i].charAt(j);
+                if( j != 9 ) { expected += " "; }
+                else { expected += "\n"; }
+            }
+        }
+        actual = cb.getBoard(true);
+
+        for( int i = 0; i < 10*10; i++ ) {
+            if( expected.charAt(i) != actual.charAt(i) ) {
+                errorCount++;
+                System.out.print("\n");
+                System.out.printf("%sFAIL:%s Incorrect output of starting board (white perspective).\n", red, reset);
+                System.out.println("Expected:\t\tActual:");
+                for( int c = 0; c < 10; c++ ) {
+                    System.out.print(expected.substring(c*rw, (c*rw)+rw-1)); // Ignore new line.
+                    System.out.print("\t\t");
+                    System.out.print(actual.substring(c*rw, (c*rw)+rw));
+                }
+                break;
+            }
+        } 
+
+        // TEST: Starting board black perspective:
+        //
+        // WHITE KING   = '\u2654';                     WHITE QUEEN  = '\u2655';
+        // WHITE ROOK   = '\u2656';                     WHITE BISHOP = '\u2657';
+        // WHITE KNIGHT = '\u2658';                     WHITE PAWN   = '\u2659';
+        //
+        // BLACK KING   = '\u265A';                     BLACK QUEEN  = '\u265B';
+        // BLACK ROOK   = '\u265C';                     BLACK BISHOP = '\u265D';
+        // BLACK KNIGHT = '\u265E';                     BLACK PAWN   = '\u265F';
+        rows[0] = " hgfedcba ";
+        rows[1] = "1\u2656\u2658\u2657\u2655\u2654\u2657\u2658\u26561";
+        rows[2] = "2\u2659\u2659\u2659\u2659\u2659\u2659\u2659\u26592";
+        rows[3] = "3········3";
+        rows[4] = "4········4";
+        rows[5] = "5········5";
+        rows[6] = "6········6";
+        rows[7] = "7\u265F\u265F\u265F\u265F\u265F\u265F\u265F\u265F7";
+        rows[8] = "8\u265C\u265E\u265D\u265B\u265A\u265D\u265E\u265C8";
+        rows[9] = " hgfedcba ";
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                cb.board[i][j] = rows[i].charAt(j);
+            }
+        }
+
+        expected = "";
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                expected += rows[i].charAt(j);
+                if( j != 9 ) { expected += " "; }
+                else { expected += "\n"; }
+            }
+        }
+        actual = cb.getBoard(true);
+
+        for( int i = 0; i < 10*10; i++ ) {
+            if( expected.charAt(i) != actual.charAt(i) ) {
+                errorCount++;
+                System.out.print("\n");
+                System.out.printf("%sFAIL:%s Incorrect output of starting board (black perspective).\n", red, reset);
+                System.out.println("Expected:\t\tActual:");
+                for( int c = 0; c < 10; c++ ) {
+                    System.out.print(expected.substring(c*rw, (c*rw)+rw-1)); // Ignore new line.
+                    System.out.print("\t\t");
+                    System.out.print(actual.substring(c*rw, (c*rw)+rw));
+                }
+                break;
+            }
+        } 
+
+        // TEST: Board with every tile containing a piece from white perspective:
+        //
+        // WHITE KING   = '\u2654';                     WHITE QUEEN  = '\u2655';
+        // WHITE ROOK   = '\u2656';                     WHITE BISHOP = '\u2657';
+        // WHITE KNIGHT = '\u2658';                     WHITE PAWN   = '\u2659';
+        //
+        // BLACK KING   = '\u265A';                     BLACK QUEEN  = '\u265B';
+        // BLACK ROOK   = '\u265C';                     BLACK BISHOP = '\u265D';
+        // BLACK KNIGHT = '\u265E';                     BLACK PAWN   = '\u265F';
+        rows[0] = " abcdefgh ";
+        rows[1] = "8\u265C\u265E\u265D\u265B\u265A\u265D\u265E\u265C8";
+        rows[2] = "7\u265F\u265F\u265F\u265F\u265F\u265F\u265F\u265F7";
+        rows[3] = "6\u2659\u265F\u2659\u265F\u2659\u265F\u2659\u265F6";
+        rows[4] = "5\u265F\u2659\u265F\u2659\u265F\u2659\u265F\u26595";
+        rows[5] = "4\u2659\u265F\u2659\u265F\u2659\u265F\u2659\u265F4";
+        rows[6] = "3\u265F\u2659\u265F\u2659\u265F\u2659\u265F\u26593";
+        rows[7] = "2\u2659\u2659\u2659\u2659\u2659\u2659\u2659\u26592";
+        rows[8] = "1\u2656\u2658\u2657\u2655\u2654\u2657\u2658\u26561";
+        rows[9] = " abcdefgh ";
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                cb.board[i][j] = rows[i].charAt(j);
+            }
+        }
+
+        expected = "";
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                expected += rows[i].charAt(j);
+                if( j != 9 ) { expected += " "; }
+                else { expected += "\n"; }
+            }
+        }
+        actual = cb.getBoard(true);
+
+        for( int i = 0; i < 10*10; i++ ) {
+            if( expected.charAt(i) != actual.charAt(i) ) {
+                errorCount++;
+                System.out.print("\n");
+                System.out.printf("%sFAIL:%s Incorrect output of board containing a piece on every tile (white perspective).\n", red, reset);
+                System.out.println("Expected:\t\tActual:");
+                for( int c = 0; c < 10; c++ ) {
+                    System.out.print(expected.substring(c*rw, (c*rw)+rw-1)); // Ignore new line.
+                    System.out.print("\t\t");
+                    System.out.print(actual.substring(c*rw, (c*rw)+rw));
+                }
+                break;
+            }
+        } 
+
+        // TEST: Board with every tile containing a piece from black perspective:
+        //
+        // WHITE KING   = '\u2654';                     WHITE QUEEN  = '\u2655';
+        // WHITE ROOK   = '\u2656';                     WHITE BISHOP = '\u2657';
+        // WHITE KNIGHT = '\u2658';                     WHITE PAWN   = '\u2659';
+        //
+        // BLACK KING   = '\u265A';                     BLACK QUEEN  = '\u265B';
+        // BLACK ROOK   = '\u265C';                     BLACK BISHOP = '\u265D';
+        // BLACK KNIGHT = '\u265E';                     BLACK PAWN   = '\u265F';
+        rows[0] = " hgfedcba ";
+        rows[1] = "1\u2656\u2658\u2657\u2655\u2654\u2657\u2658\u26561";
+        rows[2] = "2\u2659\u2659\u2659\u2659\u2659\u2659\u2659\u26592";
+        rows[3] = "3\u265F\u2659\u265F\u2659\u265F\u2659\u265F\u26593";
+        rows[4] = "4\u2659\u265F\u2659\u265F\u2659\u265F\u2659\u265F4";
+        rows[5] = "5\u265F\u2659\u265F\u2659\u265F\u2659\u265F\u26595";
+        rows[6] = "6\u2659\u265F\u2659\u265F\u2659\u265F\u2659\u265F6";
+        rows[7] = "7\u265F\u265F\u265F\u265F\u265F\u265F\u265F\u265F7";
+        rows[8] = "8\u265C\u265E\u265D\u265B\u265A\u265D\u265E\u265C8";
+        rows[9] = " hgfedcba ";
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                cb.board[i][j] = rows[i].charAt(j);
+            }
+        }
+
+        expected = "";
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                expected += rows[i].charAt(j);
+                if( j != 9 ) { expected += " "; }
+                else { expected += "\n"; }
+            }
+        }
+        actual = cb.getBoard(true);
+
+        for( int i = 0; i < 10*10; i++ ) {
+            if( expected.charAt(i) != actual.charAt(i) ) {
+                errorCount++;
+                System.out.print("\n");
+                System.out.printf("%sFAIL:%s Incorrect output of board containing a piece on every tile (black perspective).\n", red, reset);
                 System.out.println("Expected:\t\tActual:");
                 for( int c = 0; c < 10; c++ ) {
                     System.out.print(expected.substring(c*rw, (c*rw)+rw-1)); // Ignore new line.
@@ -1179,13 +1434,12 @@ public class ChessBoard {
         } 
 
 
-        // TEST: Starting board from white perspective:
-
-        // TEST: Starting board black perspective:
-
-        // TEST: Board with every tile containing a piece from white perspective:
-
-        // TEST: Board with every tile containing a piece from black perspective:
+        System.out.print("\n");
+        if( errorCount == 0 ) {
+            System.out.printf("getBoard: %sPASSED%s all %d tests.\n", green, reset, totalTests);
+        } else {
+            System.out.printf("getBoard: %sFAILED%s %d of %d tests.\n", red, reset, errorCount, totalTests);
+        }
     }
 
     /*****************************************************************************************************/
