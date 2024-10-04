@@ -80,29 +80,29 @@ public class ChessBoard {
      */
     private char translateCharacter(char chr) {
         switch (chr) {
-            case 'p':
-                return '\u265F'; // Black pawn.
             case 'P':
+                return '\u265F'; // Black pawn.
+            case 'p':
                 return '\u2659'; // White pawn.
-            case 'r':
-                return '\u265C'; // Black rook.
             case 'R':
+                return '\u265C'; // Black rook.
+            case 'r':
                 return '\u2656'; // White rook.
-            case 'n':
-                return '\u265E'; // Black knight.
             case 'N':
+                return '\u265E'; // Black knight.
+            case 'n':
                 return '\u2658'; // White knight.
-            case 'b':
-                return '\u265D'; // Black bishop.
             case 'B':
+                return '\u265D'; // Black bishop.
+            case 'b':
                 return '\u2657'; // White bishop.
-            case 'q':
-                return '\u265B'; // Black queen.
             case 'Q':
+                return '\u265B'; // Black queen.
+            case 'q':
                 return '\u2655'; // White queen.
-            case 'k':
-                return '\u265A'; // Black king.
             case 'K':
+                return '\u265A'; // Black king.
+            case 'k':
                 return '\u2654'; // White king.
             default:
                 return chr;
@@ -263,6 +263,7 @@ public class ChessBoard {
                 return "Invalid Move: cannot move piece in that location.";
         }
 
+        makeMove(current_loc, new_loc);
         return null;
     }
 
@@ -738,8 +739,6 @@ public class ChessBoard {
                             if (getColourOfPiece(getPieceAtLoc(defending_loc)) == defendingColour
                                     && Character.toLowerCase(getPieceAtLoc(defending_loc)) != 'k') {
                                 if (movePiece(defending_loc, locInPath) == null) {
-                                    makeMove(defending_loc, locInPath);
-
                                     if (!isInCheck(forWhite, kingsLoc)) {
                                         reverseMove();
                                         return true;
@@ -831,9 +830,9 @@ public class ChessBoard {
      * test whether the game is in a stalemate.
      * 
      * @param whitesTurn boolean, the player we are checking is able to move.
-     * @return boolean, true if stalemate is present. False otherwise.
+     * @return int, 0 = No Stalemate, 1 = Stalemate, >1 = Error.
      */
-    public Boolean stalemate(Boolean whitesTurn) {
+    public int stalemate(Boolean whitesTurn, Boolean verbose) {
         // This will be seen as inefficient but a key part of a player being in
         // stalemate is the fact they are not in check or checkmate:
         try {
@@ -841,39 +840,60 @@ public class ChessBoard {
                 throw new Exception();
             }
         } catch (Exception e) {
+            int returnVal = isInCheckOrCheckmate(whitesTurn, false);
+            System.out.printf("ERROR: stalemate() method. ");
+            if( returnVal == 0 ) { System.out.println("Exception incorrectly called."); }
+            else if( returnVal == 1 ) { System.out.printf("%s already in check.\n", (whitesTurn ? "White" : "Black")); }
+            else if( returnVal == 2 ) { System.out.printf("%s already in checkmate.\n", (whitesTurn ? "White" : "Black")); }
+            else { System.out.printf("isInCheckOrCheckmate() returns Error (code %d).\n", returnVal); }
+            
             String errorMessage = "ERROR: Stalemate check called when " + (whitesTurn ? "white" : "black")
                     + " is in check/checkmate";
             System.err.println(errorMessage);
-            System.exit(1);
+            return 2;
         }
 
         int whosTurn = (whitesTurn ? white : black);
+        Boolean pieceDetected = false;
+
+        if( verbose ) {
+            System.out.printf("whosTurn = %d (%s)\n", whosTurn, ((whosTurn == white) ? "White" : "Black"));
+        }
 
         // Iterate through all the pieces and check that they can be move.
         // The algorithm will only test moves directly accessible to each piece.
         for (int row = 1; row < boardWidth - 1; row++) {
             for (int col = 1; col < boardWidth - 1; col++) {
                 char piece = getPieceAtLoc(convertCoords(row, col)); // Get the piece.
-                if (piece != emptyTile) {
+                if (getColourOfPiece(piece) == whosTurn) {
+                    if( verbose ) {
+                        System.out.printf("Piece: %c\n", piece);
+                        System.out.printf(
+                            "\tPiece Colour (%d) == whosTurn (%d)\n",
+                            getColourOfPiece(piece),
+                            whosTurn
+                        );
+                    }
+                    pieceDetected = true;
                     String[] neighbours = new String[8];
                     int length;
                     switch (piece) {
                         // Lower case = black and moves with increasing row value.
                         // Upper case = white and moves with decreasing row value.
 
-                        // Rooks are unidirectional:
+                        // pawns are unidirectional:
                         case 'P':
-                            length = 3;
-                            neighbours[0] = convertCoords(row - 1, col - 1);
-                            neighbours[1] = convertCoords(row - 1, col);
-                            neighbours[2] = convertCoords(row - 1, col + 1);
-                            break;
-
-                        case 'p':
                             length = 3;
                             neighbours[0] = convertCoords(row + 1, col - 1);
                             neighbours[1] = convertCoords(row + 1, col);
                             neighbours[2] = convertCoords(row + 1, col + 1);
+                            break;
+
+                        case 'p':
+                            length = 3;
+                            neighbours[0] = convertCoords(row - 1, col - 1);
+                            neighbours[1] = convertCoords(row - 1, col);
+                            neighbours[2] = convertCoords(row - 1, col + 1);
                             break;
 
                         // Rooks, Knights, Bishops, Queens, Kings are bidirectional:
@@ -934,38 +954,249 @@ public class ChessBoard {
                             neighbours[7] = convertCoords(row + 1, col + 1);
                             break;
                         default:
-                            length = 8;
+                            length = 0;
                             break;
                     }
 
+                    if( length == 0 ) {
+                        System.err.println("length = 0");
+                        return 2;
+                    }
+
+                    if( verbose ) {
+                        System.out.printf("\tlength = %d\n", length);
+                    }
+
                     for (int i = 0; i < length; i++) {
-                        int pieceColour = getColourOfPiece(getPieceAtLoc(convertCoords(row, col)));
-                        if (pieceColour == whosTurn) {
-                            // Output: testing [currentPieceCoords] -> [neighbourCoords] \t\t
-                            // [pieceColour]==[neighbourColour]
-                            System.out.println("testing " + convertCoords(row, col) + " -> " + neighbours[i] + "\t\t"
-                                    + pieceColour + "==" + getColourOfPiece(getPieceAtLoc(neighbours[i])));
-                            if (movePiece(convertCoords(row, col), neighbours[i]) == null) {
+                        // Output: testing [currentPieceCoords] -> [neighbourCoords] \t\t
+                        // [pieceColour]==[neighbourColour]
+                        if( verbose ) {
+                            System.out.printf(
+                                "testing %s -> %s\t\t%d == %d\n",
+                                convertCoords(row, col),
+                                neighbours[i],
+                                getColourOfPiece(piece),
+                                getColourOfPiece(getPieceAtLoc(neighbours[i]))
+                            );
+                        }
+                        if (movePiece(convertCoords(row, col), neighbours[i]) == null) {
+                            if( verbose ) {
                                 System.out.println("\tThis move is legal...");
-                                System.out.println("\tmove " + convertCoords(row, col) + " -> " + neighbours[i]
-                                        + " causes check: " + isInCheckOrCheckmate(whitesTurn, false));
-                                if (isInCheckOrCheckmate(whitesTurn, false) == 0) {
-                                    System.out.println("\tThe move does not result in checkmate");
-                                    reverseMove();
-                                    return false;
-                                } else
-                                    reverseMove();
+                                System.out.printf(
+                                    "\tmove %s -> %s causes check: ",
+                                    convertCoords(row, col),
+                                    neighbours[i]
+                                );
+                                System.out.println("***************************************************");
+                                System.out.println(getBoard(true));
+                                System.out.println("***************************************************");
+                                int check_or_mate = isInCheckOrCheckmate(whitesTurn, false);
+                                if( check_or_mate == 0 ) { System.out.println("No"); }
+                                else if( check_or_mate == 1 ) { System.out.println("Check"); }
+                                else if( check_or_mate == 2 ) { System.out.println("Checkmate"); }
+                                else { System.out.println("ERROR"); }
                             }
+                            if (isInCheckOrCheckmate(whitesTurn, false) == 0) {
+                                if( verbose ) { System.out.println("Valid move available, Stalemate = false"); }
+                                reverseMove();
+                                return 0;
+                            } else
+                                reverseMove();
                         }
                     }
                 }
             }
         }
-        return true;
+        if( !pieceDetected )
+            return 2;
+        return 1;
+    }
+
+    /*****************************************************************************************************/
+    /* Testing Functons:                                                                                 */
+    /*****************************************************************************************************/
+
+    public static void test_createNewBoard() {
+        String red = "\u001B[0;31m";
+        String green = "\u001B[0;32m";
+        String reset = "\u001B[0m";
+
+        int totalTests = 1;
+        int errorCount = 0;
+
+        ChessBoard cb = new ChessBoard();
+
+        String[] rows = new String[10];
+        rows[0] = " abcdefgh ";
+        rows[1] = "8rnbqkbnr8";
+        rows[2] = "7rrrrrrrr7";
+        rows[3] = "6········6";
+        rows[4] = "5········5";
+        rows[5] = "4········4";
+        rows[6] = "3········3";
+        rows[7] = "2RRRRRRRR2";
+        rows[8] = "8RNBQKBNR8";
+        rows[9] = " abcdefgh ";
+
+        char[][] expectedBoard = new char[10][10];
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                expectedBoard[i][j] = rows[i].charAt(j);
+            }
+        }
+
+        cb.createNewBoard();
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                if( cb.board[i][j] != expectedBoard[i][j] ) {
+                    System.err.printf("%sFAIL:%s Incorrect board initialisation.\n", red, reset);
+                    errorCount++;
+                    // Output Boards:
+                    System.out.println("EXPECTED:\t\tACTUAL:");
+                    for( int r = 0; r < 10; r++ ) {
+                        for( int c = 0; c < 10; c++ ) { System.out.print(expectedBoard[r][c]); }
+                        System.out.print("\t\t");
+                        for( int c = 0; c < 10; c++ ) { System.out.print(cb.board[r][c]); }
+                        System.out.print("\n");
+                    }
+                    System.out.print("\n");
+                    i = 100; j = 100;
+                }
+            }
+        }
+
+        if( errorCount == 0 ) {
+            System.out.printf("createNewBoard: %sPASSED%s all %d tests.\n", green, reset, totalTests);
+        } else {
+            System.out.printf("createNewBoard: %sFAILED%s %d of %d tests.\n", red, reset, errorCount, totalTests);
+        }
+    }
+
+    public static void test_translateCharacter() {
+        String red = "\u001B[0;31m";
+        String green = "\u001B[0;32m";
+        String reset = "\u001B[0m";
+
+        String chars = "KQRBNPkqrbnp ·12345678";
+        int charNum = chars.length();
+        char[] expectedChars = new char[charNum];
+
+        int totalTests = charNum;
+        int errorCount = 0;
+        
+        ChessBoard cb = new ChessBoard();
+
+        // Special characters expecting translation:
+        expectedChars[0] = '\u2654';  expectedChars[1] = '\u2655';
+        expectedChars[2] = '\u2656';  expectedChars[3] = '\u2657';
+        expectedChars[4] = '\u2658';  expectedChars[5] = '\u2659';
+        expectedChars[6] = '\u265A';  expectedChars[7] = '\u265B';
+        expectedChars[8] = '\u265C';  expectedChars[9] = '\u265D';
+        expectedChars[10] = '\u265E'; expectedChars[11] = '\u265F';
+
+        // Characters that should not be translated:
+        expectedChars[12] = ' '; expectedChars[13] = '·';
+        expectedChars[14] = '1'; expectedChars[15] = '2';
+        expectedChars[16] = '3'; expectedChars[17] = '4';
+        expectedChars[18] = '5'; expectedChars[19] = '6';
+        expectedChars[20] = '7'; expectedChars[21] = '8';
+
+        char actual;
+        for( int i = 0; i < charNum; i++ ) {
+            actual = cb.translateCharacter(chars.charAt(i));
+            if( actual != expectedChars[i] ) {
+                System.out.printf("%sFAIL:%s Expected '%c', got '%c'\n", red, reset, expectedChars[i], actual);
+                errorCount++;
+            }
+        }
+        System.out.print("\n");
+
+        if( errorCount == 0 ) {
+            System.out.printf("translateCharacter: %sPASSED%s all %d tests.\n", green, reset, totalTests);
+        } else {
+            System.out.printf("createNewBoard: %sFAILED%s %d of %d tests.\n", red, reset, errorCount, totalTests);
+        }
+    }
+
+    // TODO: Continue with unit testing each method.
+    public static void test_getBoard() {
+        String red = "\u001B[0;31m";
+        String green = "\u001B[0;32m";
+        String reset = "\u001B[0m";
+
+        int totalTests = 5;
+        int errorCount = 0;
+
+        ChessBoard cb = new ChessBoard();
+        int rw = 20; // Row Width
+
+        // TEST: Board with no pieces (white perspective):
+        String[] rows = new String[10];
+        //expectedChars[0] = '\u2654';  expectedChars[1] = '\u2655';
+        //expectedChars[2] = '\u2656';  expectedChars[3] = '\u2657';
+        //expectedChars[4] = '\u2658';  expectedChars[5] = '\u2659';
+        //expectedChars[6] = '\u265A';  expectedChars[7] = '\u265B';
+        //expectedChars[8] = '\u265C';  expectedChars[9] = '\u265D';
+        //expectedChars[10] = '\u265E'; expectedChars[11] = '\u265F';
+        rows[0] = " abcdefgh ";
+        rows[1] = "8rnbqkbnr8";
+        rows[2] = "7rrrrrrrr7";
+        rows[3] = "6········6";
+        rows[4] = "5········5";
+        rows[5] = "4········4";
+        rows[6] = "3········3";
+        rows[7] = "2RRRRRRRR2";
+        rows[8] = "1RNBQKBNR1";
+        rows[9] = " abcdefgh ";
+
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                cb.board[i][j] = rows[i].charAt(j);
+            }
+        }
+
+        String expected = "";
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                expected += rows[i].charAt(j);
+                if( j != 9 ) { expected += " "; }
+                else { expected += "\n"; }
+            }
+        }
+        String actual = cb.getBoard(true);
+
+        for( int i = 0; i < 10*10; i++ ) {
+            if( expected.charAt(i) != actual.charAt(i) ) {
+                System.err.printf("%sFAIL:%s Incorrect output of empty board.\n", red, reset);
+                System.out.println("Expected:\t\tActual:");
+                for( int c = 0; c < 10; c++ ) {
+                    System.out.print(expected.substring(c*rw, (c*rw)+rw-1)); // Ignore new line.
+                    System.out.print("\t\t");
+                    System.out.print(actual.substring(c*rw, (c*rw)+rw));
+                }
+                break;
+            }
+        } 
+
+
+        // TEST: Starting board from white perspective:
+
+        // TEST: Starting board black perspective:
+
+        // TEST: Board with every tile containing a piece from white perspective:
+
+        // TEST: Board with every tile containing a piece from black perspective:
     }
 
     /*****************************************************************************************************/
     public static void main(String[] argc) {
+        System.out.println("\u2654 \u2655 \u265A \u265B");
+        test_createNewBoard();
+        System.out.print("\n\n");
+        test_translateCharacter();
+        System.out.print("\n\n");
+        test_getBoard();
+
         //
         // TEST CHECKMATE:
         //
@@ -975,6 +1206,7 @@ public class ChessBoard {
 
         ChessBoard cb = new ChessBoard();
         cb.createNewBoard();
+        int returnVal;
 
         for (int i = 1; i < 9; i++) {
             for (int j = 1; j < 9; j++)
@@ -982,19 +1214,23 @@ public class ChessBoard {
         }
 
         // No black pieces on the board:
-        cb.board[5][6] = 'p';
-        cb.board[5][7] = 'p';
-        cb.board[5][8] = 'p';
-        cb.board[6][6] = 'p';
-        cb.board[6][7] = 'k';
-        cb.board[6][8] = 'p';
-        cb.board[7][6] = 'p';
-        cb.board[7][7] = 'p';
-        cb.board[7][8] = 'p';
+        cb.board[5][6] = 'P';
+        cb.board[5][7] = 'P';
+        cb.board[5][8] = 'P';
+        cb.board[6][6] = 'P';
+        cb.board[6][7] = 'K';
+        cb.board[6][8] = 'P';
+        cb.board[7][6] = 'P';
+        cb.board[7][7] = 'P';
+        cb.board[7][8] = 'P';
 
         System.out.println(cb.getBoard(true));
         System.out.println("No pieces for black to move...");
-        System.out.println("Stalemate: " + (cb.stalemate(false) ? green + "True" + reset : red + "False" + reset));
+        returnVal = cb.stalemate(false, false);
+        System.out.print("Stalemate: ");
+        if( returnVal == 1 )        { System.out.println(red + "True" + reset); }
+        else if( returnVal == 0 )   { System.out.println(red + "False" + reset); }
+        else                        { System.out.println(green + "ERROR" + reset); }
         System.out.println("Swap colours..."); // Now it's whites turn to move.
         for (int i = 1; i < cb.boardWidth - 1; i++) {
             for (int j = 1; j < cb.boardWidth; j++) {
@@ -1004,21 +1240,29 @@ public class ChessBoard {
                     cb.board[i][j] = Character.toLowerCase(cb.board[i][j]);
             }
         }
-        System.out.println("Stalemate: " + (cb.stalemate(true) ? green + "True" + reset : red + "False" + reset));
+        returnVal = cb.stalemate(true, false);
+        System.out.print("Stalemate: ");
+        if( returnVal == 1 )        { System.out.println(red + "True" + reset); }
+        else if( returnVal == 0 )   { System.out.println(red + "False" + reset); }
+        else                        { System.out.println(green + "ERROR" + reset); }
 
         System.out.println("\n\n");
 
-        // Trap all pawns:
-        cb.board[4][6] = 'p';
-        cb.board[4][7] = 'p';
-        cb.board[4][8] = 'p';
+        // black's only move puts themselves in check:
+        cb.board[1][1] = 'K';
+        cb.board[7][5] = 'P';
+        cb.board[6][1] = 'R';
         cb.board[8][6] = 'p';
         cb.board[8][7] = 'p';
         cb.board[8][8] = 'p';
 
         System.out.println(cb.getBoard(true));
-        System.out.println("White pawns are trapped...");
-        System.out.println("Stalemate: " + (cb.stalemate(true) ? green + "True" + reset : red + "False" + reset));
+        System.out.println("Black's Only Move Results in Check...");
+        returnVal = cb.stalemate(false, false);
+        System.out.print("Stalemate: ");
+        if( returnVal == 1 )        { System.out.println(green + "True" + reset); }
+        else if( returnVal == 0 )   { System.out.println(red + "False" + reset); }
+        else                        { System.out.println(red + "ERROR" + reset); }
 
         System.out.println("Swap colours..."); // Now its blacks turn.
         for (int i = 1; i < cb.boardWidth - 1; i++) {
@@ -1029,7 +1273,11 @@ public class ChessBoard {
                     cb.board[i][j] = Character.toLowerCase(cb.board[i][j]);
             }
         }
-        System.out.println("Stalemate: " + (cb.stalemate(false) ? green + "True" + reset : red + "False" + reset));
+        returnVal = cb.stalemate(true, false);
+        System.out.print("Stalemate: ");
+        if( returnVal == 1 )        { System.out.println(green + "True" + reset); }
+        else if( returnVal == 0 )   { System.out.println(red + "False" + reset); }
+        else                        { System.out.println(red + "ERROR" + reset); }
 
         // Clear board:
         for (int i = 1; i < cb.boardWidth - 1; i++) {
@@ -1039,17 +1287,21 @@ public class ChessBoard {
 
         System.out.println("\n\n");
 
-        // King ony piece on board and has no move that doesn't result in check:
-        cb.board[3][3] = 'k';
-        cb.board[2][7] = 'R';
-        cb.board[4][7] = 'R';
-        cb.board[6][2] = 'R';
-        cb.board[6][4] = 'R';
-        cb.board[7][7] = 'K';
+        // King only piece on board and has no move that doesn't result in check:
+        cb.board[3][3] = 'K';
+        cb.board[2][7] = 'r';
+        cb.board[4][7] = 'r';
+        cb.board[6][2] = 'r';
+        cb.board[6][4] = 'r';
+        cb.board[7][7] = 'k';
 
         System.out.println(cb.getBoard(true));
         System.out.println("White king cannot move without entering check...");
-        System.out.println("Stalemate: " + (cb.stalemate(true) ? green + "True" + reset : red + "False" + reset));
+        returnVal = cb.stalemate(true, true);
+        System.out.print("Stalemate: ");
+        if( returnVal == 1 )        { System.out.println(green + "True" + reset); }
+        else if( returnVal == 0 )   { System.out.println(red + "False" + reset); }
+        else                        { System.out.println(red + "ERROR" + reset); }
 
         System.out.println("Swap colours..."); // Blacks turn now.
         for (int i = 1; i < cb.boardWidth - 1; i++) {
@@ -1060,15 +1312,23 @@ public class ChessBoard {
                     cb.board[i][j] = Character.toLowerCase(cb.board[i][j]);
             }
         }
-        System.out.println("Stalemate: " + (cb.stalemate(false) ? green + "True" + reset : red + "False" + reset));
+        returnVal = cb.stalemate(false, false);
+        System.out.print("Stalemate: ");
+        if( returnVal == 1 )        { System.out.println(green + "True" + reset); }
+        else if( returnVal == 0 )   { System.out.println(red + "False" + reset); }
+        else                        { System.out.println(red + "ERROR" + reset); }
 
         System.out.println("\n\n");
 
         // Add Bishop so legal move is available:
-        cb.board[6][5] = 'B';
+        cb.board[6][5] = 'b';
 
-        System.out.println(cb.getBoard(true));
-        System.out.println("Stalemate: " + (cb.stalemate(true) ? red + "True" + reset : green + "False" + reset));
+        System.out.println(cb.getBoard(false));
+        returnVal = cb.stalemate(false, false);
+        System.out.print("Stalemate: ");
+        if( returnVal == 1 )        { System.out.println(red + "True" + reset); }
+        else if( returnVal == 0 )   { System.out.println(green + "False" + reset); }
+        else                        { System.out.println(red + "ERROR" + reset); }
 
         System.out.println("Swap colours...");
         for (int i = 1; i < cb.boardWidth - 1; i++) {
@@ -1079,6 +1339,10 @@ public class ChessBoard {
                     cb.board[i][j] = Character.toLowerCase(cb.board[i][j]);
             }
         }
-        System.out.println("Stalemate: " + (cb.stalemate(true) ? red + "True" + reset : green + "False" + reset));
+        returnVal = cb.stalemate(true, false);
+        System.out.print("Stalemate: ");
+        if( returnVal == 1 )        { System.out.println(red + "True" + reset); }
+        else if( returnVal == 0 )   { System.out.println(green + "False" + reset); }
+        else                        { System.out.println(red + "ERROR" + reset); }
     }
 }
