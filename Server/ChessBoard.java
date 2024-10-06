@@ -1433,12 +1433,140 @@ public class ChessBoard {
             }
         } 
 
-
         System.out.print("\n");
         if( errorCount == 0 ) {
             System.out.printf("getBoard: %sPASSED%s all %d tests.\n", green, reset, totalTests);
         } else {
             System.out.printf("getBoard: %sFAILED%s %d of %d tests.\n", red, reset, errorCount, totalTests);
+        }
+    }
+
+    public static void test_getPieceAtLoc() {
+        String red = "\u001B[0;31m";
+        String green = "\u001B[0;32m";
+        String reset = "\u001B[0m";
+
+        int totalTests = 0;
+        int errorCount = 0;
+
+        ChessBoard cb = new ChessBoard();
+
+        // TEST: test retrieval of every tile on board:
+        String[] rows = new String[10];
+        rows[0] = " abcdefgh ";
+        rows[1] = "8········8";
+        rows[2] = "7········7";
+        rows[3] = "6········6";
+        rows[4] = "5········5";
+        rows[5] = "4········4";
+        rows[6] = "3········3";
+        rows[7] = "2········2";
+        rows[8] = "1········1";
+        rows[9] = " abcdefgh ";
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                cb.board[i][j] = rows[i].charAt(j);
+            }
+        }
+
+        char[] expectedPiece = { '9', 's', 'm', 'v', 'x', 'r', 'i', 'p' };
+        char actual;
+        char[] coords = new char[2];
+        for( int i = 0; i < 8; i++ ) {
+            for( int j = 0; j < 8; j++ ) {
+                cb.board[i+1][j+1] = expectedPiece[j];
+            }
+            for( int j = 0; j < 8; j++ ) {
+                totalTests++;
+                coords[0] = (char) ('a'+ j);
+                coords[1] = (char) ('8'- i);
+                actual = cb.getPieceAtLoc(String.valueOf(coords));
+                if( actual != expectedPiece[j] ) {
+                    errorCount++;
+                    System.out.printf(
+                        "%sERROR:%s incorrect piece retrieval at loc '%s'. Expected '%c', got '%c'.\n",
+                        red,
+                        reset,
+                        String.valueOf(coords),
+                        expectedPiece[j],
+                        actual
+                    );
+                }
+                totalTests++;
+                actual = cb.getPieceAtLoc(coords[0], coords[1]);
+                if( actual != expectedPiece[j] ) {
+                    errorCount++;
+                    System.out.printf(
+                        "%sERROR:%s incorrect piece retrieval at loc ( %c , %c ). Expected '%c', got '%c'.\n",
+                        red,
+                        reset,
+                        coords[0],
+                        coords[1],
+                        expectedPiece[j],
+                        actual
+                    );
+                }
+            }
+        }
+
+        System.out.print("\n");
+        if( errorCount == 0 ) {
+            System.out.printf("getPieceAtLoc: %sPASSED%s all %d tests.\n", green, reset, totalTests);
+        } else {
+            System.out.printf("getPieceAtLoc: %sFAILED%s %d of %d tests.\n", red, reset, errorCount, totalTests);
+        }
+    }
+
+    public static void test_getColourOfPiece() {
+        String red = "\u001B[0;31m";
+        String green = "\u001B[0;32m";
+        String reset = "\u001B[0m";
+
+        int totalTests = 0;
+        int errorCount = 0;
+
+        ChessBoard cb = new ChessBoard();
+
+        // TEST: Test retrieval of white pieces:
+        String pieces = "RNBQK";
+        int actual;
+        for( int i = 0; i < pieces.length(); i++ ) {
+            totalTests++;
+            actual = cb.getColourOfPiece(pieces.charAt(i));
+            if( actual != cb.white ) {
+                errorCount++;
+                System.out.printf(
+                    "%sERROR:%s Failed to identify white piece. peice (%c), received colour (%d).\n",
+                    red,
+                    reset,
+                    pieces.charAt(i),
+                    actual
+                );
+            }
+        }
+
+        // TEST: Test retrieval of black pieces:
+        pieces = "rnbqk";
+        for( int i = 0; i < pieces.length(); i++ ) {
+            totalTests++;
+            actual = cb.getColourOfPiece(pieces.charAt(i));
+            if( actual != cb.black ) {
+                errorCount++;
+                System.out.printf(
+                    "%sERROR:%s Failed to identify black piece. peice (%c), received colour (%d).\n",
+                    red,
+                    reset,
+                    pieces.charAt(i),
+                    actual
+                );
+            }
+        }
+
+        System.out.print("\n");
+        if( errorCount == 0 ) {
+            System.out.printf("getPieceAtLoc: %sPASSED%s all %d tests.\n", green, reset, totalTests);
+        } else {
+            System.out.printf("getPieceAtLoc: %sFAILED%s %d of %d tests.\n", red, reset, errorCount, totalTests);
         }
     }
 
@@ -1450,6 +1578,10 @@ public class ChessBoard {
         test_translateCharacter();
         System.out.print("\n\n");
         test_getBoard();
+        System.out.print("\n\n");
+        test_getPieceAtLoc();
+        System.out.print("\n\n");
+        test_getColourOfPiece();
 
         //
         // TEST CHECKMATE:
