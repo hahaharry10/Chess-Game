@@ -1785,6 +1785,133 @@ public class ChessBoard {
         }
     }
 
+    public static void test_movePawn() {
+        String red = "\u001B[0;31m";
+        String green = "\u001B[0;32m";
+        String reset = "\u001B[0m";
+
+        int totalTests = 0;
+        int errorCount = 0;
+
+        ChessBoard cb = new ChessBoard();
+
+        String[] rows = new String[10];
+        rows[0] = " abcdefgh ";
+        rows[1] = "8········8";
+        rows[2] = "7········7";
+        rows[3] = "6········6";
+        rows[4] = "5········5";
+        rows[5] = "4········4";
+        rows[6] = "3········3";
+        rows[7] = "2········2";
+        rows[8] = "1········1";
+        rows[9] = " abcdefgh ";
+        for( int i = 0; i < 10; i++ ) {
+            for( int j = 0; j < 10; j++ ) {
+                cb.board[i][j] = rows[i].charAt(j);
+            }
+        }
+
+        // TEST:
+        //      - Iterate one by one through all the tiles in the board.
+        //      - Place pawn on the tile.
+        //      - Test pawn movement to all surrounding spaces (only straight forward movement allowed)
+        //      - Surround pawn with opposing pieces.
+        //      - Test pawn movement to all surrounding spaces (only forward diagonal movement allowed)
+        char[] piece = { 'p' , 'P' };
+        int errTileCount;
+        String currTile;
+        String neighbour;
+        for( int i = 0; i < 2; i++ ) {
+            for( int row = 0; row < 8; row++ ) {
+                for( int col = 0; col < 8; col++ ) {
+                    errTileCount = 0;
+                    String[] errTiles = new String[8];
+                    totalTests++;
+                    currTile = String.valueOf( (char) ('a'+col) ) + String.valueOf( (char) ('1'+row) );
+                    int[] indexCoords = cb.convertCoords(currTile);
+                    cb.board[indexCoords[0]][indexCoords[1]] = piece[i];
+
+                    // All references are white facing:
+                    // Back  left:
+                    neighbour = String.valueOf( (char) (currTile.charAt(0)-1) ) + String.valueOf( (char) (currTile.charAt(1)-1) );
+                    if( cb.movePawn(currTile, neighbour) && cb.isValidCoord(neighbour) ) {
+                        errTiles[errTileCount] = neighbour;
+                        errTileCount++;
+                    }
+                    // Back:
+                    neighbour = String.valueOf( currTile.charAt(0) ) + String.valueOf( (char) (currTile.charAt(1)-1) );
+                    if( ((!cb.movePawn(currTile, neighbour) && piece[i] == 'p') || (cb.movePawn(currTile, neighbour) && piece[i] == 'P')) && cb.isValidCoord(neighbour) ) {
+                        errTiles[errTileCount] = neighbour;
+                        errTileCount++;
+                    }
+                    // Back right:
+                    neighbour = String.valueOf( (char) (currTile.charAt(0)+1) ) + String.valueOf( (char) (currTile.charAt(1)-1) );
+                    if( cb.movePawn(currTile, neighbour) && cb.isValidCoord(neighbour) ) {
+                        errTiles[errTileCount] = neighbour;
+                        errTileCount++;
+                    }
+                    // Left:
+                    neighbour = String.valueOf( (char) (currTile.charAt(0)-1) ) + String.valueOf( currTile.charAt(1) );
+                    if( cb.movePawn(currTile, neighbour) && cb.isValidCoord(neighbour) ) {
+                        errTiles[errTileCount] = neighbour;
+                        errTileCount++;
+                    }
+                    // Right:
+                    neighbour = String.valueOf( (char) (currTile.charAt(0)+1) ) + String.valueOf( currTile.charAt(1) );
+                    if( cb.movePawn(currTile, neighbour) && cb.isValidCoord(neighbour) ) {
+                        errTiles[errTileCount] = neighbour;
+                        errTileCount++;
+                    }
+                    // Front left:
+                    neighbour = String.valueOf( (char) (currTile.charAt(0)-1) ) + String.valueOf( (char) (currTile.charAt(1)+1) );
+                    if( cb.movePawn(currTile, neighbour) && cb.isValidCoord(neighbour) ) {
+                        errTiles[errTileCount] = neighbour;
+                        errTileCount++;
+                    }
+                    // Front:
+                    neighbour = String.valueOf( currTile.charAt(0) ) + String.valueOf( (char) (currTile.charAt(1)+1) );
+                    if( ((!cb.movePawn(currTile, neighbour) && piece[i] == 'P') || (cb.movePawn(currTile, neighbour) && piece[i] == 'p')) && cb.isValidCoord(neighbour) ) {
+                        errTiles[errTileCount] = neighbour;
+                        errTileCount++;
+                    }
+                    // Front Right:
+                    neighbour = String.valueOf( (char) (currTile.charAt(0)+1) ) + String.valueOf( (char) (currTile.charAt(1)+1) );
+                    if( cb.movePawn(currTile, neighbour) && cb.isValidCoord(neighbour) ) {
+                        errTiles[errTileCount] = neighbour;
+                        errTileCount++;
+                    }
+
+                    if( errTileCount != 0 ) {
+                        errorCount++;
+                        System.out.printf(
+                            "%sFAIL:%s Incorrect movement validation of %c from tile '%s' to tiles: ",
+                            red,
+                            reset,
+                            piece[i],
+                            currTile
+                        );
+                        for( int n = 0; n < errTileCount; n++ ) {
+                            System.out.printf(
+                                "%s%s",
+                                errTiles[n],
+                                (n == errTileCount-1 ? "\n" : ", ")
+                            );
+                        }
+                    }
+                    cb.board[indexCoords[0]][indexCoords[1]] = cb.emptyTile;
+                }
+            }
+        }
+        
+        System.out.print("\n");
+        if( errorCount == 0 ) {
+            System.out.printf("movePawn: %sPASSED%s all %d tests.\n", green, reset, totalTests);
+        } else {
+            System.out.printf("movePawn: %sFAILED%s %d of %d tests.\n", red, reset, errorCount, totalTests);
+        }
+    }
+
 
     /*****************************************************************************************************/
     public static void main(String[] argc) {
@@ -1802,6 +1929,8 @@ public class ChessBoard {
         test_convertCoords();
         System.out.print("\n\n");
         test_isValidCoord();
+        System.out.print("\n\n");
+        test_movePawn();
 
         //
         // TEST CHECKMATE:
