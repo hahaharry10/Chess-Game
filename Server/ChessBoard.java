@@ -1484,7 +1484,7 @@ public class ChessBoard {
                 if( actual != expectedPiece[j] ) {
                     errorCount++;
                     System.out.printf(
-                        "%sERROR:%s incorrect piece retrieval at loc '%s'. Expected '%c', got '%c'.\n",
+                        "%sFAIL:%s incorrect piece retrieval at loc '%s'. Expected '%c', got '%c'.\n",
                         red,
                         reset,
                         String.valueOf(coords),
@@ -1497,7 +1497,7 @@ public class ChessBoard {
                 if( actual != expectedPiece[j] ) {
                     errorCount++;
                     System.out.printf(
-                        "%sERROR:%s incorrect piece retrieval at loc ( %c , %c ). Expected '%c', got '%c'.\n",
+                        "%sFAIL:%s incorrect piece retrieval at loc ( %c , %c ). Expected '%c', got '%c'.\n",
                         red,
                         reset,
                         coords[0],
@@ -1536,7 +1536,7 @@ public class ChessBoard {
             if( actual != cb.white ) {
                 errorCount++;
                 System.out.printf(
-                    "%sERROR:%s Failed to identify white piece. peice (%c), received colour (%d).\n",
+                    "%sFAIL:%s Failed to identify white piece. peice (%c), received colour (%d).\n",
                     red,
                     reset,
                     pieces.charAt(i),
@@ -1553,7 +1553,7 @@ public class ChessBoard {
             if( actual != cb.black ) {
                 errorCount++;
                 System.out.printf(
-                    "%sERROR:%s Failed to identify black piece. peice (%c), received colour (%d).\n",
+                    "%sFAIL:%s Failed to identify black piece. peice (%c), received colour (%d).\n",
                     red,
                     reset,
                     pieces.charAt(i),
@@ -1570,6 +1570,222 @@ public class ChessBoard {
         }
     }
 
+    public static void test_convertCoords() {
+        String red = "\u001B[0;31m";
+        String green = "\u001B[0;32m";
+        String reset = "\u001B[0m";
+
+        int totalTests = 0;
+        int errorCount = 0;
+
+        ChessBoard cb = new ChessBoard();
+
+        // TEST: Test conversion between chess coordinates and indexing coordinates:
+        String chess;
+        for( int row = 1; row < 9; row++ ) {
+            for( int col = 1; col < 9; col++ ) {
+                totalTests++;
+                chess = String.valueOf( (char) ('a'+(col-1)) ) + String.valueOf( (char) ('9'-row) );
+                int[] actual = cb.convertCoords(chess);
+                int[] expected = { row, col };
+                if( actual[0] != expected[0] || actual[1] != expected[1] ) {
+                    errorCount++;
+                    System.out.printf(
+                        "%sFAIL:%s Incorrect conversion of %s to indexing coordinates. Expected ( %d , %d ), got ( %d , %d ).\n",
+                        red,
+                        reset,
+                        chess,
+                        expected[0],
+                        expected[1],
+                        actual[0],
+                        actual[1]
+                    );
+                }
+            }
+        }
+
+        // TEST: Test conversion between indexing coordinates and chess coordinates:
+        String expected;
+        String actual;
+        for( int row = 1; row < 9; row++ ) {
+            for( int col = 1; col < 9; col++ ) {
+                totalTests++;
+                int[] indexing = { row , col };
+                expected = String.valueOf( (char) ('a'+(col-1)) ) + String.valueOf( (char) ('9'-row) );
+                //expected = "" + ( (char) 'a'+i-1 ) + ( (char) '1'+j-1 );
+                actual = cb.convertCoords(indexing[0], indexing[1]);
+                if( !expected.equals(actual) ) {
+                    errorCount++;
+                    System.out.printf(
+                        "%sFAIL:%s Incorrect conversion of ( %d , %d ) to chess coordinates. Expected '%s', got '%s'.\n",
+                        red,
+                        reset,
+                        indexing[0],
+                        indexing[1],
+                        expected,
+                        actual
+                    );
+                }
+            }
+        }
+
+        System.out.print("\n");
+        if( errorCount == 0 ) {
+            System.out.printf("convertCoords: %sPASSED%s all %d tests.\n", green, reset, totalTests);
+        } else {
+            System.out.printf("convertCoords: %sFAILED%s %d of %d tests.\n", red, reset, errorCount, totalTests);
+        }
+    }
+
+    public static void test_isValidCoord() {
+        String red = "\u001B[0;31m";
+        String green = "\u001B[0;32m";
+        String reset = "\u001B[0m";
+
+        int totalTests = 0;
+        int errorCount = 0;
+
+        ChessBoard cb = new ChessBoard();
+
+        // TEST: test valid coordinates.
+        String input;
+        for( int i = 0; i < 8; i++ ) {
+            for( int j = 0; j < 8; j++ ) {
+                totalTests++;
+                input = String.valueOf( (char) ('a'+i) ) + String.valueOf( (char) ('1'+j) );
+                if( !cb.isValidCoord(input) ) {
+                    errorCount++;
+                    System.out.printf(
+                        "%sFAIL:%s Identified '%s' as invalid.\n",
+                        red,
+                        reset,
+                        input
+                    );
+                }
+                input = String.valueOf( (char) ('A'+i) ) + String.valueOf( (char) ('1'+j) );
+                if( !cb.isValidCoord(input) ) {
+                    errorCount++;
+                    System.out.printf(
+                        "%sFAIL:%s Identified '%s' as invalid.\n",
+                        red,
+                        reset,
+                        input
+                    );
+                }
+            }
+        }
+
+        // TEST: test single character strings.
+        for( int i = 0; i < 10; i++ ) {
+            totalTests++;
+            input = String.valueOf(i);
+            if( cb.isValidCoord(input) ) {
+                errorCount++;
+                System.out.printf(
+                    "%sFAIL:%s Identified '%s' as valid.\n",
+                    red,
+                    reset,
+                    input
+                );
+            }
+        }
+        for( int i = 0; i < 26; i++ ) {
+            totalTests++;
+            input = String.valueOf( (char) ('a'+i) );
+            if( cb.isValidCoord(input) ) {
+                errorCount++;
+                System.out.printf(
+                    "%sFAIL:%s Identified '%s' as valid.\n",
+                    red,
+                    reset,
+                    input
+                );
+            }
+        }
+
+        // TEST: test valid letters and invalid numbers.
+        for( int i = 0; i < 8; i++ ) {
+            totalTests++;
+            input = String.valueOf( (char) ('a'+i) ) + "0";
+            if( cb.isValidCoord(input) ) {
+                errorCount++;
+                System.out.printf(
+                    "%sFAIL:%s Identified '%s' as valid.\n",
+                    red,
+                    reset,
+                    input
+                );
+            }
+            for( int j = 9; j < 20; j++ ) {
+                totalTests++;
+                input = String.valueOf( (char) ('a'+i) ) + String.valueOf( j );
+                if( cb.isValidCoord(input) ) {
+                    errorCount++;
+                    System.out.printf(
+                        "%sFAIL:%s Identified '%s' as valid.\n",
+                        red,
+                        reset,
+                        input
+                    );
+                }
+            }
+        }
+
+        // TEST: test invalid letters and valid numbers.
+        for( int i = 8; i < 26; i++ ) {
+            totalTests++;
+            input = String.valueOf( (char) ('a'+i) ) + "0";
+            if( cb.isValidCoord(input) ) {
+                errorCount++;
+                System.out.printf(
+                    "%sFAIL:%s Identified '%s' as valid.\n",
+                    red,
+                    reset,
+                    input
+                );
+            }
+            for( int j = 9; j < 20; j++ ) {
+                totalTests++;
+                input = String.valueOf( (char) ('a'+i) ) + String.valueOf( j );
+                if( cb.isValidCoord(input) ) {
+                    errorCount++;
+                    System.out.printf(
+                        "%sFAIL:%s Identified '%s' as valid.\n",
+                        red,
+                        reset,
+                        input
+                    );
+                }
+            }
+        }
+
+
+        // TEST: test invalid letters and invalid numbers.
+        for( int i = 8; i < 26; i++ ) {
+            for( int j = 0; j < 8; j++ ) {
+                totalTests++;
+                input = String.valueOf( (char) ('a'+i) ) + String.valueOf( (char) ('1'+j) );
+                if( cb.isValidCoord(input) ) {
+                    errorCount++;
+                    System.out.printf(
+                        "%sFAIL:%s Identified '%s' as valid.\n",
+                        red,
+                        reset,
+                        input
+                    );
+                }
+            }
+        }
+
+        System.out.print("\n");
+        if( errorCount == 0 ) {
+            System.out.printf("isValidCoord: %sPASSED%s all %d tests.\n", green, reset, totalTests);
+        } else {
+            System.out.printf("isValidCoord: %sFAILED%s %d of %d tests.\n", red, reset, errorCount, totalTests);
+        }
+    }
+
+
     /*****************************************************************************************************/
     public static void main(String[] argc) {
         System.out.println("\u2654 \u2655 \u265A \u265B");
@@ -1582,6 +1798,10 @@ public class ChessBoard {
         test_getPieceAtLoc();
         System.out.print("\n\n");
         test_getColourOfPiece();
+        System.out.print("\n\n");
+        test_convertCoords();
+        System.out.print("\n\n");
+        test_isValidCoord();
 
         //
         // TEST CHECKMATE:
