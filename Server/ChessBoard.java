@@ -1119,6 +1119,10 @@ public class ChessBoard {
     }
 
     // TODO: Continue with unit testing each method.
+    // 
+    // NOTE: These tests only test for method correctness, not efficiency. And the
+    //  tests are not written in the most efficient manner but that is a hurdle
+    //  for another time.
     public static void test_getBoard() {
         String red = "\u001B[0;31m";
         String green = "\u001B[0;32m";
@@ -1134,14 +1138,6 @@ public class ChessBoard {
         String actual;
 
         // TEST: Board with no pieces (white perspective):
-        //
-        // WHITE KING   = '\u2654';                     WHITE QUEEN  = '\u2655';
-        // WHITE ROOK   = '\u2656';                     WHITE BISHOP = '\u2657';
-        // WHITE KNIGHT = '\u2658';                     WHITE PAWN   = '\u2659';
-        //
-        // BLACK KING   = '\u265A';                     BLACK QUEEN  = '\u265B';
-        // BLACK ROOK   = '\u265C';                     BLACK BISHOP = '\u265D';
-        // BLACK KNIGHT = '\u265E';                     BLACK PAWN   = '\u265F';
         rows[0] = " abcdefgh ";
         rows[1] = "8········8";
         rows[2] = "7········7";
@@ -1184,14 +1180,6 @@ public class ChessBoard {
         } 
 
         // TEST: Board with no pieces (black perspective):
-        //
-        // WHITE KING   = '\u2654';                     WHITE QUEEN  = '\u2655';
-        // WHITE ROOK   = '\u2656';                     WHITE BISHOP = '\u2657';
-        // WHITE KNIGHT = '\u2658';                     WHITE PAWN   = '\u2659';
-        //
-        // BLACK KING   = '\u265A';                     BLACK QUEEN  = '\u265B';
-        // BLACK ROOK   = '\u265C';                     BLACK BISHOP = '\u265D';
-        // BLACK KNIGHT = '\u265E';                     BLACK PAWN   = '\u265F';
         rows[0] = " hgfedcba ";
         rows[1] = "1········1";
         rows[2] = "2········2";
@@ -1818,78 +1806,150 @@ public class ChessBoard {
         //      - Test pawn movement to all surrounding spaces (only straight forward movement allowed)
         //      - Surround pawn with opposing pieces.
         //      - Test pawn movement to all surrounding spaces (only forward diagonal movement allowed)
-        char[] piece = { 'p' , 'P' };
+        char[] piece = { 'P' , 'p' };
+        char defaultPiece = cb.emptyTile;
         int errTileCount;
         String currTile;
         String neighbour;
-        for( int i = 0; i < 2; i++ ) {
+        boolean fill;
+        for( int i = 0; i < 4; i++ ) {
+            // TEST: The white pawn is surrounded by empty spaces.
+            //  When i == 2, the board stays blank and only the pawn colour changes.
+            if( i == 0 ) {
+                rows[0] = " abcdefgh ";
+                rows[1] = "8········8";
+                rows[2] = "7········7";
+                rows[3] = "6········6";
+                rows[4] = "5········5";
+                rows[5] = "4········4";
+                rows[6] = "3········3";
+                rows[7] = "2········2";
+                rows[8] = "1········1";
+                rows[9] = " abcdefgh ";
+                for( int row = 0; row < 10; row++ ) {
+                    for( int col = 0; col < 10; col++ ) {
+                        cb.board[row][col] = rows[row].charAt(col);
+                    }
+                }
+                defaultPiece = cb.emptyTile;
+            }
+            // TEST: The white pawn is surrounded by opposing pieces.
+            else if( i == 2 ) {
+                //  Fill the board with black pawns.
+                for( int row = 1; row < 9; row++ ) {
+                    for( int col = 1; col < 9; col++ )
+                        cb.board[row][col] = 'p';
+                }
+                defaultPiece = 'p';
+            }
+
+            // TEST: The black pawn is surrounded by opposing pieces.
+            else if( i == 3 ) {
+                //  Fill the board with white pawns.
+                for( int row = 1; row < 9; row++ ) {
+                    for( int col = 1; col < 9; col++ )
+                        cb.board[row][col] = 'P';
+                }
+                defaultPiece = 'P';
+            }
+
             for( int row = 0; row < 8; row++ ) {
                 for( int col = 0; col < 8; col++ ) {
                     errTileCount = 0;
-                    String[] errTiles = new String[8];
+                    String[] errTiles = new String[16];
                     totalTests++;
                     currTile = String.valueOf( (char) ('a'+col) ) + String.valueOf( (char) ('1'+row) );
                     int[] indexCoords = cb.convertCoords(currTile);
-                    cb.board[indexCoords[0]][indexCoords[1]] = piece[i];
+                    cb.board[indexCoords[0]][indexCoords[1]] = piece[i%2];
 
-                    // All references are white facing:
-                    // Back  left:
+                    /*
+                     * TODO: test movement when neighbouring tiles contain opposition's piece.
+                     */
+
+                    // All references are from white perspective:
+                    // Forward left, only allowed if white pawn is capturing opposing piece:
                     neighbour = String.valueOf( (char) (currTile.charAt(0)-1) ) + String.valueOf( (char) (currTile.charAt(1)-1) );
-                    if( cb.movePawn(currTile, neighbour) && cb.isValidCoord(neighbour) ) {
-                        errTiles[errTileCount] = neighbour;
-                        errTileCount++;
-                    }
-                    // Back:
+                    if( // This is an ugly format for this kinda multi-conditional statement. But idc :|
+                            ( (!cb.movePawn(currTile, neighbour) && piece[i%2] == 'P') ||
+                             (cb.movePawn(currTile, neighbour) && piece[i%2] == 'p')
+                            ) &&
+                            cb.isValidCoord(neighbour)
+                    )
+                        errTiles[errTileCount++] = neighbour;
+
+                    // Forward, only allowed if white pawn is moving to empty tile:
                     neighbour = String.valueOf( currTile.charAt(0) ) + String.valueOf( (char) (currTile.charAt(1)-1) );
-                    if( ((!cb.movePawn(currTile, neighbour) && piece[i] == 'p') || (cb.movePawn(currTile, neighbour) && piece[i] == 'P')) && cb.isValidCoord(neighbour) ) {
-                        errTiles[errTileCount] = neighbour;
-                        errTileCount++;
-                    }
-                    // Back right:
+                    if(
+                            ( (!cb.movePawn(currTile, neighbour) && piece[i%2] == 'P') ||
+                             (cb.movePawn(currTile, neighbour) && piece[i%2] == 'p')
+                            ) &&
+                            cb.isValidCoord(neighbour)
+                    )
+                        errTiles[errTileCount++] = neighbour;
+                    
+                    // Forward right, only allowed if white pawn is capturing opposing piece:
                     neighbour = String.valueOf( (char) (currTile.charAt(0)+1) ) + String.valueOf( (char) (currTile.charAt(1)-1) );
-                    if( cb.movePawn(currTile, neighbour) && cb.isValidCoord(neighbour) ) {
-                        errTiles[errTileCount] = neighbour;
-                        errTileCount++;
-                    }
+                    if(
+                            ( (!cb.movePawn(currTile, neighbour) && piece[i%2] == 'P') ||
+                             (cb.movePawn(currTile, neighbour) && piece[i%2] == 'p')
+                            ) &&
+                            cb.isValidCoord(neighbour)
+                    )
+                        errTiles[errTileCount++] = neighbour;
+                    
                     // Left:
                     neighbour = String.valueOf( (char) (currTile.charAt(0)-1) ) + String.valueOf( currTile.charAt(1) );
-                    if( cb.movePawn(currTile, neighbour) && cb.isValidCoord(neighbour) ) {
-                        errTiles[errTileCount] = neighbour;
-                        errTileCount++;
-                    }
+                    if( cb.movePawn(currTile, neighbour) && cb.isValidCoord(neighbour) ) 
+                        errTiles[errTileCount++] = neighbour;
+                    
                     // Right:
                     neighbour = String.valueOf( (char) (currTile.charAt(0)+1) ) + String.valueOf( currTile.charAt(1) );
-                    if( cb.movePawn(currTile, neighbour) && cb.isValidCoord(neighbour) ) {
-                        errTiles[errTileCount] = neighbour;
-                        errTileCount++;
-                    }
-                    // Front left:
+                    if( cb.movePawn(currTile, neighbour) && cb.isValidCoord(neighbour) ) 
+                        errTiles[errTileCount++] = neighbour;
+                    
+                    // Back left, only allowed if black pawn is capturing opposing piece:
                     neighbour = String.valueOf( (char) (currTile.charAt(0)-1) ) + String.valueOf( (char) (currTile.charAt(1)+1) );
-                    if( cb.movePawn(currTile, neighbour) && cb.isValidCoord(neighbour) ) {
-                        errTiles[errTileCount] = neighbour;
-                        errTileCount++;
-                    }
-                    // Front:
+                    if(
+                        (
+                         (!cb.movePawn(currTile, neighbour) && piece[i%2] == 'p') ||
+                         (cb.movePawn(currTile, neighbour) && piece[i%2] == 'P')
+                        ) &&
+                        cb.isValidCoord(neighbour)
+                    )
+                        errTiles[errTileCount++] = neighbour;
+                    
+                    // Back, only allowed if black pawn is moving to empty tile:
                     neighbour = String.valueOf( currTile.charAt(0) ) + String.valueOf( (char) (currTile.charAt(1)+1) );
-                    if( ((!cb.movePawn(currTile, neighbour) && piece[i] == 'P') || (cb.movePawn(currTile, neighbour) && piece[i] == 'p')) && cb.isValidCoord(neighbour) ) {
-                        errTiles[errTileCount] = neighbour;
-                        errTileCount++;
-                    }
-                    // Front Right:
+                    if(
+                        (
+                         (!cb.movePawn(currTile, neighbour) && piece[i%2] == 'p') ||
+                         (cb.movePawn(currTile, neighbour) && piece[i%2] == 'P')
+                        ) &&
+                        cb.isValidCoord(neighbour)
+                    )
+                        errTiles[errTileCount++] = neighbour;
+                    
+                    // Back right, only allowed if black pawn is capturing opposing piece:
                     neighbour = String.valueOf( (char) (currTile.charAt(0)+1) ) + String.valueOf( (char) (currTile.charAt(1)+1) );
-                    if( cb.movePawn(currTile, neighbour) && cb.isValidCoord(neighbour) ) {
-                        errTiles[errTileCount] = neighbour;
-                        errTileCount++;
-                    }
+                    if(
+                        (
+                         (!cb.movePawn(currTile, neighbour) && piece[i%2] == 'p') ||
+                         (cb.movePawn(currTile, neighbour) && piece[i%2] == 'P')
+                        ) &&
+                        cb.isValidCoord(neighbour)
+                    )
+                        errTiles[errTileCount++] = neighbour;
+                    
 
                     if( errTileCount != 0 ) {
                         errorCount++;
                         System.out.printf(
-                            "%sFAIL:%s Incorrect movement validation of %c from tile '%s' to tiles: ",
+                            "%sFAIL:%s Incorrect movement validation of %c from tile '%s' to %s tiles: ",
                             red,
                             reset,
-                            piece[i],
-                            currTile
+                            piece[i%2],
+                            currTile,
+                            (i < 2 ? "EMPTY" : "OPPOSITION")
                         );
                         for( int n = 0; n < errTileCount; n++ ) {
                             System.out.printf(
@@ -1899,7 +1959,7 @@ public class ChessBoard {
                             );
                         }
                     }
-                    cb.board[indexCoords[0]][indexCoords[1]] = cb.emptyTile;
+                    cb.board[indexCoords[0]][indexCoords[1]] = defaultPiece;
                 }
             }
         }
